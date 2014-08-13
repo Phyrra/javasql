@@ -5,13 +5,13 @@ import java.util.*;
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dbo.Value;
+import ch.sama.sql.query.dialect.SqlQuery;
 import ch.sama.sql.helper.Condition;
 import ch.sama.sql.helper.Order;
-import ch.sama.sql.query.Query;
 
 public class QueryTest {
 	public static void main(String[] args) {
-		String s = new Query()
+		String s = new SqlQuery()
 						.select(new Field("TABLE1.FIELD1"), new Field("TABLE1.FIELD2"), new Field("TABLE2.FIELD1"))
 						.from(new Table("TABLE1"), new Table("TABLE2"))
 						.where(Condition.eq("TABLE1.FIELD1", new Value(23)))
