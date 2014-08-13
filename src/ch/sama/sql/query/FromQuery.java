@@ -1,4 +1,10 @@
+package ch.sama.sql.query;
+
 import java.util.*;
+
+import ch.sama.sql.dbo.Table;
+import ch.sama.sql.helper.Condition;
+import ch.sama.sql.helper.Order;
 
 public class FromQuery implements IQuery {
 	private IQuery parent;

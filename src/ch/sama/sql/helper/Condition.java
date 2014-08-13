@@ -1,3 +1,7 @@
+package ch.sama.sql.helper;
+
+import ch.sama.sql.dbo.Value;
+
 public class Condition {
 	private enum TYPE {
 		AND,

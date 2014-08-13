@@ -1,4 +1,9 @@
+package ch.sama.sql.query;
+
 import java.util.*;
+
+import ch.sama.sql.dbo.Field;
+import ch.sama.sql.dbo.Table;
 
 public class SelectQuery implements IQuery {
 	private IQuery parent;

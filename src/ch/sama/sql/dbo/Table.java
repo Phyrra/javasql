@@ -1,3 +1,5 @@
+package ch.sama.sql.dbo;
+
 public class Table {
 	private String name;
 	

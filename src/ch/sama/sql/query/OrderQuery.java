@@ -1,4 +1,8 @@
+package ch.sama.sql.query;
+
 import java.util.*;
+
+import ch.sama.sql.helper.Order;
 
 public class OrderQuery implements IQuery {
 	private IQuery parent;

@@ -1,4 +1,8 @@
+package ch.sama.sql.helper;
+
 import java.util.*;
+
+import ch.sama.sql.dbo.Field;
 
 public class Order {
 	private enum TYPE {

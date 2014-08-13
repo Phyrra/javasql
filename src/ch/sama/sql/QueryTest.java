@@ -1,4 +1,13 @@
+package ch.sama.sql;
+
 import java.util.*;
+
+import ch.sama.sql.dbo.Field;
+import ch.sama.sql.dbo.Table;
+import ch.sama.sql.dbo.Value;
+import ch.sama.sql.helper.Condition;
+import ch.sama.sql.helper.Order;
+import ch.sama.sql.query.Query;
 
 public class QueryTest {
 	public static void main(String[] args) {

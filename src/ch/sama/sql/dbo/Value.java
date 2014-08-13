@@ -1,3 +1,5 @@
+package ch.sama.sql.dbo;
+
 import java.util.*;
 import java.text.*;
 
