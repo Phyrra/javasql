@@ -14,6 +14,10 @@ public abstract class Query implements IQuery {
 	public IQuery getParent() {
 		return null;
 	}
+	
+	public QueryFactory getFactory() {
+		return factory;
+	}
 		
 	public SelectQuery select(Field... f) {
 		return factory.selectQuery(factory, this, f);

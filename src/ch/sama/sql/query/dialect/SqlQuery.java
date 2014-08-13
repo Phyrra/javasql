@@ -8,7 +8,7 @@ public class SqlQuery extends Query {
 	}
 	
 	@Override
-	public String getSql() {
+	public String toString() {
 		return null;
 	}
 }

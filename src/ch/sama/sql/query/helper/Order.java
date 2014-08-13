@@ -1,11 +1,11 @@
-package ch.sama.sql.helper;
+package ch.sama.sql.query.helper;
 
 import java.util.*;
 
 import ch.sama.sql.dbo.Field;
 
 public class Order {
-	private enum TYPE {
+	public enum TYPE {
 		ASC,
 		DESC
 	}
@@ -15,6 +15,14 @@ public class Order {
 	
 	private Order(TYPE type) {
 		this.type = type;
+	}
+	
+	public TYPE getType() {
+		return type;
+	}
+	
+	public List<Field> getFields() {
+		return fields;
 	}
 	
 	public static Order asc(Field... f) {
@@ -39,6 +47,7 @@ public class Order {
 		}
 	}
 	
+	/*
 	public String getString() {
 		StringBuilder builder = new StringBuilder();
 		String prefix = "";
@@ -60,4 +69,5 @@ public class Order {
 		
 		return builder.toString();
 	}
+	*/
 }

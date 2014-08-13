@@ -3,8 +3,8 @@ package ch.sama.sql.query.base;
 import java.util.*;
 
 import ch.sama.sql.dbo.Table;
-import ch.sama.sql.helper.Condition;
-import ch.sama.sql.helper.Order;
+import ch.sama.sql.query.helper.Condition;
+import ch.sama.sql.query.helper.Order;
 
 public abstract class FromQuery implements IQuery {
 	QueryFactory factory;
@@ -13,6 +13,10 @@ public abstract class FromQuery implements IQuery {
 	
 	public IQuery getParent() {
 		return parent;
+	}
+	
+	public QueryFactory getFactory() {
+		return factory;
 	}
 	
 	public List<Table> getTables() {

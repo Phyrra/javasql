@@ -11,7 +11,7 @@ public class SqlSelectQuery extends SelectQuery {
 	}
 
 	@Override
-	public String getSql() {
+	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		String prefix = "";
 		
@@ -19,7 +19,7 @@ public class SqlSelectQuery extends SelectQuery {
 		
 		for (Field f : getFields()) {
 			builder.append(prefix);
-			builder.append(f.getName());
+			builder.append(f.toString());
 			
 			prefix = ", ";
 		}	

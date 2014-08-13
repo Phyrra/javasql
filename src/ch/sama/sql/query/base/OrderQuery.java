@@ -1,6 +1,6 @@
 package ch.sama.sql.query.base;
 
-import ch.sama.sql.helper.Order;
+import ch.sama.sql.query.helper.Order;
 
 public abstract class OrderQuery implements IQuery {
 	private QueryFactory factory;
@@ -9,6 +9,10 @@ public abstract class OrderQuery implements IQuery {
 	
 	public IQuery getParent() {
 		return parent;
+	}
+	
+	public QueryFactory getFactory() {
+		return factory;
 	}
 	
 	public Order getOrder() {

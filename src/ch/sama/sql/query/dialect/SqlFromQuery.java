@@ -11,10 +11,10 @@ public class SqlFromQuery extends FromQuery {
 	}
 	
 	@Override
-	public String getSql() {
+	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		
-		builder.append(getParent().getSql());
+		builder.append(getParent().toString());
 		
 		String prefix = "";
 		
@@ -22,7 +22,7 @@ public class SqlFromQuery extends FromQuery {
 		
 		for (Table t : getTables()) {
 			builder.append(prefix);
-			builder.append(t.getName());
+			builder.append(t.toString());
 			
 			prefix = ", ";
 		}

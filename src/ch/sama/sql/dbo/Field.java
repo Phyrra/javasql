@@ -1,13 +1,24 @@
 package ch.sama.sql.dbo;
 
 public class Field {
-	private String name;
+	private String table;
+	private String field;
 	
-	public Field(String name) {
-		this.name = name;
+	public Field(String field) {
+		this.field = field;
 	}
 	
-	public String getName() {
-		return name;
+	public Field(String table, String field) {
+		this.table = table;
+		this.field = field;
+	}
+	
+	public String toString() {
+		String s = "";
+		if (table != null) {
+			s += table + ".";
+		}
+		
+		return s + field;
 	}
 }

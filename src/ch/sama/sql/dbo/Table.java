@@ -1,13 +1,13 @@
 package ch.sama.sql.dbo;
 
 public class Table {
-	private String name;
+	private String table;
 	
-	public Table(String name) {
-		this.name = name;
+	public Table(String table) {
+		this.table = table;
 	}
 	
-	public String getName() {
-		return name;
+	public String toString() {
+		return table;
 	}
 }

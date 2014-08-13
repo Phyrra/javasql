@@ -8,8 +8,10 @@ import ch.sama.sql.query.base.OrderQuery;
 import ch.sama.sql.query.base.QueryFactory;
 import ch.sama.sql.query.base.SelectQuery;
 import ch.sama.sql.query.base.WhereQuery;
-import ch.sama.sql.helper.Condition;
-import ch.sama.sql.helper.Order;
+import ch.sama.sql.query.helper.Condition;
+import ch.sama.sql.query.helper.ConditionParser;
+import ch.sama.sql.query.helper.Order;
+import ch.sama.sql.query.helper.OrderParser;
 
 public class SqlQueryFactory implements QueryFactory {
 	@Override
@@ -30,5 +32,15 @@ public class SqlQueryFactory implements QueryFactory {
 	@Override
 	public OrderQuery orderQuery(QueryFactory factory, IQuery parent, Order order) {
 		return new SqlOrderQuery(factory, parent, order);
+	}
+
+	@Override
+	public ConditionParser conditionParser() {
+		return new SqlConditionParser();
+	}
+
+	@Override
+	public OrderParser orderParser() {
+		return new SqlOrderParser();
 	}
 }

@@ -3,7 +3,7 @@ package ch.sama.sql.query.dialect;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.base.OrderQuery;
 import ch.sama.sql.query.base.QueryFactory;
-import ch.sama.sql.helper.Order;
+import ch.sama.sql.query.helper.Order;
 
 public class SqlOrderQuery extends OrderQuery {
 	public SqlOrderQuery(QueryFactory factory, IQuery parent, Order order) {
@@ -11,12 +11,12 @@ public class SqlOrderQuery extends OrderQuery {
 	}
 	
 	@Override
-	public String getSql() {
+	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		
-		builder.append(getParent().getSql());		
+		builder.append(getParent().toString());		
 		builder.append("\n");
-		builder.append(getOrder().getString());
+		builder.append(getFactory().orderParser().parse(getOrder()));
 		
 		return builder.toString();
 	}

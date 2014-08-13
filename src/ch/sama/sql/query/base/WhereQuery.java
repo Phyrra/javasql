@@ -2,8 +2,8 @@ package ch.sama.sql.query.base;
 
 import java.util.*;
 
-import ch.sama.sql.helper.Condition;
-import ch.sama.sql.helper.Order;
+import ch.sama.sql.query.helper.Condition;
+import ch.sama.sql.query.helper.Order;
 
 public abstract class WhereQuery implements IQuery {
 	private QueryFactory factory;
@@ -12,6 +12,10 @@ public abstract class WhereQuery implements IQuery {
 	
 	public IQuery getParent() {
 		return parent;
+	}
+	
+	public QueryFactory getFactory() {
+		return factory;
 	}
 	
 	public Condition getCondition() {

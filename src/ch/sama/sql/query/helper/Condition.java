@@ -1,9 +1,9 @@
-package ch.sama.sql.helper;
+package ch.sama.sql.query.helper;
 
-import ch.sama.sql.dbo.Value;
+import ch.sama.sql.query.base.QueryFactory;
 
 public class Condition {
-	private enum TYPE {
+	public enum TYPE {
 		AND,
 		OR,
 		EQ,
@@ -20,21 +20,16 @@ public class Condition {
 		this.type = type;
 	}
 	
-	public String getString() {
-		switch (type) {
-			case EQ:
-				return (String)lhs + " = " + ((Value)rhs).getString();
-			case NEQ:
-				return (String)lhs + " <> " + ((Value)rhs).getString();			
-			case LIKE:
-				return (String)lhs + " LIKE " + ((Value)rhs).getString();
-			case AND:
-				return "(" + ((Condition)lhs).getString() + " AND " + ((Condition)rhs).getString() + ")";
-			case OR:
-				return "(" + ((Condition)lhs).getString() + " OR " + ((Condition)rhs).getString() + ")";
-			default:
-				throw new RuntimeException("Unknown type: " + type);
-		}
+	public TYPE getType() {
+		return type;
+	}
+	
+	public Object getLHS() {
+		return lhs;
+	}
+	
+	public Object getRHS() {
+		return rhs;
 	}
 	
 	public static Condition eq(String field, Value value) {

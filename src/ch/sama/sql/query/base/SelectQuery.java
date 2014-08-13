@@ -14,6 +14,10 @@ public abstract class SelectQuery implements IQuery {
 		return parent;
 	}
 	
+	public QueryFactory getFactory() {
+		return factory;
+	}
+	
 	public List<Field> getFields() {
 		return fields;
 	}
