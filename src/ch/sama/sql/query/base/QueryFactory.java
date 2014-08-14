@@ -10,6 +10,7 @@ import ch.sama.sql.query.helper.OrderParser;
 public interface QueryFactory {
 	public SelectQuery selectQuery(QueryFactory factory, IQuery parent, Field... f);
 	public FromQuery fromQuery(QueryFactory factory, IQuery parent, Table... t);
+	public JoinQuery joinQuery(QueryFactory factory, IQuery parent, Table t); 
 	public WhereQuery whereQuery(QueryFactory factory, IQuery parent, Condition condition);
 	public OrderQuery orderQuery(QueryFactory factory, IQuery parent, Order order);
 	

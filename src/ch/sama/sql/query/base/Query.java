@@ -1,7 +1,5 @@
 package ch.sama.sql.query.base;
 
-import java.util.*;
-
 import ch.sama.sql.dbo.Field;
 
 public abstract class Query implements IQuery {

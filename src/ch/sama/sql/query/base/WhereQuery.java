@@ -1,7 +1,5 @@
 package ch.sama.sql.query.base;
 
-import java.util.*;
-
 import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.Order;
 

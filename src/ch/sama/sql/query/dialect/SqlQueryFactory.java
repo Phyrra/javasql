@@ -3,6 +3,7 @@ package ch.sama.sql.query.dialect;
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.base.FromQuery;
+import ch.sama.sql.query.base.JoinQuery;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.base.OrderQuery;
 import ch.sama.sql.query.base.QueryFactory;
@@ -22,6 +23,11 @@ public class SqlQueryFactory implements QueryFactory {
 	@Override
 	public FromQuery fromQuery(QueryFactory factory, IQuery parent, Table... t) {
 		return new SqlFromQuery(factory, parent, t);
+	}
+	
+	@Override
+	public JoinQuery joinQuery(QueryFactory factory, IQuery parent, Table t) {
+		return new SqlJoinQuery(factory, parent, t);
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package ch.sama.sql.query.dialect;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
+import ch.sama.sql.dbo.Field;
 import ch.sama.sql.query.helper.Value;
 
 public class SqlValue implements Value {
@@ -31,5 +32,9 @@ public class SqlValue implements Value {
 	public SqlValue(Date d) {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");		
 		value = "CONVERT(datetime, '" + df.format(d) + "', 21)";
+	}
+	
+	public SqlValue(Field f) {
+		value = f.toString();
 	}
 }

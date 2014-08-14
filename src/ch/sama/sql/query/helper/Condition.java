@@ -1,7 +1,5 @@
 package ch.sama.sql.query.helper;
 
-import ch.sama.sql.query.base.QueryFactory;
-
 public class Condition {
 	public enum TYPE {
 		AND,
@@ -32,29 +30,29 @@ public class Condition {
 		return rhs;
 	}
 	
-	public static Condition eq(String field, Value value) {
+	public static Condition eq(Value lhs, Value rhs) {
 		Condition c = new Condition(TYPE.EQ);
 	
-		c.lhs = field;
-		c.rhs = value;
+		c.lhs = lhs;
+		c.rhs = rhs;
 		
 		return c;
 	}
 	
-	public static Condition neq(String field, Value value) {
+	public static Condition neq(Value lhs, Value rhs) {
 		Condition c = new Condition(TYPE.NEQ);
 	
-		c.lhs = field;
-		c.rhs = value;
+		c.lhs = lhs;
+		c.rhs = rhs;
 		
 		return c;
 	}
 	
-	public static Condition like(String field, Value value) {
+	public static Condition like(Value lhs, Value rhs) {
 		Condition c = new Condition(TYPE.LIKE);
 	
-		c.lhs = field;
-		c.rhs = value;
+		c.lhs = lhs;
+		c.rhs = rhs;
 		
 		return c;
 	}

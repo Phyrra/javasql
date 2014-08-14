@@ -33,6 +33,10 @@ public abstract class FromQuery implements IQuery {
 		}
 	}
 	
+	public JoinQuery join(Table table) {
+		return factory.joinQuery(factory, this, table);
+	}
+	
 	public OrderQuery order(Order order) {
 		return factory.orderQuery(factory, this, order);
 	}
