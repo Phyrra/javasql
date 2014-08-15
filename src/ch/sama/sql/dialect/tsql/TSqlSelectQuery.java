@@ -1,12 +1,12 @@
-package ch.sama.sql.query.dialect;
+package ch.sama.sql.dialect.tsql;
 
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.base.QueryFactory;
 import ch.sama.sql.query.base.SelectQuery;
 
-public class SqlSelectQuery extends SelectQuery {
-	public SqlSelectQuery(QueryFactory factory, IQuery parent, Field[] f) {
+public class TSqlSelectQuery extends SelectQuery {
+	public TSqlSelectQuery(QueryFactory factory, IQuery parent, Field[] f) {
 		super(factory, parent, f);
 	}
 

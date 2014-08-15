@@ -4,28 +4,28 @@ import java.util.*;
 
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
-import ch.sama.sql.query.dialect.SqlQuery;
-import ch.sama.sql.query.dialect.SqlValue;
+import ch.sama.sql.dialect.tsql.TSqlQuery;
+import ch.sama.sql.dialect.tsql.TSqlValue;
 import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.Order;
 
 public class QueryTest {
 	public static void main(String[] args) {
 		Condition c = Condition.and(
-				Condition.eq(new SqlValue(new Field("FIELD1")), new SqlValue(new Date())),
+				Condition.eq(new TSqlValue(new Field("FIELD1")), new TSqlValue(new Date())),
 				Condition.or(
-						Condition.neq(new SqlValue(new Field("FIELD2")), new SqlValue(3.32)),
-						Condition.like(new SqlValue(new Field("FIELD3")), new SqlValue("test3"))
+						Condition.neq(new TSqlValue(new Field("FIELD2")), new TSqlValue(3.32)),
+						Condition.like(new TSqlValue(new Field("FIELD3")), new TSqlValue("test3"))
 				)
 		);
 		
 		Condition c2 = Condition.not(
-				Condition.eq(new SqlValue(new Field("FIELD4")), new SqlValue(1))
+				Condition.eq(new TSqlValue(new Field("FIELD4")), new TSqlValue(1))
 		);
 		
-		Condition c3 = Condition.eq(new SqlValue(1), new SqlValue(1));
+		Condition c3 = Condition.eq(new TSqlValue(1), new TSqlValue(1));
 		
-		String s = new SqlQuery()
+		String s = new TSqlQuery()
 						.select(new Field("TABLE1.FIELD1").as("TEST"), new Field("TABLE1.FIELD2"), new Field("TABLE2.FIELD1"))
 						.from(new Table("TABLE1"), new Table("TABLE2"))
 						.join(new Table("TABLE3")).left().as("T3").on(c2)

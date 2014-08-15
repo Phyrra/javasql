@@ -1,9 +1,9 @@
-package ch.sama.sql.query.dialect;
+package ch.sama.sql.dialect.tsql;
 
 import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.ConditionParser;
 
-public class SqlConditionParser implements ConditionParser {
+public class TSqlConditionParser implements ConditionParser {
 	@Override
 	public String parse(Condition c) {
 		switch (c.getType()) {

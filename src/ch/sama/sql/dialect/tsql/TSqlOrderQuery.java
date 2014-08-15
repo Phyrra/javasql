@@ -1,12 +1,12 @@
-package ch.sama.sql.query.dialect;
+package ch.sama.sql.dialect.tsql;
 
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.base.OrderQuery;
 import ch.sama.sql.query.base.QueryFactory;
 import ch.sama.sql.query.helper.Order;
 
-public class SqlOrderQuery extends OrderQuery {
-	public SqlOrderQuery(QueryFactory factory, IQuery parent, Order order) {
+public class TSqlOrderQuery extends OrderQuery {
+	public TSqlOrderQuery(QueryFactory factory, IQuery parent, Order order) {
 		super(factory, parent, order);
 	}
 	

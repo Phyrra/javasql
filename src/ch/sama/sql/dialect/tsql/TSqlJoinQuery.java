@@ -1,12 +1,12 @@
-package ch.sama.sql.query.dialect;
+package ch.sama.sql.dialect.tsql;
 
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.base.JoinQuery;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.base.QueryFactory;
 
-public class SqlJoinQuery extends JoinQuery {
-	public SqlJoinQuery(QueryFactory factory, IQuery parent, Table table) {
+public class TSqlJoinQuery extends JoinQuery {
+	public TSqlJoinQuery(QueryFactory factory, IQuery parent, Table table) {
 		super(factory, parent, table);
 	}
 	

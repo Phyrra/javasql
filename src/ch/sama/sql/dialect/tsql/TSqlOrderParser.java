@@ -1,10 +1,10 @@
-package ch.sama.sql.query.dialect;
+package ch.sama.sql.dialect.tsql;
 
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.query.helper.Order;
 import ch.sama.sql.query.helper.OrderParser;
 
-public class SqlOrderParser implements OrderParser {
+public class TSqlOrderParser implements OrderParser {
 	public String parse(Order o) {
 		StringBuilder builder = new StringBuilder();
 		String prefix = "";
