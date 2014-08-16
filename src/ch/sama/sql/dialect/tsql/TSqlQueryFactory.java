@@ -2,6 +2,7 @@ package ch.sama.sql.dialect.tsql;
 
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
+import ch.sama.sql.query.base.CTEQuery;
 import ch.sama.sql.query.base.FromQuery;
 import ch.sama.sql.query.base.JoinQuery;
 import ch.sama.sql.query.base.IQuery;
@@ -38,6 +39,10 @@ public class TSqlQueryFactory implements QueryFactory {
 	@Override
 	public OrderQuery orderQuery(QueryFactory factory, IQuery parent, Order order) {
 		return new TSqlOrderQuery(factory, parent, order);
+	}
+	
+	@Override public CTEQuery cteQuery(QueryFactory factory, IQuery parent, String name) {
+		return new TSqlCTEQuery(factory, parent, name);
 	}
 
 	@Override

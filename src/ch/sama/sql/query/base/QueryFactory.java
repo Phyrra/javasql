@@ -13,6 +13,7 @@ public interface QueryFactory {
 	public JoinQuery joinQuery(QueryFactory factory, IQuery parent, Table t); 
 	public WhereQuery whereQuery(QueryFactory factory, IQuery parent, Condition condition);
 	public OrderQuery orderQuery(QueryFactory factory, IQuery parent, Order order);
+	public CTEQuery cteQuery(QueryFactory factory, IQuery parent, String name);
 	
 	public ConditionParser conditionParser();
 	public OrderParser orderParser();

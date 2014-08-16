@@ -16,6 +16,10 @@ public abstract class Query implements IQuery {
 	public QueryFactory getFactory() {
 		return factory;
 	}
+	
+	public CTEQuery with(String name) {
+		return factory.cteQuery(factory, this, name);
+	}
 		
 	public SelectQuery select(Field... f) {
 		return factory.selectQuery(factory, this, f);

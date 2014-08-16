@@ -8,7 +8,7 @@ public class TSqlQuery extends Query {
 	}
 	
 	@Override
-	public String toString() {
+	public String toString() {		
 		return null;
 	}
 }
