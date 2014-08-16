@@ -8,6 +8,9 @@ import java.text.SimpleDateFormat;
 import org.junit.Test;
 
 import ch.sama.sql.dbo.Field;
+import ch.sama.sql.dbo.Function;
+import ch.sama.sql.dbo.Table;
+import ch.sama.sql.dialect.tsql.TSqlQuery;
 import ch.sama.sql.dialect.tsql.TSqlValue;
 
 public class ValueTest {
@@ -42,5 +45,33 @@ public class ValueTest {
 	@Test
 	public void field() {
 		assertEquals("TABLE.FIELD", new TSqlValue(new Field("TABLE", "FIELD")).toString());
+	}
+	
+	@Test
+	public void nameAlias() {
+		assertEquals("NAME AS ALIAS", new TSqlValue(new Field("NAME")).as("ALIAS").toString());
+	}
+	
+	@Test
+	public void subQuery() {
+		assertEquals("(\nSELECT 1\n) AS ALIAS", new TSqlValue(new TSqlQuery().select(new TSqlValue(1))).as("ALIAS").toString());
+	}
+	
+	@Test
+	public void function() {
+		assertEquals("COUNT(*)", new TSqlValue(new Function("COUNT(*)")).toString());
+	}
+	
+	@Test
+	public void selectFunction() {
+		assertEquals(
+			"SELECT COUNT(*) AS _COUNT\nFROM TABLE",
+			new TSqlQuery()
+				.select(
+					new TSqlValue(new Function("COUNT(*)")).as("_COUNT")
+				)
+				.from(new Table("TABLE"))
+			.toString()
+		);
 	}
 }

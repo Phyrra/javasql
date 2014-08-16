@@ -1,14 +1,14 @@
 package ch.sama.sql.dialect.tsql;
 
-import ch.sama.sql.dbo.Field;
 import ch.sama.sql.query.base.CTEQuery;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.base.QueryFactory;
 import ch.sama.sql.query.base.SelectQuery;
+import ch.sama.sql.query.helper.Value;
 
 public class TSqlSelectQuery extends SelectQuery {
-	public TSqlSelectQuery(QueryFactory factory, IQuery parent, Field[] f) {
-		super(factory, parent, f);
+	public TSqlSelectQuery(QueryFactory factory, IQuery parent, Value[] v) {
+		super(factory, parent, v);
 	}
 
 	@Override
@@ -31,9 +31,9 @@ public class TSqlSelectQuery extends SelectQuery {
 			builder.append(" ");
 		}
 		
-		for (Field f : getFields()) {
+		for (Value v : getValues()) {
 			builder.append(prefix);
-			builder.append(f.toString());
+			builder.append(v.toString());
 			
 			prefix = ", ";
 		}	

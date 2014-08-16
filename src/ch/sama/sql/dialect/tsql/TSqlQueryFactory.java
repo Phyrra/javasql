@@ -1,6 +1,5 @@
 package ch.sama.sql.dialect.tsql;
 
-import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.base.CTEQuery;
 import ch.sama.sql.query.base.FromQuery;
@@ -14,11 +13,12 @@ import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.ConditionParser;
 import ch.sama.sql.query.helper.Order;
 import ch.sama.sql.query.helper.OrderParser;
+import ch.sama.sql.query.helper.Value;
 
 public class TSqlQueryFactory implements QueryFactory {
 	@Override
-	public SelectQuery selectQuery(QueryFactory factory, IQuery parent, Field... f) {
-		return new TSqlSelectQuery(factory, parent, f);
+	public SelectQuery selectQuery(QueryFactory factory, IQuery parent, Value... v) {
+		return new TSqlSelectQuery(factory, parent, v);
 	}
 
 	@Override

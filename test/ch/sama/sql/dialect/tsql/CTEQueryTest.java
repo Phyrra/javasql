@@ -22,7 +22,7 @@ public class CTEQueryTest {
 			"WITH CTE AS (\nSELECT F\nFROM T\n)",
 			query
 				.with("CTE").as(
-					new TSqlQuery().select(new Field("F")).from(new Table("T"))
+					new TSqlQuery().select(new TSqlValue(new Field("F"))).from(new Table("T"))
 				)
 			.toString()
 		);
@@ -34,9 +34,9 @@ public class CTEQueryTest {
 			"WITH CTE AS (\nSELECT F\nFROM T\n)\nSELECT F\nFROM CTE",
 			query
 				.with("CTE").as(
-					new TSqlQuery().select(new Field("F")).from(new Table("T"))
+					new TSqlQuery().select(new TSqlValue(new Field("F"))).from(new Table("T"))
 				)
-				.select(new Field("F")).from(new Table("CTE"))
+				.select(new TSqlValue(new Field("F"))).from(new Table("CTE"))
 				.toString()
 		);
 	}

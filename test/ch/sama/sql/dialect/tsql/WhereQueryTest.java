@@ -10,7 +10,7 @@ import ch.sama.sql.query.base.FromQuery;
 import ch.sama.sql.query.helper.Condition;
 
 public class WhereQueryTest {
-	private static final FromQuery query = new TSqlQuery().select(new Field("F")).from(new Table("T"));
+	private static final FromQuery query = new TSqlQuery().select(new TSqlValue(new Field("F"))).from(new Table("T"));
 	private static final Condition cond = Condition.eq(new TSqlValue(1), new TSqlValue(1));
 	
 	@Test

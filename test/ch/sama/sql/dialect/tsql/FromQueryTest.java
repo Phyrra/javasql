@@ -9,7 +9,7 @@ import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.base.SelectQuery;
 
 public class FromQueryTest {
-	private static final SelectQuery query = new TSqlQuery().select(new Field("F"));
+	private static final SelectQuery query = new TSqlQuery().select(new TSqlValue(new Field("F")));
 	
 	@Test
 	public void single() {

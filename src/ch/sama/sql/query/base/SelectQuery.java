@@ -2,13 +2,13 @@ package ch.sama.sql.query.base;
 
 import java.util.*;
 
-import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
+import ch.sama.sql.query.helper.Value;
 
 public abstract class SelectQuery implements IQuery {
 	private QueryFactory factory;
 	private IQuery parent;
-	private List<Field> fields;
+	private List<Value> values;	
 	private int n;
 	
 	public IQuery getParent() {
@@ -19,22 +19,22 @@ public abstract class SelectQuery implements IQuery {
 		return factory;
 	}
 	
-	public List<Field> getFields() {
-		return fields;
+	public List<Value> getValues() {
+		return values;
 	}
 	
 	public int getTopN() {
 		return n;
 	}
 	
-	public SelectQuery(QueryFactory factory, IQuery parent, Field... f) {
+	public SelectQuery(QueryFactory factory, IQuery parent, Value... v) {
 		this.factory = factory;
 		this.parent = parent;
-		this.fields = new ArrayList<Field>();
+		this.values = new ArrayList<Value>();
 		this.n = -1;
 		
-		for (int i = 0; i < f.length; ++i) {
-			fields.add(f[i]);
+		for (int i = 0; i < v.length; ++i) {
+			values.add(v[i]);
 		}
 	}
 	

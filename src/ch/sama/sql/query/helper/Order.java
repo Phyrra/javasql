@@ -2,8 +2,6 @@ package ch.sama.sql.query.helper;
 
 import java.util.*;
 
-import ch.sama.sql.dbo.Field;
-
 public class Order {
 	public enum TYPE {
 		ASC,
@@ -11,7 +9,7 @@ public class Order {
 	}
 	
 	private TYPE type;
-	private List<Field> fields;
+	private List<Value> values;
 	
 	private Order(TYPE type) {
 		this.type = type;
@@ -21,53 +19,29 @@ public class Order {
 		return type;
 	}
 	
-	public List<Field> getFields() {
-		return fields;
+	public List<Value> getValues() {
+		return values;
 	}
 	
-	public static Order asc(Field... f) {
+	public static Order asc(Value... v) {
 		Order o = new Order(TYPE.ASC);
-		o.fill(f);
+		o.fill(v);
 		
 		return o;
 	}
 	
-	public static Order desc(Field... f) {
+	public static Order desc(Value... v) {
 		Order o = new Order(TYPE.DESC);
-		o.fill(f);
+		o.fill(v);
 		
 		return o;
 	}
 	
-	private void fill(Field... f) {
-		fields = new ArrayList<Field>();
+	private void fill(Value... v) {
+		values = new ArrayList<Value>();
 		
-		for (int i = 0; i < f.length; ++i) {
-			fields.add(f[i]);
+		for (int i = 0; i < v.length; ++i) {
+			values.add(v[i]);
 		}
 	}
-	
-	/*
-	public String getString() {
-		StringBuilder builder = new StringBuilder();
-		String prefix = "";
-		
-		builder.append("ORDER BY ");
-		
-		for (Field f : fields) {
-			builder.append(prefix);
-			builder.append(f.getName());
-			
-			prefix = ", ";
-		}
-		
-		if (type == TYPE.ASC) {
-			builder.append(" ASC");
-		} else if (type == TYPE.DESC) {
-			builder.append(" DESC");
-		}
-		
-		return builder.toString();
-	}
-	*/
 }

@@ -4,13 +4,30 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 
 import ch.sama.sql.dbo.Field;
+import ch.sama.sql.dbo.Function;
+import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.helper.Value;
 
 public class TSqlValue implements Value {
 	private String value;
+	private String alias;
 	
 	public String toString() {
-		return value;
+		StringBuilder builder = new StringBuilder();
+		
+		builder.append(value);
+		
+		if (alias != null) {
+			builder.append(" AS ");
+			builder.append(alias);
+		}
+		
+		return builder.toString();
+	}
+	
+	public Value as(String alias) {
+		this.alias = alias;
+		return this;
 	}
 	
 	public TSqlValue(String s) {
@@ -35,6 +52,14 @@ public class TSqlValue implements Value {
 	}
 	
 	public TSqlValue(Field f) {
+		value = f.toString();
+	}
+	
+	public TSqlValue(IQuery query) {
+		value = "(\n" + query.toString() + "\n)";
+	}
+	
+	public TSqlValue(Function f) {
 		value = f.toString();
 	}
 }

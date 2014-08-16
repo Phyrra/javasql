@@ -11,8 +11,8 @@ import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.Order;
 
 public class OrderQueryTest {
-	private static final FromQuery query = new TSqlQuery().select(new Field("F")).from(new Table("T"));
-	private static final Order order = Order.asc(new Field("F"));
+	private static final FromQuery query = new TSqlQuery().select(new TSqlValue(new Field("F"))).from(new Table("T"));
+	private static final Order order = Order.asc(new TSqlValue(new Field("F")));
 	
 	@Test
 	public void afterFrom() {

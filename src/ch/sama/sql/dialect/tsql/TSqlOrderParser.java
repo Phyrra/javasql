@@ -1,8 +1,8 @@
 package ch.sama.sql.dialect.tsql;
 
-import ch.sama.sql.dbo.Field;
 import ch.sama.sql.query.helper.Order;
 import ch.sama.sql.query.helper.OrderParser;
+import ch.sama.sql.query.helper.Value;
 
 public class TSqlOrderParser implements OrderParser {
 	public String parse(Order o) {
@@ -11,9 +11,9 @@ public class TSqlOrderParser implements OrderParser {
 		
 		builder.append("ORDER BY ");
 		
-		for (Field f : o.getFields()) {
+		for (Value v : o.getValues()) {
 			builder.append(prefix);
-			builder.append(f.toString());
+			builder.append(v.toString());
 			
 			prefix = ", ";
 		}

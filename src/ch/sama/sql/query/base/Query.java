@@ -1,6 +1,6 @@
 package ch.sama.sql.query.base;
 
-import ch.sama.sql.dbo.Field;
+import ch.sama.sql.query.helper.Value;
 
 public abstract class Query implements IQuery {
 	private QueryFactory factory;
@@ -21,7 +21,7 @@ public abstract class Query implements IQuery {
 		return factory.cteQuery(factory, this, name);
 	}
 		
-	public SelectQuery select(Field... f) {
-		return factory.selectQuery(factory, this, f);
+	public SelectQuery select(Value... v) {
+		return factory.selectQuery(factory, this, v);
 	}
 }
