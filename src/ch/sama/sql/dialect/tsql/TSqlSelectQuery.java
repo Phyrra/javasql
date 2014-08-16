@@ -17,6 +17,12 @@ public class TSqlSelectQuery extends SelectQuery {
 		
 		builder.append("SELECT ");
 		
+		if (getTopN() > 0) {
+			builder.append("TOP ");
+			builder.append(getTopN());
+			builder.append(" ");
+		}
+		
 		for (Field f : getFields()) {
 			builder.append(prefix);
 			builder.append(f.toString());

@@ -8,7 +8,6 @@ import ch.sama.sql.dialect.tsql.TSqlConditionParser;
 import ch.sama.sql.dialect.tsql.TSqlValue;
 import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.ConditionParser;
-import ch.sama.sql.query.helper.Value;
 
 public class ConditionTest {
 	private static final ConditionParser parser = new TSqlConditionParser();
