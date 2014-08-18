@@ -1,0 +1,31 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+sourceCompatibility = 1.7
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url "http://repo.maven.apache.org/maven2"
+    }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+
+// running a single test:
+//  gradle -Dtest.single=CLASSNAME test
+test {
+    testLogging {
+        events 'passed', 'failed'
+    }
+
+    outputs.upToDateWhen { false }
+}

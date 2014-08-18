@@ -1,2 +1,7 @@
 syntax: glob
 *.class
+.idea/*
+build/*
+gradle/*
+gradlew
+gradlew.bat
