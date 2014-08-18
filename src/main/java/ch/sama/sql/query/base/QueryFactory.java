@@ -7,7 +7,11 @@ import ch.sama.sql.query.helper.Order;
 import ch.sama.sql.query.helper.OrderParser;
 import ch.sama.sql.query.helper.Value;
 
+import java.util.Date;
+
 public interface QueryFactory {
+    public Query create();
+
 	public SelectQuery selectQuery(QueryFactory factory, IQuery parent, Value... v);
 	public FromQuery fromQuery(QueryFactory factory, IQuery parent, Table... t);
 	public JoinQuery joinQuery(QueryFactory factory, IQuery parent, Table t); 
@@ -17,4 +21,16 @@ public interface QueryFactory {
 	
 	public ConditionParser conditionParser();
 	public OrderParser orderParser();
+
+    public Table table(String name);
+
+    public Value field(String field);
+    public Value field(String table, String field);
+    public Value date(Date date);
+    public Value string(String s);
+    public Value numeric(Integer i);
+    public Value numeric(Float f);
+    public Value numeric(Double d);
+    public Value function(String fnc);
+    public Value query(IQuery query);
 }

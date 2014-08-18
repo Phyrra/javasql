@@ -1,21 +1,23 @@
 package ch.sama.sql.dialect.tsql;
 
+import ch.sama.sql.dbo.Field;
+import ch.sama.sql.dbo.Function;
 import ch.sama.sql.dbo.Table;
-import ch.sama.sql.query.base.CTEQuery;
-import ch.sama.sql.query.base.FromQuery;
-import ch.sama.sql.query.base.JoinQuery;
-import ch.sama.sql.query.base.IQuery;
-import ch.sama.sql.query.base.OrderQuery;
-import ch.sama.sql.query.base.QueryFactory;
-import ch.sama.sql.query.base.SelectQuery;
-import ch.sama.sql.query.base.WhereQuery;
+import ch.sama.sql.query.base.*;
 import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.ConditionParser;
 import ch.sama.sql.query.helper.Order;
 import ch.sama.sql.query.helper.OrderParser;
 import ch.sama.sql.query.helper.Value;
 
+import java.util.Date;
+
 public class TSqlQueryFactory implements QueryFactory {
+    @Override
+    public Query create() {
+        return new TSqlQuery(this);
+    }
+
 	@Override
 	public SelectQuery selectQuery(QueryFactory factory, IQuery parent, Value... v) {
 		return new TSqlSelectQuery(factory, parent, v);
@@ -54,4 +56,54 @@ public class TSqlQueryFactory implements QueryFactory {
 	public OrderParser orderParser() {
 		return new TSqlOrderParser();
 	}
+
+    @Override
+    public Table table(String name) {
+        return new Table(name);
+    }
+
+    @Override
+    public Value field(String field) {
+        return new TSqlValue(new Field(field));
+    }
+
+    @Override
+    public Value field(String table, String field) {
+        return new TSqlValue(new Field(table, field));
+    }
+
+    @Override
+    public Value date(Date date) {
+        return new TSqlValue(date);
+    }
+
+    @Override
+    public Value string(String s) {
+        return new TSqlValue(s);
+    }
+
+    @Override
+    public Value numeric(Integer i) {
+        return new TSqlValue(i);
+    }
+
+    @Override
+    public Value numeric(Float f) {
+        return new TSqlValue(f);
+    }
+
+    @Override
+    public Value numeric(Double d) {
+        return new TSqlValue(d);
+    }
+
+    @Override
+    public Value function(String fnc) {
+        return new TSqlValue(new Function(fnc));
+    }
+
+    @Override
+    public Value query(IQuery query) {
+        return new TSqlValue(query);
+    }
 }

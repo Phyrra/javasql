@@ -3,5 +3,6 @@ syntax: glob
 .idea/*
 build/*
 gradle/*
+.gradle/*
 gradlew
 gradlew.bat
