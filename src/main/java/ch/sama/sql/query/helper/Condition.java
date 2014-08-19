@@ -4,7 +4,7 @@ import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.exception.UnknownConditionException;
 
 public class Condition {
-	public enum TYPE {
+	private enum TYPE {
 		AND,
 		OR,
 		EQ,
@@ -27,47 +27,35 @@ public class Condition {
 	private Condition(TYPE type) {
 		this.type = type;
 	}
-	
-	public TYPE getType() {
-		return type;
-	}
-	
-	public Object getLHS() {
-		return lhs;
-	}
-	
-	public Object getRHS() {
-		return rhs;
-	}
 
     public String toString(ConditionParser parser) {
         switch (type) {
             case EQ:
-                return parser.eq(this);
+                return parser.eq((Value)lhs, (Value)rhs);
             case NEQ:
-                return parser.neq(this);
+                return parser.neq((Value)lhs, (Value)rhs);
             case LIKE:
-                return parser.like(this);
+                return parser.like((Value)lhs, (Value)rhs);
             case AND:
-                return parser.and(this);
+                return parser.and((Condition)lhs, (Condition)rhs);
             case OR:
-                return parser.or(this);
+                return parser.or((Condition)lhs, (Condition)rhs);
             case NOT:
-                return parser.not(this);
+                return parser.not((Condition)lhs);
             case GT:
-                return parser.gt(this);
+                return parser.gt((Value)lhs, (Value)rhs);
             case GE:
-                return parser.ge(this);
+                return parser.ge((Value)lhs, (Value)rhs);
             case LT:
-                return parser.lt(this);
+                return parser.lt((Value)lhs, (Value)rhs);
             case LE:
-                return parser.le(this);
+                return parser.le((Value)lhs, (Value)rhs);
             case EXISTS:
-                return parser.exists(this);
+                return parser.exists((IQuery)lhs);
             case NULL:
-                return parser.isNull(this);
+                return parser.isNull((Value)lhs);
             case IN:
-                return parser.in(this);
+                return parser.in((Value)lhs, (IQuery)rhs);
             default:
                 throw new UnknownConditionException("Caused by: " + type);
         }

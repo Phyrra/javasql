@@ -1,17 +1,19 @@
 package ch.sama.sql.query.helper;
 
+import ch.sama.sql.query.base.IQuery;
+
 public interface ConditionParser {
-    public String eq(Condition c);
-    public String neq(Condition c);
-    public String like(Condition c);
-	public String and(Condition c);
-    public String or(Condition c);
+    public String eq(Value lhs, Value rhs);
+    public String neq(Value lhs, Value rhs);
+    public String like(Value lhs, Value rhs);
+	public String and(Condition lhs, Condition rhs);
+    public String or(Condition lhs, Condition rhs);
     public String not(Condition c);
-    public String gt(Condition c);
-    public String ge(Condition c);
-    public String lt(Condition c);
-    public String le(Condition c);
-    public String exists(Condition c);
-    public String isNull(Condition c);
-    public String in(Condition c);
+    public String gt(Value lhs, Value rhs);
+    public String ge(Value lhs, Value rhs);
+    public String lt(Value lhs, Value rhs);
+    public String le(Value lhs, Value rhs);
+    public String exists(IQuery query);
+    public String isNull(Value v);
+    public String in(Value v, IQuery query);
 }

@@ -5,7 +5,7 @@ import ch.sama.sql.query.exception.UnknownOrderException;
 import java.util.*;
 
 public class Order {
-	public enum TYPE {
+	private enum TYPE {
 		ASC,
 		DESC
 	}
@@ -16,21 +16,13 @@ public class Order {
 	private Order(TYPE type) {
 		this.type = type;
 	}
-	
-	public TYPE getType() {
-		return type;
-	}
-	
-	public List<Value> getValues() {
-		return values;
-	}
 
     public String toString(OrderParser parser) {
         switch (type) {
             case ASC:
-                return parser.asc(this);
+                return parser.asc(values);
             case DESC:
-                return parser.desc(this);
+                return parser.desc(values);
             default:
                 throw new UnknownOrderException("Caused by: " + type);
         }

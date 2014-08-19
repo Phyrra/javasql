@@ -4,14 +4,16 @@ import ch.sama.sql.query.helper.Order;
 import ch.sama.sql.query.helper.OrderParser;
 import ch.sama.sql.query.helper.Value;
 
+import java.util.List;
+
 public class TSqlOrderParser implements OrderParser {
-    private String getBase(Order o) {
+    private String getBase(List<Value> values) {
         StringBuilder builder = new StringBuilder();
         String prefix = "";
 
         builder.append("ORDER BY ");
 
-        for (Value v : o.getValues()) {
+        for (Value v : values) {
             builder.append(prefix);
             builder.append(v.toString());
 
@@ -22,12 +24,12 @@ public class TSqlOrderParser implements OrderParser {
     }
 
     @Override
-    public String asc(Order o) {
-        return getBase(o) + " ASC";
+    public String asc(List<Value> values) {
+        return getBase(values) + " ASC";
     }
 
     @Override
-    public String desc(Order o) {
-        return getBase(o) + " DESC";
+    public String desc(List<Value> values) {
+        return getBase(values) + " DESC";
     }
 }
