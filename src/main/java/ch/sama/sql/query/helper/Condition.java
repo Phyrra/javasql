@@ -1,6 +1,7 @@
 package ch.sama.sql.query.helper;
 
 import ch.sama.sql.query.base.IQuery;
+import ch.sama.sql.query.exception.UnknownConditionException;
 
 public class Condition {
 	public enum TYPE {
@@ -68,7 +69,7 @@ public class Condition {
             case IN:
                 return parser.in(this);
             default:
-                throw new RuntimeException("Unknown type: " + type);
+                throw new UnknownConditionException("Caused by: " + type);
         }
     }
 	

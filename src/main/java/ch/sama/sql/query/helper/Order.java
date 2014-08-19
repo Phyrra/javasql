@@ -1,5 +1,7 @@
 package ch.sama.sql.query.helper;
 
+import ch.sama.sql.query.exception.UnknownOrderException;
+
 import java.util.*;
 
 public class Order {
@@ -30,7 +32,7 @@ public class Order {
             case DESC:
                 return parser.desc(this);
             default:
-                throw new RuntimeException("...");
+                throw new UnknownOrderException("Caused by: " + type);
         }
     }
 	
