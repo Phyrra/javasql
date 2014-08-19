@@ -32,7 +32,7 @@ public class TSqlJoinQuery extends JoinQuery {
 		}
 		
 		builder.append(" ON ");
-		builder.append(getFactory().conditionParser().parse(getCondition()));
+		builder.append(getCondition().toString(getFactory().conditionParser()));
 		
 		return builder.toString();
 	}

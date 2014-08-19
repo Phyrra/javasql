@@ -5,31 +5,29 @@ import ch.sama.sql.query.helper.OrderParser;
 import ch.sama.sql.query.helper.Value;
 
 public class TSqlOrderParser implements OrderParser {
-	public String parse(Order o) {
-		StringBuilder builder = new StringBuilder();
-		String prefix = "";
-		
-		builder.append("ORDER BY ");
-		
-		for (Value v : o.getValues()) {
-			builder.append(prefix);
-			builder.append(v.toString());
-			
-			prefix = ", ";
-		}
-		
-		switch (o.getType()) {
-			case ASC:
-				builder.append(" ASC");
-				break;
-			case DESC:
-				builder.append(" DESC");
-				break;
-			default:
-				throw new RuntimeException("Unknown Type: " + o.getType());
-		}
-		
-		return builder.toString();
-	}
+    private String getBase(Order o) {
+        StringBuilder builder = new StringBuilder();
+        String prefix = "";
 
+        builder.append("ORDER BY ");
+
+        for (Value v : o.getValues()) {
+            builder.append(prefix);
+            builder.append(v.toString());
+
+            prefix = ", ";
+        }
+
+        return builder.toString();
+    }
+
+    @Override
+    public String asc(Order o) {
+        return getBase(o) + " ASC";
+    }
+
+    @Override
+    public String desc(Order o) {
+        return getBase(o) + " DESC";
+    }
 }

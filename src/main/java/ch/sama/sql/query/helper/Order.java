@@ -22,6 +22,17 @@ public class Order {
 	public List<Value> getValues() {
 		return values;
 	}
+
+    public String toString(OrderParser parser) {
+        switch (type) {
+            case ASC:
+                return parser.asc(this);
+            case DESC:
+                return parser.desc(this);
+            default:
+                throw new RuntimeException("...");
+        }
+    }
 	
 	public static Order asc(Value... v) {
 		Order o = new Order(TYPE.ASC);

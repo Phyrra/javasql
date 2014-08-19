@@ -7,8 +7,6 @@ import org.junit.Test;
 
 import ch.sama.sql.dialect.tsql.TSqlConditionParser;
 import ch.sama.sql.dialect.tsql.TSqlValue;
-import ch.sama.sql.query.helper.Condition;
-import ch.sama.sql.query.helper.ConditionParser;
 
 public class ConditionTest {
 	private static final ConditionParser parser = new TSqlConditionParser();
@@ -16,25 +14,25 @@ public class ConditionTest {
 	@Test
 	public void eq() {
 		Condition c = Condition.eq(new TSqlValue(1), new TSqlValue(2));
-		assertEquals("1 = 2", parser.parse(c));
+		assertEquals("1 = 2", c.toString(parser));
 	}
 	
 	@Test
 	public void neq() {
 		Condition c = Condition.neq(new TSqlValue(1), new TSqlValue(2));
-		assertEquals("1 <> 2", parser.parse(c));
+		assertEquals("1 <> 2", c.toString(parser));
 	}
 	
 	@Test
 	public void like() {
 		Condition c = Condition.like(new TSqlValue("hello"), new TSqlValue("hell%"));
-		assertEquals("'hello' LIKE 'hell%'", parser.parse(c));
+		assertEquals("'hello' LIKE 'hell%'", c.toString(parser));
 	}
 	
 	@Test
 	public void not() {
 		Condition c = Condition.not(Condition.eq(new TSqlValue(1), new TSqlValue(2)));
-		assertEquals("NOT (1 = 2)", parser.parse(c));
+		assertEquals("NOT (1 = 2)", c.toString(parser));
 	}
 	
 	@Test
@@ -44,7 +42,7 @@ public class ConditionTest {
 				Condition.eq(new TSqlValue(3), new TSqlValue(4))
 		);
 		
-		assertEquals("(1 = 2 AND 3 = 4)", parser.parse(c));
+		assertEquals("(1 = 2 AND 3 = 4)", c.toString(parser));
 	}
 	
 	@Test
@@ -54,42 +52,42 @@ public class ConditionTest {
 				Condition.eq(new TSqlValue(3), new TSqlValue(4))
 		);
 		
-		assertEquals("(1 = 2 OR 3 = 4)", parser.parse(c));	
+		assertEquals("(1 = 2 OR 3 = 4)", c.toString(parser));	
 	}
 
     @Test
      public void gt() {
         Condition c = Condition.gt(new TSqlValue(1), new TSqlValue(2));
-        assertEquals("1 > 2", parser.parse(c));
+        assertEquals("1 > 2", c.toString(parser));
     }
 
     @Test
     public void ge() {
         Condition c = Condition.ge(new TSqlValue(1), new TSqlValue(2));
-        assertEquals("1 >= 2", parser.parse(c));
+        assertEquals("1 >= 2", c.toString(parser));
     }
 
     @Test
     public void lt() {
         Condition c = Condition.lt(new TSqlValue(1), new TSqlValue(2));
-        assertEquals("1 < 2", parser.parse(c));
+        assertEquals("1 < 2", c.toString(parser));
     }
 
     @Test
     public void le() {
         Condition c = Condition.le(new TSqlValue(1), new TSqlValue(2));
-        assertEquals("1 <= 2", parser.parse(c));
+        assertEquals("1 <= 2", c.toString(parser));
     }
 
     @Test
     public void exists() {
         Condition c = Condition.exists(new TSqlQuery().select(new TSqlValue(1)));
-        assertEquals("EXISTS (\nSELECT 1\n)", parser.parse(c));
+        assertEquals("EXISTS (\nSELECT 1\n)", c.toString(parser));
     }
 
     @Test
     public void in() {
         Condition c = Condition.in(new TSqlValue(1), new TSqlQuery().select(new TSqlValue(1)));
-        assertEquals("1 IN (\nSELECT 1\n)", parser.parse(c));
+        assertEquals("1 IN (\nSELECT 1\n)", c.toString(parser));
     }
 }

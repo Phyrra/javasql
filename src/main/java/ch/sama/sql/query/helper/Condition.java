@@ -38,6 +38,39 @@ public class Condition {
 	public Object getRHS() {
 		return rhs;
 	}
+
+    public String toString(ConditionParser parser) {
+        switch (type) {
+            case EQ:
+                return parser.eq(this);
+            case NEQ:
+                return parser.neq(this);
+            case LIKE:
+                return parser.like(this);
+            case AND:
+                return parser.and(this);
+            case OR:
+                return parser.or(this);
+            case NOT:
+                return parser.not(this);
+            case GT:
+                return parser.gt(this);
+            case GE:
+                return parser.ge(this);
+            case LT:
+                return parser.lt(this);
+            case LE:
+                return parser.le(this);
+            case EXISTS:
+                return parser.exists(this);
+            case NULL:
+                return parser.isNull(this);
+            case IN:
+                return parser.in(this);
+            default:
+                throw new RuntimeException("Unknown type: " + type);
+        }
+    }
 	
 	public static Condition eq(Value lhs, Value rhs) {
 		Condition c = new Condition(TYPE.EQ);

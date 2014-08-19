@@ -16,7 +16,7 @@ public class TSqlWhereQuery extends WhereQuery {
 		
 		builder.append(getParent().toString());
 		builder.append("\nWHERE ");
-		builder.append(getFactory().conditionParser().parse(getCondition()));
+		builder.append(getCondition().toString(getFactory().conditionParser()));
 		
 		return builder.toString();
 	}

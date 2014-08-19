@@ -16,7 +16,7 @@ public class TSqlOrderQuery extends OrderQuery {
 		
 		builder.append(getParent().toString());		
 		builder.append("\n");
-		builder.append(getFactory().orderParser().parse(getOrder()));
+		builder.append(getOrder().toString(getFactory().orderParser()));
 		
 		return builder.toString();
 	}
