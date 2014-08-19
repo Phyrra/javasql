@@ -11,6 +11,7 @@ import java.util.Date;
 
 public interface QueryFactory {
     public Query create();
+    public Query create(QueryFactory factory, IQuery parent);
 
 	public SelectQuery selectQuery(QueryFactory factory, IQuery parent, Value... v);
 	public FromQuery fromQuery(QueryFactory factory, IQuery parent, Table... t);
@@ -33,4 +34,5 @@ public interface QueryFactory {
     public Value numeric(Double d);
     public Value function(String fnc);
     public Value query(IQuery query);
+    public Value value(String value);
 }

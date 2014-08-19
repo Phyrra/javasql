@@ -19,6 +19,20 @@ public class TSqlConditionParser implements ConditionParser {
 				return "(" + parse((Condition)c.getLHS()) + " OR " + parse((Condition)c.getRHS()) + ")";
 			case NOT:
 				return "NOT (" + parse((Condition)c.getLHS()) + ")";
+            case GT:
+                return c.getLHS().toString() + " > " + c.getRHS().toString();
+            case GE:
+                return c.getLHS().toString() + " >= " + c.getRHS().toString();
+            case LT:
+                return c.getLHS().toString() + " < " + c.getRHS().toString();
+            case LE:
+                return c.getLHS().toString() +" <= " + c.getRHS().toString();
+            case EXISTS:
+                return "EXISTS (\n" + c.getLHS().toString() + "\n)";
+            case NULL:
+                return c.getLHS().toString() + " IS NULL";
+            case IN:
+                return c.getLHS().toString() + " IN (\n" + c.getRHS().toString() + "\n)";
 			default:
 				throw new RuntimeException("Unknown type: " + c.getType());
 		}

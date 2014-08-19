@@ -12,8 +12,15 @@ public class TSqlCTEQuery extends CTEQuery {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		
-		builder.append("WITH ");
+
+        IQuery parent = getParent();
+        if (parent instanceof CTEQuery) {
+            builder.append(parent.toString());
+            builder.append(", ");
+        } else {
+            builder.append("WITH ");
+        }
+
 		builder.append(getName());
 		builder.append(" AS (\n");
 		builder.append(getQuery().toString());

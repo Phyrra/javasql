@@ -78,4 +78,8 @@ public abstract class JoinQuery implements IQuery {
 	public WhereQuery where(Condition condition) {
 		return factory.whereQuery(factory, this, condition);
 	}
+
+    public Query union() {
+        return factory.create(factory, this);
+    }
 }

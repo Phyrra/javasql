@@ -46,4 +46,8 @@ public abstract class SelectQuery implements IQuery {
 	public FromQuery from(Table... t) {
 		return factory.fromQuery(factory, this, t);
 	}
+
+    public Query union() {
+        return factory.create(factory, this);
+    }
 }

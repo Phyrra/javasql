@@ -1,5 +1,7 @@
 package ch.sama.sql.query.helper;
 
+import ch.sama.sql.query.base.IQuery;
+
 public class Condition {
 	public enum TYPE {
 		AND,
@@ -7,7 +9,14 @@ public class Condition {
 		EQ,
 		NEQ,
 		NOT,
-		LIKE
+		LIKE,
+        GT,
+        GE,
+        LT,
+        LE,
+        NULL,
+        EXISTS,
+        IN
 	}
 	
 	private TYPE type;
@@ -82,4 +91,65 @@ public class Condition {
 		
 		return c;	
 	}
+
+    public static Condition gt(Value lhs, Value rhs) {
+        Condition c = new Condition(TYPE.GT);
+
+        c.lhs = lhs;
+        c.rhs = rhs;
+
+        return c;
+    }
+
+    public static Condition ge(Value lhs, Value rhs) {
+        Condition c = new Condition(TYPE.GE);
+
+        c.lhs = lhs;
+        c.rhs = rhs;
+
+        return c;
+    }
+
+    public static Condition lt(Value lhs, Value rhs) {
+        Condition c = new Condition(TYPE.LT);
+
+        c.lhs = lhs;
+        c.rhs = rhs;
+
+        return c;
+    }
+
+    public static Condition le(Value lhs, Value rhs) {
+        Condition c = new Condition(TYPE.LE);
+
+        c.lhs = lhs;
+        c.rhs = rhs;
+
+        return c;
+    }
+
+    public static Condition exists(IQuery exists) {
+        Condition c = new Condition(TYPE.EXISTS);
+
+        c.lhs = exists;
+
+        return c;
+    }
+
+    public static Condition isNull(Value lhs) {
+        Condition c = new Condition(TYPE.NULL);
+
+        c.lhs = lhs;
+
+        return c;
+    }
+
+    public static Condition in(Value lhs, IQuery rhs) {
+        Condition c = new Condition(TYPE.IN);
+
+        c.lhs = lhs;
+        c.rhs = rhs;
+
+        return c;
+    }
 }

@@ -29,4 +29,8 @@ public abstract class WhereQuery implements IQuery {
 	public OrderQuery order(Order order) {
 		return factory.orderQuery(factory, this, order);
 	}
+
+    public Query union() {
+        return factory.create(factory, this);
+    }
 }

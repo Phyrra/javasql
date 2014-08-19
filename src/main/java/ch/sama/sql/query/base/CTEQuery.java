@@ -35,6 +35,10 @@ public abstract class CTEQuery implements IQuery {
 		this.query = query;
 		return this;
 	}
+
+    public CTEQuery with(String name) {
+        return factory.cteQuery(factory, this, name);
+    }
 	
 	public SelectQuery select(Value... v) {
 		return factory.selectQuery(factory, this, v);

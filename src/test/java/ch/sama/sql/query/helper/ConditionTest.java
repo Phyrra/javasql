@@ -2,6 +2,7 @@ package ch.sama.sql.query.helper;
 
 import static org.junit.Assert.*;
 
+import ch.sama.sql.dialect.tsql.TSqlQuery;
 import org.junit.Test;
 
 import ch.sama.sql.dialect.tsql.TSqlConditionParser;
@@ -55,4 +56,40 @@ public class ConditionTest {
 		
 		assertEquals("(1 = 2 OR 3 = 4)", parser.parse(c));	
 	}
+
+    @Test
+     public void gt() {
+        Condition c = Condition.gt(new TSqlValue(1), new TSqlValue(2));
+        assertEquals("1 > 2", parser.parse(c));
+    }
+
+    @Test
+    public void ge() {
+        Condition c = Condition.ge(new TSqlValue(1), new TSqlValue(2));
+        assertEquals("1 >= 2", parser.parse(c));
+    }
+
+    @Test
+    public void lt() {
+        Condition c = Condition.lt(new TSqlValue(1), new TSqlValue(2));
+        assertEquals("1 < 2", parser.parse(c));
+    }
+
+    @Test
+    public void le() {
+        Condition c = Condition.le(new TSqlValue(1), new TSqlValue(2));
+        assertEquals("1 <= 2", parser.parse(c));
+    }
+
+    @Test
+    public void exists() {
+        Condition c = Condition.exists(new TSqlQuery().select(new TSqlValue(1)));
+        assertEquals("EXISTS (\nSELECT 1\n)", parser.parse(c));
+    }
+
+    @Test
+    public void in() {
+        Condition c = Condition.in(new TSqlValue(1), new TSqlQuery().select(new TSqlValue(1)));
+        assertEquals("1 IN (\nSELECT 1\n)", parser.parse(c));
+    }
 }

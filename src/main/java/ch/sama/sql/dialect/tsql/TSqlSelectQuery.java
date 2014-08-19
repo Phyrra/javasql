@@ -16,9 +16,12 @@ public class TSqlSelectQuery extends SelectQuery {
 		StringBuilder builder = new StringBuilder();
 		
 		IQuery parent = getParent();
-		if (parent != null && parent instanceof CTEQuery) {
-			builder.append(getParent().toString());
-			builder.append("\n");
+		if (parent != null) {
+            String parentQuery = parent.toString();
+            if (parentQuery != null) {
+                builder.append(parentQuery);
+                builder.append("\n");
+            }
 		}
 		
 		String prefix = "";

@@ -18,6 +18,11 @@ public class TSqlQueryFactory implements QueryFactory {
         return new TSqlQuery(this);
     }
 
+    @Override
+    public Query create(QueryFactory factory, IQuery parent) {
+        return new TSqlQuery(factory, parent);
+    }
+
 	@Override
 	public SelectQuery selectQuery(QueryFactory factory, IQuery parent, Value... v) {
 		return new TSqlSelectQuery(factory, parent, v);
@@ -105,5 +110,10 @@ public class TSqlQueryFactory implements QueryFactory {
     @Override
     public Value query(IQuery query) {
         return new TSqlValue(query);
+    }
+
+    @Override
+    public Value value(String value) {
+        return new TSqlValue(new Function(value));
     }
 }

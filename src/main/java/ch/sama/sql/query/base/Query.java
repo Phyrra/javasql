@@ -4,13 +4,19 @@ import ch.sama.sql.query.helper.Value;
 
 public abstract class Query implements IQuery {
 	private QueryFactory factory;
+    private IQuery parent;
 	
 	public Query(QueryFactory factory) {
 		this.factory = factory;
 	}
+
+    public Query(QueryFactory factory, IQuery parent) {
+        this.factory = factory;
+        this.parent = parent;
+    }
 	
 	public IQuery getParent() {
-		return null;
+		return parent;
 	}
 	
 	public QueryFactory getFactory() {
