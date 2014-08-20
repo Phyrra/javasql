@@ -8,26 +8,28 @@ import ch.sama.sql.dbo.Function;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.helper.Value;
 
-public class TSqlValue implements Value {
+public class TSqlValue extends Value {
 	private String value;
-	private String alias;
+
+    public String nullValue() {
+        return "NULL";
+    }
+
+    public String allValue() {
+        return "*";
+    }
 	
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		
 		builder.append(value);
 		
-		if (alias != null) {
+		if (getAlias() != null) {
 			builder.append(" AS ");
-			builder.append(alias);
+			builder.append(getAlias());
 		}
 		
 		return builder.toString();
-	}
-	
-	public Value as(String alias) {
-		this.alias = alias;
-		return this;
 	}
 	
 	public TSqlValue(String s) {
@@ -62,4 +64,8 @@ public class TSqlValue implements Value {
 	public TSqlValue(Function f) {
 		value = f.toString();
 	}
+
+    public TSqlValue(Value.VALUE v) {
+        value = fromValue(v);
+    }
 }

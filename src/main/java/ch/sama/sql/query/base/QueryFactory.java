@@ -34,5 +34,5 @@ public interface QueryFactory {
     public Value numeric(Double d);
     public Value function(String fnc);
     public Value query(IQuery query);
-    public Value value(String value);
+    public Value value(Value.VALUE val);
 }

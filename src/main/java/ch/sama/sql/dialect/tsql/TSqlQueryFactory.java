@@ -113,7 +113,7 @@ public class TSqlQueryFactory implements QueryFactory {
     }
 
     @Override
-    public Value value(String value) {
-        return new TSqlValue(new Function(value));
+    public Value value(Value.VALUE value) {
+        return new TSqlValue(value);
     }
 }

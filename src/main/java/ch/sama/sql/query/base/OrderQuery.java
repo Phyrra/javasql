@@ -24,4 +24,8 @@ public abstract class OrderQuery implements IQuery {
 		this.parent = parent;
 		this.order = order;
 	}
+
+    public OrderQuery order(Order order) {
+        return factory.orderQuery(factory, this, order);
+    }
 }

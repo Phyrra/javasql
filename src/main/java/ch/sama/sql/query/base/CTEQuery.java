@@ -1,5 +1,7 @@
 package ch.sama.sql.query.base;
 
+import ch.sama.sql.query.exception.IllegalIdentifierException;
+import ch.sama.sql.query.helper.Identifier;
 import ch.sama.sql.query.helper.Value;
 
 public abstract class CTEQuery implements IQuery {
@@ -25,6 +27,10 @@ public abstract class CTEQuery implements IQuery {
 	}
 	
 	public CTEQuery(QueryFactory factory, IQuery parent, String name) {
+        if (!Identifier.test(name)) {
+            throw new IllegalIdentifierException(name);
+        }
+
 		this.factory = factory;
 		this.parent = parent;
 		this.name = name;

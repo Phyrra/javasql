@@ -13,9 +13,17 @@ public class TSqlOrderQuery extends OrderQuery {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		
-		builder.append(getParent().toString());		
-		builder.append("\n");
+
+        IQuery parent = getParent();
+        builder.append(parent.toString());
+
+        if (parent instanceof OrderQuery) {
+            builder.append(", ");
+        } else {
+            builder.append("\n");
+            builder.append("ORDER BY ");
+        }
+
 		builder.append(getOrder().toString(getFactory().orderParser()));
 		
 		return builder.toString();

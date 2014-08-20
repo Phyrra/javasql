@@ -44,6 +44,17 @@ public class ConditionTest {
 		
 		assertEquals("(1 = 2 AND 3 = 4)", c.toString(parser));
 	}
+
+    @Test
+    public void multiAnd() {
+        Condition c = Condition.and(
+                Condition.eq(new TSqlValue(1), new TSqlValue(1)),
+                Condition.eq(new TSqlValue(2), new TSqlValue(2)),
+                Condition.eq(new TSqlValue(3), new TSqlValue(3))
+        );
+
+        assertEquals("(1 = 1 AND 2 = 2 AND 3 = 3)", c.toString(parser));
+    }
 	
 	@Test
 	public void or() {
@@ -54,6 +65,17 @@ public class ConditionTest {
 		
 		assertEquals("(1 = 2 OR 3 = 4)", c.toString(parser));	
 	}
+
+    @Test
+    public void multiOr() {
+        Condition c = Condition.or(
+                Condition.eq(new TSqlValue(1), new TSqlValue(1)),
+                Condition.eq(new TSqlValue(2), new TSqlValue(2)),
+                Condition.eq(new TSqlValue(3), new TSqlValue(3))
+        );
+
+        assertEquals("(1 = 1 OR 2 = 2 OR 3 = 3)", c.toString(parser));
+    }
 
     @Test
      public void gt() {

@@ -11,8 +11,6 @@ public class TSqlOrderParser implements OrderParser {
         StringBuilder builder = new StringBuilder();
         String prefix = "";
 
-        builder.append("ORDER BY ");
-
         for (Value v : values) {
             builder.append(prefix);
             builder.append(v.toString());

@@ -5,6 +5,8 @@ import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.ConditionParser;
 import ch.sama.sql.query.helper.Value;
 
+import java.util.List;
+
 public class TSqlConditionParser implements ConditionParser {
     @Override
     public String eq(Value lhs, Value rhs) {
@@ -21,14 +23,32 @@ public class TSqlConditionParser implements ConditionParser {
         return lhs.toString() + " LIKE " + rhs.toString();
     }
 
-    @Override
-    public String and(Condition lhs, Condition rhs) {
-        return "(" + lhs.toString(this) + " AND " + rhs.toString(this) + ")";
+    private String join(List<Condition> conditions, String join) {
+        StringBuilder builder = new StringBuilder();
+        String prefix = "";
+
+        builder.append("(");
+
+        for (Condition c : conditions) {
+            builder.append(prefix);
+            builder.append(c.toString(this));
+
+            prefix = join;
+        }
+
+        builder.append(")");
+
+        return builder.toString();
     }
 
     @Override
-    public String or(Condition lhs, Condition rhs) {
-        return "(" + lhs.toString(this) + " OR " + rhs.toString(this) + ")";
+    public String and(List<Condition> conditions) {
+        return join(conditions, " AND ");
+    }
+
+    @Override
+    public String or(List<Condition> conditions) {
+        return join(conditions, " OR ");
     }
 
     @Override

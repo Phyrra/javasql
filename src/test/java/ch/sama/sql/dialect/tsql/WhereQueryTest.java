@@ -25,7 +25,8 @@ public class WhereQueryTest {
 			query
 				.join(new Table("J"))
 					.on(Condition.eq(new TSqlValue(2), new TSqlValue(2)))
-				.where(cond).toString()
+				.where(cond)
+            .toString()
 		);
 	}
 }

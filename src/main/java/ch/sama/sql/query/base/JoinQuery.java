@@ -1,7 +1,9 @@
 package ch.sama.sql.query.base;
 
 import ch.sama.sql.dbo.Table;
+import ch.sama.sql.query.exception.IllegalIdentifierException;
 import ch.sama.sql.query.helper.Condition;
+import ch.sama.sql.query.helper.Identifier;
 import ch.sama.sql.query.helper.Order;
 
 public abstract class JoinQuery implements IQuery {
@@ -58,6 +60,10 @@ public abstract class JoinQuery implements IQuery {
 	//	Since I never use them, I didn't :>
 	
 	public JoinQuery as(String alias) {
+        if (!Identifier.test(alias)) {
+            throw new IllegalIdentifierException(alias);
+        }
+
 		this.alias = alias;
 		return this;
 	}

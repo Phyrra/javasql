@@ -3,6 +3,7 @@ package ch.sama.sql;
 import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
 import ch.sama.sql.query.base.QueryFactory;
 import ch.sama.sql.query.helper.Condition;
+import ch.sama.sql.query.helper.Value;
 
 public class QueriesForWeberp {
 	public static void main(String[] args) {
@@ -52,33 +53,31 @@ public class QueriesForWeberp {
                                 .select(fac.field("PRG_ID"), fac.field("PRG_PERM_ID")).from(fac.table("SYS_USER_PERMS"))
                                 .where(Condition.eq(fac.field("USR_ID"), fac.numeric(userId)))
                 )
-                .select(fac.value("*")).from(fac.table("META_WEB_DESKTOP").as("[D]"))
+                .select(fac.value(Value.ALL)).from(fac.table("META_WEB_DESKTOP").as("[D]"))
                 .where(
                         Condition.and(
                                 Condition.not(Condition.exists(
                                         fac.create()
-                                                .select(fac.value("NULL")).from(fac.table("META_WEB_DESKTOP_PART").as("[P]"))
+                                                .select(fac.value(Value.NULL)).from(fac.table("META_WEB_DESKTOP_PART").as("[P]"))
                                                 .where(
                                                         Condition.and(
                                                                 Condition.eq(fac.field("[P]", "DESKTOP_ID"), fac.field("[D]", "DESKTOP_ID")),
                                                                 Condition.exists(
                                                                         fac.create()
-                                                                                .select(fac.value("NULL")).from(fac.table("PART_TABLE").as("[T]"))
+                                                                                .select(fac.value(Value.NULL)).from(fac.table("PART_TABLE").as("[T]"))
                                                                                 .where(
                                                                                         Condition.and(
                                                                                                 Condition.eq(fac.field("[T]", "PART_ID"), fac.field("[P]", "PART_ID")),
-                                                                                                Condition.and(
-                                                                                                        Condition.not(Condition.isNull(fac.field("[T]", "TABLE_NAME"))),
-                                                                                                        Condition.not(Condition.in(
-                                                                                                                fac.field("[T]", "TABLE_NAME"),
-                                                                                                                fac.create()
-                                                                                                                        .select(fac.field("SYS_PROG", "PRG_NAME")).from(fac.table("PERMS"))
-                                                                                                                        .join(fac.table("SYS_PROG")).on(Condition.and(
-                                                                                                                        Condition.eq(fac.field("PERMS", "PRG_ID"), fac.field("SYS_PROG", "PRG_ID")),
-                                                                                                                        Condition.eq(fac.field("SYS_PROG", "PRG_TYPE"), fac.string("D"))
-                                                                                                                ))
+                                                                                                Condition.not(Condition.isNull(fac.field("[T]", "TABLE_NAME"))),
+                                                                                                Condition.not(Condition.in(
+                                                                                                        fac.field("[T]", "TABLE_NAME"),
+                                                                                                        fac.create()
+                                                                                                                .select(fac.field("SYS_PROG", "PRG_NAME")).from(fac.table("PERMS"))
+                                                                                                                .join(fac.table("SYS_PROG")).on(Condition.and(
+                                                                                                                Condition.eq(fac.field("PERMS", "PRG_ID"), fac.field("SYS_PROG", "PRG_ID")),
+                                                                                                                Condition.eq(fac.field("SYS_PROG", "PRG_TYPE"), fac.string("D"))
                                                                                                         ))
-                                                                                                )
+                                                                                                ))
                                                                                         )
                                                                                 )
                                                                 )

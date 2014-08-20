@@ -14,24 +14,24 @@ public class OrderTest {
 	@Test
 	public void ascSingle() {
 		Order o = Order.asc(new TSqlValue(new Field("A")));
-		assertEquals("ORDER BY A ASC", o.toString(parser));
+		assertEquals("A ASC", o.toString(parser));
 	}
 	
 	@Test
 	public void ascMultiple() {
 		Order o = Order.asc(new TSqlValue(new Field("A")), new TSqlValue(new Field("B")));
-		assertEquals("ORDER BY A, B ASC", o.toString(parser));
+		assertEquals("A, B ASC", o.toString(parser));
 	}
 	
 	@Test
 	public void descSingle() {
 		Order o = Order.desc(new TSqlValue(new Field("A")));
-		assertEquals("ORDER BY A DESC", o.toString(parser));
+		assertEquals("A DESC", o.toString(parser));
 	}
 	
 	@Test
 	public void descMultiple() {
 		Order o = Order.desc(new TSqlValue(new Field("A")), new TSqlValue(new Field("B")));
-		assertEquals("ORDER BY A, B DESC", o.toString(parser));
+		assertEquals("A, B DESC", o.toString(parser));
 	}
 }

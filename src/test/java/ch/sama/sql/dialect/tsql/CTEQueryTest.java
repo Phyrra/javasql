@@ -37,7 +37,7 @@ public class CTEQueryTest {
 					new TSqlQuery().select(new TSqlValue(new Field("F"))).from(new Table("T"))
 				)
 				.select(new TSqlValue(new Field("F"))).from(new Table("CTE"))
-				.toString()
+            .toString()
 		);
 	}
 
@@ -53,7 +53,7 @@ public class CTEQueryTest {
                     new TSqlQuery().select(new TSqlValue(new Field("F"))).from(new Table("T"))
                 )
                 .select(new TSqlValue(new Field("F"))).from(new Table("CTE1"))
-                .toString()
+            .toString()
         );
     }
 }
