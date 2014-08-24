@@ -1,5 +1,7 @@
 package ch.sama.sql.query.base;
 
+import ch.sama.sql.query.base.checker.QueryFinder;
+import ch.sama.sql.query.exception.BadParametersException;
 import ch.sama.sql.query.exception.IllegalIdentifierException;
 import ch.sama.sql.query.helper.Identifier;
 import ch.sama.sql.query.helper.Value;
@@ -38,6 +40,10 @@ public abstract class CTEQuery implements IQuery {
 	}
 	
 	public CTEQuery as(IQuery query) {
+        if (new QueryFinder().findQuery(query, CTEQuery.class) != null) {
+            throw new BadParametersException("CTE cannot be nested");
+        }
+
 		this.query = query;
 		return this;
 	}
