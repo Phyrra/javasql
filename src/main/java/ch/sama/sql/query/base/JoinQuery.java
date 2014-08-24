@@ -1,6 +1,7 @@
 package ch.sama.sql.query.base;
 
 import ch.sama.sql.dbo.Table;
+import ch.sama.sql.query.exception.BadSqlException;
 import ch.sama.sql.query.exception.IllegalIdentifierException;
 import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.Identifier;
@@ -72,20 +73,34 @@ public abstract class JoinQuery implements IQuery {
 		this.condition = condition;
 		return this;
 	}
+
+    private void assertCondition() {
+        if (condition == null) {
+            throw new BadSqlException("Missing join condition");
+        }
+    }
 	
 	public JoinQuery join(Table table) {
-		return factory.joinQuery(factory, this, table);
+        assertCondition();
+
+        return factory.joinQuery(factory, this, table);
 	}
 	
 	public OrderQuery order(Order order) {
-		return factory.orderQuery(factory, this, order);
+        assertCondition();
+
+        return factory.orderQuery(factory, this, order);
 	}
 	
 	public WhereQuery where(Condition condition) {
-		return factory.whereQuery(factory, this, condition);
+        assertCondition();
+
+        return factory.whereQuery(factory, this, condition);
 	}
 
     public Query union() {
+        assertCondition();
+
         return factory.create(factory, this);
     }
 }

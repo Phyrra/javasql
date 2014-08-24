@@ -2,6 +2,8 @@ package ch.sama.sql.dialect.tsql;
 
 import static org.junit.Assert.*;
 
+import ch.sama.sql.query.exception.BadSqlException;
+import ch.sama.sql.query.helper.Value;
 import org.junit.Test;
 
 import ch.sama.sql.dbo.Field;
@@ -55,5 +57,10 @@ public class CTEQueryTest {
                 .select(new TSqlValue(new Field("F"))).from(new Table("CTE1"))
             .toString()
         );
+    }
+
+    @Test(expected = BadSqlException.class)
+    public void missingQuery() {
+        query.with("CTE").select(new TSqlValue(Value.ALL));
     }
 }

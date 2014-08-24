@@ -46,6 +46,11 @@ public class ValueTest {
 	public void field() {
 		assertEquals("TABLE.FIELD", new TSqlValue(new Field("TABLE", "FIELD")).toString());
 	}
+
+    @Test
+    public void table() {
+        assertEquals("TABLE.*", new TSqlValue(new Table("TABLE")).toString());
+    }
 	
 	@Test
 	public void nameAlias() {

@@ -12,7 +12,12 @@ public abstract class Value {
     public static final VALUE ALL = VALUE.ALL;
     public static final VALUE NULL = VALUE.NULL;
 
+    private Object source;
     private String alias;
+
+    public Value(Object o) {
+        source = o;
+    }
 
 	public abstract String toString();
 
@@ -32,6 +37,10 @@ public abstract class Value {
 
     public String getAlias() {
         return alias;
+    }
+
+    public Object getSource() {
+        return source;
     }
 
     public Value as(String alias) {

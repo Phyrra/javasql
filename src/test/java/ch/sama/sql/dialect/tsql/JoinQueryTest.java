@@ -2,6 +2,10 @@ package ch.sama.sql.dialect.tsql;
 
 import static org.junit.Assert.*;
 
+import ch.sama.sql.query.base.IQuery;
+import ch.sama.sql.query.exception.BadSqlException;
+import ch.sama.sql.query.helper.Order;
+import ch.sama.sql.query.helper.Value;
 import org.junit.Test;
 
 import ch.sama.sql.dbo.Field;
@@ -31,4 +35,9 @@ public class JoinQueryTest {
 			.toString()
 		);
 	}
+
+    @Test(expected = BadSqlException.class)
+    public void missingCondition() {
+        IQuery query = new TSqlQuery().select(new TSqlValue(Value.ALL)).from(new Table("T")).join(new Table("J")).order(Order.asc(new TSqlValue(new Field("F"))));
+    }
 }
