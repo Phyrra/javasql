@@ -40,15 +40,15 @@ public class QueryFinder {
 
     // TODO: This will not work with "SELECT *"
     // TODO: This will not work with "SELECT TABLE.*"
-    public List<Field> getSelectedFields(IQuery src) {
+    public<T> List<T> getSelected(IQuery src, Class<T> dst) {
         SelectQuery query = get(src, SelectQuery.class);
         List<Value> values = query.getValues();
 
-        List<Field> fields = new ArrayList<Field>();
+        List<T> fields = new ArrayList<T>();
         for (Value v : values) {
             Object o = v.getSource();
-            if (o instanceof Field) {
-                fields.add((Field)o);
+            if (dst.isAssignableFrom(o.getClass())) {
+                fields.add((T)o);
             }
         }
 
