@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Function;
+import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
 import ch.sama.sql.query.base.*;
 import ch.sama.sql.query.exception.BadSqlException;
@@ -74,5 +75,29 @@ public class QueryFinderTest {
         List<Function> fields = finder.getSelected(query, Function.class);
 
         assertEquals(3, fields.size());
+    }
+
+    @Test
+    public void getFromSource() {
+        IQuery query = fac.create()
+                .select(fac.field("FIELD"))
+                .from(fac.table("TABLE1"), fac.table("TABLE2"));
+
+        List<Table> tables = finder.getSources(query);
+
+        assertEquals(2, tables.size());
+    }
+
+    @Test
+    public void getJoinSources() {
+        IQuery query = fac.create()
+                .select(fac.field("FIELD"))
+                .from(fac.table("TABLE1"))
+                .join(fac.table("TABLE2")).on(Condition.eq(fac.numeric(1), fac.numeric(1)))
+                .join(fac.table("TABLE3")).on(Condition.eq(fac.numeric(1), fac.numeric(1)));
+
+        List<Table> tables = finder.getSources(query);
+
+        assertEquals(3, tables.size());
     }
 }
