@@ -2,8 +2,6 @@ package ch.sama.sql.tsql.dialect;
 
 import static org.junit.Assert.*;
 
-import ch.sama.sql.tsql.dialect.TSqlQuery;
-import ch.sama.sql.tsql.dialect.TSqlValue;
 import org.junit.Test;
 
 import ch.sama.sql.dbo.Field;
@@ -28,7 +26,19 @@ public class OrderQueryTest {
 			query
 				.join(new Table("J"))
 					.on(Condition.eq(new TSqlValue(2), new TSqlValue(2)))
-				.order(order).toString()
+				.order(order)
+            .toString()
 		);
 	}
+
+    @Test
+    public void multiple() {
+        assertEquals(
+            "SELECT F\nFROM T\nORDER BY A ASC, B DESC",
+            query
+                .order(Order.asc(new TSqlValue(new Field("A"))))
+                .order(Order.desc(new TSqlValue(new Field("B"))))
+            .toString()
+        );
+    }
 }

@@ -2,8 +2,6 @@ package ch.sama.sql.tsql.dialect;
 
 import static org.junit.Assert.*;
 
-import ch.sama.sql.tsql.dialect.TSqlQuery;
-import ch.sama.sql.tsql.dialect.TSqlValue;
 import org.junit.Test;
 
 import ch.sama.sql.dbo.Field;

@@ -2,8 +2,6 @@ package ch.sama.sql.tsql.dialect;
 
 import static org.junit.Assert.*;
 
-import ch.sama.sql.tsql.dialect.TSqlQuery;
-import ch.sama.sql.tsql.dialect.TSqlValue;
 import org.junit.Test;
 
 import ch.sama.sql.dbo.Field;
@@ -27,7 +25,8 @@ public class WhereQueryTest {
 			query
 				.join(new Table("J"))
 					.on(Condition.eq(new TSqlValue(2), new TSqlValue(2)))
-				.where(cond).toString()
+				.where(cond)
+            .toString()
 		);
 	}
 }

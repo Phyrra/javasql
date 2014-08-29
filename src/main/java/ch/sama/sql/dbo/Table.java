@@ -4,6 +4,7 @@ import ch.sama.sql.query.exception.IllegalIdentifierException;
 import ch.sama.sql.query.helper.Identifier;
 
 public class Table {
+    private String schema;
 	private String table;
 	private String alias;
 
@@ -14,9 +15,26 @@ public class Table {
 
 		this.table = table;
 	}
+
+    public Table(String schema, String table) {
+        if (!Identifier.test(schema)) {
+            throw new IllegalIdentifierException(schema);
+        }
+        if (!Identifier.test(table)) {
+            throw new IllegalIdentifierException(table);
+        }
+
+        this.schema = schema;
+        this.table = table;
+    }
 	
 	public String toString() {
         StringBuilder builder = new StringBuilder();
+
+        if (schema != null) {
+            builder.append(schema);
+            builder.append(".");
+        }
 
         builder.append(table);
 

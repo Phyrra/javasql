@@ -2,8 +2,6 @@ package ch.sama.sql.tsql.dialect;
 
 import static org.junit.Assert.*;
 
-import ch.sama.sql.tsql.dialect.TSqlQuery;
-import ch.sama.sql.tsql.dialect.TSqlValue;
 import org.junit.Test;
 
 import ch.sama.sql.dbo.Field;
@@ -39,7 +37,23 @@ public class CTEQueryTest {
 					new TSqlQuery().select(new TSqlValue(new Field("F"))).from(new Table("T"))
 				)
 				.select(new TSqlValue(new Field("F"))).from(new Table("CTE"))
-				.toString()
+            .toString()
 		);
 	}
+
+    @Test
+    public void multiCte() {
+        assertEquals(
+            "WITH CTE1 AS (\nSELECT F\nFROM T\n), CTE2 AS (\nSELECT F\nFROM T\n)\nSELECT F\nFROM CTE1",
+            query
+                .with("CTE1").as(
+                    new TSqlQuery().select(new TSqlValue(new Field("F"))).from(new Table("T"))
+                )
+                .with("CTE2").as(
+                    new TSqlQuery().select(new TSqlValue(new Field("F"))).from(new Table("T"))
+                )
+                .select(new TSqlValue(new Field("F"))).from(new Table("CTE1"))
+            .toString()
+        );
+    }
 }

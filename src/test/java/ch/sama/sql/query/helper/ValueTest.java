@@ -74,4 +74,28 @@ public class ValueTest {
 			.toString()
 		);
 	}
+
+    @Test
+    public void nullValue() {
+        assertEquals(
+            "SELECT NULL",
+            new TSqlQuery()
+                .select(
+                    new TSqlValue(Value.NULL)
+                )
+            .toString()
+        );
+    }
+
+    @Test
+    public void allValue() {
+        assertEquals(
+            "SELECT *",
+            new TSqlQuery()
+                .select(
+                    new TSqlValue(Value.ALL)
+                )
+            .toString()
+        );
+    }
 }

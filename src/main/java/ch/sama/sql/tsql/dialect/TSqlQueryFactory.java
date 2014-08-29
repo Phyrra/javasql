@@ -68,6 +68,11 @@ public class TSqlQueryFactory implements QueryFactory {
     }
 
     @Override
+    public Table table(String schema, String name) {
+        return new Table(schema, name);
+    }
+
+    @Override
     public Value field(String field) {
         return new TSqlValue(new Field(field));
     }

@@ -24,6 +24,7 @@ public interface QueryFactory {
 	public OrderParser orderParser();
 
     public Table table(String name);
+    public Table table(String schema, String name);
 
     public Value field(String field);
     public Value field(String table, String field);
