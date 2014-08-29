@@ -1,14 +1,13 @@
 package ch.sama.sql;
 
-import ch.sama.sql.dbo.Schema;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dbo.connection.ResultSetTransformer;
 import ch.sama.sql.query.helper.Value;
 import ch.sama.sql.tsql.connection.JtdsConnection;
 import ch.sama.sql.tsql.connection.TSqlExecutor;
 import ch.sama.sql.tsql.dialect.TSqlQueryFactory;
+import ch.sama.sql.tsql.dialect.TSqlSchema;
 
-import java.sql.*;
 import java.util.List;
 import java.util.Map;
 
@@ -47,7 +46,7 @@ public class ServerConnection {
         System.out.println("---");
         System.out.println("");
 
-        Schema schema = new Schema(executor, factory);
+        TSqlSchema schema = new TSqlSchema(executor, factory);
         Map<String, Table> tables = schema.getTables();
 
         for (Table table : tables.values()) {
