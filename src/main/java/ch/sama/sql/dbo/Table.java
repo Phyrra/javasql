@@ -3,7 +3,7 @@ package ch.sama.sql.dbo;
 import ch.sama.sql.query.exception.IllegalIdentifierException;
 import ch.sama.sql.query.helper.Identifier;
 
-public class Table {
+public class Table implements Cloneable {
     private String schema;
 	private String table;
 	private String alias;
@@ -51,7 +51,14 @@ public class Table {
             throw new IllegalIdentifierException(alias);
         }
 
-        this.alias = alias;
-        return this;
+        Table table = null;
+        try {
+            table = (Table)this.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+
+        table.alias = alias;
+        return table;
     }
 }

@@ -28,6 +28,8 @@ public interface QueryFactory {
 
     public Value field(String field);
     public Value field(String table, String field);
+    public Value field(Table table, String field);
+
     public Value date(Date date);
     public Value string(String s);
     public Value numeric(Integer i);

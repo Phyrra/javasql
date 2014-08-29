@@ -83,6 +83,11 @@ public class TSqlQueryFactory implements QueryFactory {
     }
 
     @Override
+    public Value field(Table table, String field) {
+        return new TSqlValue(new Field(table, field));
+    }
+
+    @Override
     public Value date(Date date) {
         return new TSqlValue(date);
     }
