@@ -1,5 +1,7 @@
 package ch.sama.sql;
 
+import ch.sama.sql.dbo.Schema;
+import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dbo.connection.ResultSetTransformer;
 import ch.sama.sql.query.helper.Value;
 import ch.sama.sql.tsql.connection.JtdsConnection;
@@ -19,7 +21,7 @@ public class ServerConnection {
         TSqlExecutor executor = new TSqlExecutor(connection, transformer);
 
         List<Map<String, Object>> list = executor.query(
-            factory.create().select(factory.value(Value.ALL)).from(factory.table("tblTable1"))
+                factory.create().select(factory.value(Value.ALL)).from(factory.table("tblTable1"))
         );
 
         for (Map<String, Object> row : list) {
@@ -39,6 +41,17 @@ public class ServerConnection {
             }
 
             System.out.println(builder.toString());
+        }
+
+        System.out.println("");
+        System.out.println("---");
+        System.out.println("");
+
+        Schema schema = new Schema(executor, factory);
+        Map<String, Table> tables = schema.getTables();
+
+        for (Table table : tables.values()) {
+            System.out.println(table.toString());
         }
     }
 }
