@@ -10,8 +10,8 @@ import org.junit.Test;
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Function;
 import ch.sama.sql.dbo.Table;
-import ch.sama.sql.dialect.tsql.TSqlQuery;
-import ch.sama.sql.dialect.tsql.TSqlValue;
+import ch.sama.sql.tsql.dialect.TSqlQuery;
+import ch.sama.sql.tsql.dialect.TSqlValue;
 
 public class ValueTest {
 	@Test
@@ -46,11 +46,6 @@ public class ValueTest {
 	public void field() {
 		assertEquals("TABLE.FIELD", new TSqlValue(new Field("TABLE", "FIELD")).toString());
 	}
-
-    @Test
-    public void table() {
-        assertEquals("TABLE.*", new TSqlValue(new Table("TABLE")).toString());
-    }
 	
 	@Test
 	public void nameAlias() {
@@ -79,28 +74,4 @@ public class ValueTest {
 			.toString()
 		);
 	}
-
-    @Test
-    public void nullValue() {
-        assertEquals(
-            "SELECT NULL",
-            new TSqlQuery()
-                .select(
-                    new TSqlValue(Value.NULL)
-                )
-            .toString()
-        );
-    }
-
-    @Test
-    public void allValue() {
-        assertEquals(
-            "SELECT *",
-            new TSqlQuery()
-                .select(
-                    new TSqlValue(Value.ALL)
-                )
-            .toString()
-        );
-    }
 }

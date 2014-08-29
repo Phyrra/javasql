@@ -1,4 +1,4 @@
-package ch.sama.sql.dialect.tsql;
+package ch.sama.sql.tsql.dialect;
 
 import java.util.Date;
 import java.text.SimpleDateFormat;

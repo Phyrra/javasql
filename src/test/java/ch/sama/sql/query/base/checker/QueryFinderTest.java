@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Function;
 import ch.sama.sql.dbo.Table;
-import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
+import ch.sama.sql.tsql.dialect.TSqlQueryFactory;
 import ch.sama.sql.query.base.*;
 import ch.sama.sql.query.exception.BadSqlException;
 import ch.sama.sql.query.helper.Condition;

@@ -1,6 +1,6 @@
 package ch.sama.sql;
 
-import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
+import ch.sama.sql.tsql.dialect.TSqlQueryFactory;
 import ch.sama.sql.query.base.QueryFactory;
 import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.Value;
