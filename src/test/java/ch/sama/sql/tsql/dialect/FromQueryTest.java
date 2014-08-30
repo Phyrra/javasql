@@ -13,11 +13,11 @@ public class FromQueryTest {
 	
 	@Test
 	public void single() {
-		assertEquals("SELECT F\nFROM A", query.from(new Table("A")).toString());
+		assertEquals("SELECT [F]\nFROM [A]", query.from(new Table("A")).toString());
 	}
 	
 	@Test
 	public void multi() {
-		assertEquals("SELECT F\nFROM A, B", query.from(new Table("A"), new Table("B")).toString());
+		assertEquals("SELECT [F]\nFROM [A], [B]", query.from(new Table("A"), new Table("B")).toString());
 	}
 }

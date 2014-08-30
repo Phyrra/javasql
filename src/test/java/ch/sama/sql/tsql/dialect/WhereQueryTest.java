@@ -15,13 +15,13 @@ public class WhereQueryTest {
 	
 	@Test
 	public void afterFrom() {
-		assertEquals("SELECT F\nFROM T\nWHERE 1 = 1", query.where(cond).toString());
+		assertEquals("SELECT [F]\nFROM [T]\nWHERE 1 = 1", query.where(cond).toString());
 	}
 	
 	@Test
 	public void afterJoin() {
 		assertEquals(
-			"SELECT F\nFROM T\nJOIN J ON 2 = 2\nWHERE 1 = 1",
+			"SELECT [F]\nFROM [T]\nJOIN [J] ON 2 = 2\nWHERE 1 = 1",
 			query
 				.join(new Table("J"))
 					.on(Condition.eq(new TSqlValue(2), new TSqlValue(2)))

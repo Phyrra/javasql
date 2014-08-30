@@ -20,7 +20,7 @@ public class UnionTest {
     @Test
     public void from() {
         assertEquals(
-                "SELECT FIELD\nFROM TABLE1 UNION ALL\nSELECT FIELD\nFROM TABLE2",
+                "SELECT [FIELD]\nFROM [TABLE1] UNION ALL\nSELECT [FIELD]\nFROM [TABLE2]",
                 query
                         .select(new TSqlValue(new Field("FIELD"))).from(new Table("TABLE1")).union()
                         .select(new TSqlValue(new Field("FIELD"))).from(new Table("TABLE2"))
@@ -33,7 +33,7 @@ public class UnionTest {
         Condition c = Condition.eq(new TSqlValue(new Field("FIELD")), new TSqlValue(1));
 
         assertEquals(
-                "SELECT *\nFROM TABLE1\nWHERE FIELD = 1 UNION ALL\nSELECT *\nFROM TABLE2\nWHERE FIELD = 1",
+                "SELECT *\nFROM [TABLE1]\nWHERE [FIELD] = 1 UNION ALL\nSELECT *\nFROM [TABLE2]\nWHERE [FIELD] = 1",
                 query
                         .select(new TSqlValue(new Function("*"))).from(new Table("TABLE1")).where(c).union()
                         .select(new TSqlValue(new Function("*"))).from(new Table("TABLE2")).where(c)
@@ -46,7 +46,7 @@ public class UnionTest {
         Condition c = Condition.eq(new TSqlValue(1), new TSqlValue(1));
 
         assertEquals(
-                "SELECT *\nFROM TABLE1\nJOIN TABLE2 ON 1 = 1 UNION ALL\nSELECT *\nFROM TABLE3",
+                "SELECT *\nFROM [TABLE1]\nJOIN [TABLE2] ON 1 = 1 UNION ALL\nSELECT *\nFROM [TABLE3]",
                 query
                         .select(new TSqlValue(new Function("*"))).from(new Table("TABLE1")).join(new Table("TABLE2")).on(c).union()
                         .select(new TSqlValue(new Function("*"))).from(new Table("TABLE3"))

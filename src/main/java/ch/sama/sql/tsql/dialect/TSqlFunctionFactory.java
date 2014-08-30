@@ -1,7 +1,7 @@
 package ch.sama.sql.tsql.dialect;
 
 import ch.sama.sql.dbo.Function;
-import ch.sama.sql.query.exception.BadParametersException;
+import ch.sama.sql.query.exception.BadParameterException;
 import ch.sama.sql.query.helper.Value;
 
 /*
@@ -51,7 +51,7 @@ public class TSqlFunctionFactory {
             WhenThen wt = wts[i];
 
             if (wt.isElse() && i != wts.length - 1) { // this also captures multiple ELSEs
-                throw new BadParametersException("ELSE must be the last argument");
+                throw new BadParameterException("ELSE must be the last argument");
             }
 
             builder.append("\n");

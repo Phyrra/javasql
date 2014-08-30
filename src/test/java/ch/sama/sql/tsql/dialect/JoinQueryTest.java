@@ -15,8 +15,14 @@ public class JoinQueryTest {
 	@Test
 	public void single() {
 		Condition c = Condition.eq(new TSqlValue(1), new TSqlValue(1));
-		assertEquals("SELECT F\nFROM T\nJOIN J ON 1 = 1", query.join(new Table("J")).on(c).toString());
+		assertEquals("SELECT [F]\nFROM [T]\nJOIN [J] ON 1 = 1", query.join(new Table("J")).on(c).toString());
 	}
+
+    @Test
+    public void alias() {
+        Condition c = Condition.eq(new TSqlValue(1), new TSqlValue(1));
+        assertEquals("SELECT [F]\nFROM [T]\nJOIN [J] AS [A] ON 1 = 1", query.join(new Table("J").as("A")).on(c).toString());
+    }
 	
 	@Test
 	public void multiple() {
@@ -24,7 +30,7 @@ public class JoinQueryTest {
 		Condition c2 = Condition.eq(new TSqlValue(2), new TSqlValue(2));
 		
 		assertEquals(
-			"SELECT F\nFROM T\nJOIN J1 ON 1 = 1\nJOIN J2 ON 2 = 2",
+			"SELECT [F]\nFROM [T]\nJOIN [J1] ON 1 = 1\nJOIN [J2] ON 2 = 2",
 			query
 				.join(new Table("J1")).on(c1)
 				.join(new Table("J2")).on(c2)

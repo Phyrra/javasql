@@ -16,13 +16,13 @@ public class OrderQueryTest {
 	
 	@Test
 	public void afterFrom() {
-		assertEquals("SELECT F\nFROM T\nORDER BY F ASC", query.order(order).toString());
+		assertEquals("SELECT [F]\nFROM [T]\nORDER BY [F] ASC", query.order(order).toString());
 	}
 	
 	@Test
 	public void afterJoin() {
 		assertEquals(
-			"SELECT F\nFROM T\nJOIN J ON 2 = 2\nORDER BY F ASC",
+			"SELECT [F]\nFROM [T]\nJOIN [J] ON 2 = 2\nORDER BY [F] ASC",
 			query
 				.join(new Table("J"))
 					.on(Condition.eq(new TSqlValue(2), new TSqlValue(2)))
@@ -34,7 +34,7 @@ public class OrderQueryTest {
     @Test
     public void multiple() {
         assertEquals(
-            "SELECT F\nFROM T\nORDER BY A ASC, B DESC",
+            "SELECT [F]\nFROM [T]\nORDER BY [A] ASC, [B] DESC",
             query
                 .order(Order.asc(new TSqlValue(new Field("A"))))
                 .order(Order.desc(new TSqlValue(new Field("B"))))

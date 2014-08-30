@@ -1,7 +1,7 @@
 package ch.sama.sql.tsql.dialect;
 
 import ch.sama.sql.dbo.Field;
-import ch.sama.sql.query.exception.BadParametersException;
+import ch.sama.sql.query.exception.BadParameterException;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -11,13 +11,13 @@ public class FunctionTest {
 
     @Test
     public void coalesce() {
-        assertEquals("COALESCE(FIELD, 1)", fac.coalesce(new TSqlValue(new Field("FIELD")), new TSqlValue(1)).toString());
+        assertEquals("COALESCE([FIELD], 1)", fac.coalesce(new TSqlValue(new Field("FIELD")), new TSqlValue(1)).toString());
     }
 
     @Test
     public void caseWhen() {
         assertEquals(
-            "(CASE FIELD\nWHEN 1 THEN 'ONE'\nWHEN 2 THEN 'TWO'\nELSE 'UNKNOWN'\nEND)",
+            "(CASE [FIELD]\nWHEN 1 THEN 'ONE'\nWHEN 2 THEN 'TWO'\nELSE 'UNKNOWN'\nEND)",
             fac.caseWhen(
                 new TSqlValue(new Field("FIELD")),
                 fac.whenThen(new TSqlValue(1), new TSqlValue("ONE")),
@@ -26,7 +26,7 @@ public class FunctionTest {
             ).toString());
     }
 
-    @Test(expected = BadParametersException.class)
+    @Test(expected = BadParameterException.class)
     public void caseElse() {
         fac.caseWhen(
             new TSqlValue(new Field("FIELD")),

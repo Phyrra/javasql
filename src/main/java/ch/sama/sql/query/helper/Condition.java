@@ -1,7 +1,7 @@
 package ch.sama.sql.query.helper;
 
 import ch.sama.sql.query.base.IQuery;
-import ch.sama.sql.query.exception.BadParametersException;
+import ch.sama.sql.query.exception.BadParameterException;
 import ch.sama.sql.query.exception.UnknownConditionException;
 
 import java.util.ArrayList;
@@ -109,7 +109,7 @@ public class Condition {
 	
 	public static Condition and(Condition... conditions) {
         if (conditions.length <= 1) {
-            throw new BadParametersException("Condition List too short");
+            throw new BadParameterException("Condition List too short");
         }
 
 		Condition c = new Condition(TYPE.AND);
@@ -124,7 +124,7 @@ public class Condition {
 	
 	public static Condition or(Condition... conditions) {
         if (conditions.length <= 1) {
-            throw new BadParametersException("Condition List too short");
+            throw new BadParameterException("Condition List too short");
         }
 
         Condition c = new Condition(TYPE.OR);

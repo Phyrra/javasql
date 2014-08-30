@@ -26,8 +26,9 @@ public class TSqlValue extends Value {
 		builder.append(value);
 		
 		if (getAlias() != null) {
-			builder.append(" AS ");
+			builder.append(" AS [");
 			builder.append(getAlias());
+            builder.append("]");
 		}
 		
 		return builder.toString();

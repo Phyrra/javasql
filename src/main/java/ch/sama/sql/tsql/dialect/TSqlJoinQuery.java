@@ -26,11 +26,6 @@ public class TSqlJoinQuery extends JoinQuery {
 		
 		builder.append(getTable().toString());
 		
-		if (getAlias() != null) {
-			builder.append(" AS ");
-			builder.append(getAlias());
-		}
-		
 		builder.append(" ON ");
 		builder.append(getCondition().toString(getFactory().conditionParser()));
 		

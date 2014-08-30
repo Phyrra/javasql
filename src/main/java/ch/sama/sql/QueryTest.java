@@ -28,7 +28,7 @@ public class QueryTest {
         String s = fac.create()
                         .select(fac.field("TABLE1", "FIELD1").as("TEST"), fac.field("TABLE1", "FIELD2"), fac.string("Hello").as("GREETING"))
                         .from(fac.table("TABLE1"), fac.table("TABLE2"))
-                        .join(fac.table("TABLE3")).left().as("T3").on(c2)
+                        .join(fac.table("TABLE3").as("T3")).left().on(c2)
                         .join(fac.table("TABLE4")).on(c3)
                         .where(c)
                         .order(Order.asc(fac.field("TABLE1", "FIELD1"), fac.field("TABLE2", "FIELD2")))

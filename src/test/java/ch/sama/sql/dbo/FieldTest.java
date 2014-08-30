@@ -7,17 +7,17 @@ import org.junit.Test;
 public class FieldTest {
 	@Test
 	public void nameOnly() {
-		assertEquals("NAME", new Field("NAME").toString());
+		assertEquals("[NAME]", new Field("NAME").toString());
 	}
 	
 	@Test
 	public void withTableName() {
-		assertEquals("TABLE.NAME", new Field("TABLE", "NAME").toString());
+		assertEquals("[TABLE].[NAME]", new Field("TABLE", "NAME").toString());
 	}
 
     @Test
     public void withTable() {
-        assertEquals("TABLE.NAME", new Field(new Table("TABLE"), "NAME").toString());
+        assertEquals("[TABLE].[NAME]", new Field(new Table("TABLE"), "NAME").toString());
     }
 
     @Test
@@ -28,6 +28,6 @@ public class FieldTest {
         // after using it in a join or equal
         t.as("OTHER");
 
-        assertEquals("TABLE.NAME", new Field(t, "NAME").toString());
+        assertEquals("[TABLE].[NAME]", new Field(t, "NAME").toString());
     }
 }

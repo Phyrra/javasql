@@ -1,5 +1,6 @@
 package ch.sama.sql.query.helper;
 
+import ch.sama.sql.query.exception.BadSqlException;
 import ch.sama.sql.query.exception.UnknownOrderException;
 
 import java.util.*;
@@ -42,11 +43,15 @@ public class Order {
 		return o;
 	}
 	
-	private void fill(Value... v) {
+	private void fill(Value... vs) {
 		values = new ArrayList<Value>();
 		
-		for (int i = 0; i < v.length; ++i) {
-			values.add(v[i]);
+		for (Value v : vs) {
+            if (v.getAlias() != null) {
+                throw new BadSqlException("Order values cannot have aliases");
+            }
+
+			values.add(v);
 		}
 	}
 }

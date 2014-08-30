@@ -19,7 +19,7 @@ public class CTEQueryTest {
 	@Test
 	public void cte() {
 		assertEquals(
-			"WITH CTE AS (\nSELECT F\nFROM T\n)",
+			"WITH CTE AS (\nSELECT [F]\nFROM [T]\n)",
 			query
 				.with("CTE").as(
 					new TSqlQuery().select(new TSqlValue(new Field("F"))).from(new Table("T"))
@@ -31,7 +31,7 @@ public class CTEQueryTest {
 	@Test
 	public void selectCte() {
 		assertEquals(
-			"WITH CTE AS (\nSELECT F\nFROM T\n)\nSELECT F\nFROM CTE",
+			"WITH CTE AS (\nSELECT [F]\nFROM [T]\n)\nSELECT [F]\nFROM [CTE]",
 			query
 				.with("CTE").as(
 					new TSqlQuery().select(new TSqlValue(new Field("F"))).from(new Table("T"))
@@ -44,7 +44,7 @@ public class CTEQueryTest {
     @Test
     public void multiCte() {
         assertEquals(
-            "WITH CTE1 AS (\nSELECT F\nFROM T\n), CTE2 AS (\nSELECT F\nFROM T\n)\nSELECT F\nFROM CTE1",
+            "WITH CTE1 AS (\nSELECT [F]\nFROM [T]\n), CTE2 AS (\nSELECT [F]\nFROM [T]\n)\nSELECT [F]\nFROM [CTE1]",
             query
                 .with("CTE1").as(
                     new TSqlQuery().select(new TSqlValue(new Field("F"))).from(new Table("T"))

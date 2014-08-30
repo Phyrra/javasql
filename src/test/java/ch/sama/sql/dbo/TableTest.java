@@ -7,16 +7,16 @@ import static org.junit.Assert.assertEquals;
 public class TableTest {
 	@Test
 	public void nameOnly() {
-		assertEquals("NAME", new Table("NAME").toString());
+		assertEquals("[NAME]", new Table("NAME").toString());
 	}
 	
 	@Test
 	public void withSchema() {
-		assertEquals("dbo.NAME", new Table("dbo", "NAME").toString());
+		assertEquals("[dbo].[NAME]", new Table("dbo", "NAME").toString());
 	}
 
     @Test
     public void withAlias() {
-        assertEquals("NAME AS OTHER", new Table("NAME").as("OTHER").toString());
+        assertEquals("[NAME] AS [OTHER]", new Table("NAME").as("OTHER").toString());
     }
 }

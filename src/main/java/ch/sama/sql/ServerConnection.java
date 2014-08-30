@@ -1,5 +1,6 @@
 package ch.sama.sql;
 
+import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dbo.connection.ResultSetTransformer;
 import ch.sama.sql.query.helper.Value;
@@ -50,7 +51,7 @@ public class ServerConnection {
         Map<String, Table> tables = schema.getTables();
 
         for (Table table : tables.values()) {
-            System.out.println(table.toString());
+            System.out.println(schema.getTableSchema(table));
         }
     }
 }

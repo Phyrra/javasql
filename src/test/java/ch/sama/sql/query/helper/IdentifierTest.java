@@ -34,24 +34,4 @@ public class IdentifierTest {
     public void illegalChar() {
         new Field("F'IELD");
     }
-
-    @Test
-    public void balancedBracket() {
-        new Field("[FIELD]");
-    }
-
-    @Test
-    public void minimalisticBracket() {
-        new Field("[F]");
-    }
-
-    @Test(expected = IllegalIdentifierException.class)
-    public void unbalancedBracket() {
-        new Field("[FIELD");
-    }
-
-    @Test(expected = IllegalIdentifierException.class)
-    public void multiBracket() {
-        new Field("[[FIELD]]");
-    }
 }

@@ -2,16 +2,13 @@ package ch.sama.sql.query.base;
 
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.exception.BadSqlException;
-import ch.sama.sql.query.exception.IllegalIdentifierException;
 import ch.sama.sql.query.helper.Condition;
-import ch.sama.sql.query.helper.Identifier;
 import ch.sama.sql.query.helper.Order;
 
 public abstract class JoinQuery implements IQuery {
 	QueryFactory factory;
 	private IQuery parent;
 	private Table table;
-	private String alias;
 	private Condition condition;
 	private String type;
 	
@@ -27,10 +24,6 @@ public abstract class JoinQuery implements IQuery {
 		return table;
 	}
 	
-	public String getAlias() {
-		return alias;
-	}
-	
 	public Condition getCondition() {
 		return condition;
 	}
@@ -43,7 +36,6 @@ public abstract class JoinQuery implements IQuery {
 		this.factory = factory;
 		this.parent = parent;
 		this.table = table;
-		this.alias = null;
 		this.type = null;
 	}
 	
@@ -59,15 +51,6 @@ public abstract class JoinQuery implements IQuery {
 	
 	// Could also add inner/outer/cross and so on..
 	//	Since I never use them, I didn't :>
-	
-	public JoinQuery as(String alias) {
-        if (!Identifier.test(alias)) {
-            throw new IllegalIdentifierException(alias);
-        }
-
-		this.alias = alias;
-		return this;
-	}
 	
 	public JoinQuery on(Condition condition) {
 		this.condition = condition;
