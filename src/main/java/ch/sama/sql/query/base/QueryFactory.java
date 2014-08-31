@@ -1,5 +1,6 @@
 package ch.sama.sql.query.base;
 
+import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.ConditionParser;
@@ -26,6 +27,7 @@ public interface QueryFactory {
     public Table table(String name);
     public Table table(String schema, String name);
 
+    public Value field(Field field);
     public Value field(String field);
     public Value field(String table, String field);
     public Value field(Table table, String field);

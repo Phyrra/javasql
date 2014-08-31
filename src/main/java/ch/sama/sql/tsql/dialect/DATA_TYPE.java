@@ -1,6 +1,7 @@
 package ch.sama.sql.tsql.dialect;
 
 import ch.sama.sql.query.exception.BadParameterException;
+import ch.sama.sql.query.exception.ObjectNotFoundException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +47,7 @@ public enum DATA_TYPE {
 
         public static DATA_TYPE fromString(String type) {
             if (!map.containsKey(type)) {
-                throw new BadParameterException("Unknown type: " + type);
+                throw new ObjectNotFoundException("Unknown type: " + type);
             }
 
             return map.get(type);

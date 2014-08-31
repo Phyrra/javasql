@@ -1,6 +1,7 @@
 package ch.sama.sql.dbo;
 
 import ch.sama.sql.query.exception.IllegalIdentifierException;
+import ch.sama.sql.query.exception.ObjectNotFoundException;
 import ch.sama.sql.query.helper.Identifier;
 
 import java.util.ArrayList;
@@ -12,6 +13,8 @@ public class Table implements Cloneable {
     private String schema;
 	private String table;
 	private String alias;
+
+    private String primaryKey;
 
     private Map<String, Field> columns = new HashMap<String, Field>();
 
@@ -73,6 +76,10 @@ public class Table implements Cloneable {
         return table;
     }
 
+    public String getName() {
+        return table;
+    }
+
     public void addColumn(String field) {
         columns.put(field, new Field(this, field));
     }
@@ -82,10 +89,33 @@ public class Table implements Cloneable {
     }
 
     public Field getColumn(String name) {
+        if (!columns.containsKey(name)) {
+            throw new ObjectNotFoundException("Column " + name + " could not be found");
+        }
+
         return columns.get(name);
     }
 
     public List<Field> getColumns() {
         return new ArrayList<Field>(columns.values());
+    }
+
+    public void setPrimaryKey(String name) {
+        primaryKey = name;
+
+        if (!columns.containsKey(name)) {
+            addColumn(name);
+        }
+    }
+
+    public Field getPrimaryKey() {
+        return getColumn(primaryKey);
+    }
+
+    public boolean isPrimaryKey(String name) {
+        return primaryKey.equalsIgnoreCase(name);
+    }
+    public boolean isPrimaryKey(Field field) {
+        return primaryKey.equalsIgnoreCase(field.getName());
     }
 }

@@ -5,6 +5,7 @@ import ch.sama.sql.dbo.Schema;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dbo.connection.QueryExecutor;
 import ch.sama.sql.query.base.QueryFactory;
+import ch.sama.sql.query.exception.ObjectNotFoundException;
 import ch.sama.sql.query.helper.Condition;
 
 import java.util.HashMap;
@@ -19,7 +20,22 @@ public class TSqlSchema implements Schema {
 
         List<Map<String, Object>> list = executor.query(
                 factory.create()
-                        .select(factory.field("TABLE_SCHEMA"), factory.field("TABLE_NAME"))
+                        .select(
+                                factory.field("TABLE_SCHEMA"),
+                                factory.field("TABLE_NAME"),
+                                factory.query(
+                                        factory.create()
+                                                .select(factory.field("COLUMN_NAME"))
+                                                .from(factory.table("INFORMATION_SCHEMA", "TABLE_CONSTRAINTS").as("tc"))
+                                                .join(factory.table("INFORMATION_SCHEMA", "CONSTRAINT_COLUMN_USAGE").as("ccu")).on(Condition.eq(factory.field("tc", "CONSTRAINT_NAME"), factory.field("ccu", "CONSTRAINT_NAME")))
+                                                .where(
+                                                        Condition.and(
+                                                                Condition.eq(factory.field("tc", "CONSTRAINT_TYPE"), factory.string("PRIMARY KEY")),
+                                                                Condition.eq(factory.field("tc", "TABLE_NAME"), factory.field("TABLES", "TABLE_NAME"))
+                                                        )
+                                                )
+                                ).as("PRIMARY_KEY")
+                        )
                         .from(factory.table("INFORMATION_SCHEMA", "TABLES"))
                         .toString()
         );
@@ -33,7 +49,12 @@ public class TSqlSchema implements Schema {
 
             List<Map<String, Object>> columns = executor.query(
                     factory.create()
-                            .select(factory.field("COLUMN_NAME"), factory.field("DATA_TYPE"), factory.field("CHARACTER_MAXIMUM_LENGTH"), factory.field("IS_NULLABLE"))
+                            .select(
+                                    factory.field("COLUMN_NAME"),
+                                    factory.field("DATA_TYPE"),
+                                    factory.field("CHARACTER_MAXIMUM_LENGTH"),
+                                    factory.field("IS_NULLABLE")
+                            )
                             .from(factory.table("INFORMATION_SCHEMA", "COLUMNS"))
                             .where(Condition.eq(factory.field("TABLE_NAME"), factory.string(table)))
                     .toString()
@@ -58,6 +79,8 @@ public class TSqlSchema implements Schema {
 
                 t.addColumn(f);
             }
+
+            t.setPrimaryKey(row.get("PRIMARY_KEY").toString());
         }
     }
 
@@ -68,11 +91,14 @@ public class TSqlSchema implements Schema {
 
     @Override
     public Table getTable(String name) {
+        if (!tables.containsKey(name)) {
+            throw new ObjectNotFoundException("Table " + name + " could not be cound");
+        }
+
         return tables.get(name);
     }
 
     public String getTableSchema(Table table) {
-        // TODO: Private Key Info is missing
         // TODO: Ignores constraints and defaults
 
         StringBuilder builder = new StringBuilder();
@@ -110,7 +136,12 @@ public class TSqlSchema implements Schema {
             prefix = ",\n";
         }
 
-        builder.append("\n)");
+        builder.append(",\n\tCONSTRAINT [PK_");
+        builder.append(table.getName());
+        builder.append("] PRIMARY KEY CLUSTERED (\n\t\t[");
+        builder.append(table.getPrimaryKey().getName());
+        builder.append("] ASC\n\t)\n) ON [PRIMARY]");
+        // Ignores all the options: WITH  (...) ON [PRIMARY]
 
         return builder.toString();
     }
