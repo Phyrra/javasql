@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TSqlSchema implements Schema {
     private static final TSqlQueryFactory factory = new TSqlQueryFactory();
@@ -94,6 +96,38 @@ public class TSqlSchema implements Schema {
 
             t.setPrimaryKey(row.get("PRIMARY_KEY").toString());
         }
+    }
+
+    public TSqlSchema(String schema) {
+        parse(schema);
+    }
+
+    public TSqlSchema(File file) {
+        StringBuilder builder = new StringBuilder();
+        String prefix = "";
+
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(file));
+        } catch(FileNotFoundException e) {
+            throw new ObjectNotFoundException(e.getMessage(), e);
+        }
+
+        try {
+            String line;
+            while ((line = br.readLine()) != null) {
+                builder.append(prefix);
+                builder.append(line);
+
+                prefix = "\n";
+            }
+
+            br.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        parse(builder.toString());
     }
 
     @Override
@@ -179,5 +213,142 @@ public class TSqlSchema implements Schema {
         // Ignores all the options: WITH  (...) ON [PRIMARY]
 
         return builder.toString();
+    }
+
+    private void parse(String schema) {
+        // This will be very basic!
+        //  I have no intention of writing a complete SQL parser
+
+        final int NONE = 0;
+        final int TABLE_BLOCK = 1;
+        final int PRIMARY_BLOCK = 2;
+
+        tables = new HashMap<String, Table>();
+        int currentBlock = NONE;
+        Table table = null;
+
+        Pattern pattern = Pattern.compile("\\[(\\w+)\\](\\(\\d+\\))?");
+
+        String[] lines = schema.split("\n");
+        for (String line : lines) {
+            line = line.trim();
+
+            if (line.startsWith("CREATE TABLE")) {
+                currentBlock = TABLE_BLOCK;
+
+                Matcher matcher = pattern.matcher(line);
+
+                String tableSchema = null;
+                String tableName = null;
+
+                int i = 0;
+                while (matcher.find()) { // [dbo].[table]
+                    if (i == 0) {
+                        tableSchema = matcher.group(1);
+                    } else if (i == 1) {
+                        tableName = matcher.group(1);
+                    } else {
+                        break;
+                    }
+
+                    ++i;
+                }
+                if (i == 0) {
+                    throw new BadSqlException("Schema error: " + line);
+                } else if (i == 1) {
+                    tableName = tableSchema;
+                    table = new Table(tableName);
+                } else {
+                    table = new Table(tableSchema, tableName);
+                }
+
+                tables.put(tableName, table);
+            } else if (line.startsWith("CONSTRAINT")) { // the only supported constraint is PRIMARY
+                currentBlock = PRIMARY_BLOCK;
+            } else if (line.startsWith(")")) {
+                if (currentBlock == NONE) {
+                    throw new BadSqlException("Schema error, unbalanced Brackets: " + line);
+                } else if (currentBlock == TABLE_BLOCK) {
+                    table = null;
+                    currentBlock = NONE;
+                } else if (currentBlock == PRIMARY_BLOCK) {
+                    currentBlock = TABLE_BLOCK;
+                }
+            } else {
+                Matcher matcher = pattern.matcher(line);
+                String fieldName = null;
+                int i = 0;
+
+                switch (currentBlock) {
+                    case NONE:
+                        throw new BadSqlException("Schema error, blockless field: " + line);
+                    case TABLE_BLOCK:
+                        String dataType = null;
+
+                        while (matcher.find()) { // [field] [type] ...
+                            if (i == 0) {
+                                fieldName = matcher.group(1);
+                            } else if (i == 1) {
+                                dataType = matcher.group(1);
+
+                                String length = matcher.group(2);
+                                if (length != null) {
+                                    dataType += length;
+                                }
+                            } else {
+                                break;
+                            }
+
+                            ++i;
+                        }
+                        if (i == 0) {
+                            throw new BadSqlException("Schema error, no field name: " + line);
+                        }
+
+                        Field field = new Field(table, fieldName);
+
+                        if (line.contains("NOT NULL")) {
+                            field.setNullable(false);
+                        } else {
+                            field.setNullable(true); // nullable = true is default if none is set
+                        }
+
+                        if (dataType != null) {
+                            field.setDataType(dataType);
+                        }
+
+                        if (line.contains("CONSTRAINT") && line.contains("DEFAULT")) { // The only supported constraint is DEFAULT
+                            int idx1 = line.lastIndexOf("(");
+                            int idx2 = line.lastIndexOf(")");
+
+                            String defaultValue = line.substring(idx1, idx2 + 1);
+                            field.setDefault(TSqlValue.plain(defaultValue));
+                        }
+
+                        table.addColumn(field); // if this does invoke NPE something went wrong
+
+                        break;
+                    case PRIMARY_BLOCK:
+                        while (matcher.find()) { // [field]
+                            if (i == 0) {
+                                fieldName = matcher.group(1);
+                            } else {
+                                break;
+                            }
+
+                            ++i;
+                        }
+                        if (i == 0) {
+                            throw new BadSqlException("Schema error, no field name: " + line);
+                        }
+
+                        table.setPrimaryKey(fieldName);
+
+                        break;
+                    default:
+                        throw new BadSqlException("Unknown block (" + currentBlock + "): " + line); // should never happen
+                }
+            }
+        }
     }
 }
