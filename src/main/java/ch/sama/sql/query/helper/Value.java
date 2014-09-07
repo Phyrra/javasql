@@ -15,6 +15,8 @@ public abstract class Value {
     private Object source;
     private String alias;
 
+    public Value() { }
+
     public Value(Object o) {
         source = o;
     }

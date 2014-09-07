@@ -4,18 +4,23 @@ import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Schema;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dbo.connection.QueryExecutor;
-import ch.sama.sql.query.base.QueryFactory;
+import ch.sama.sql.query.exception.BadSqlException;
 import ch.sama.sql.query.exception.ObjectNotFoundException;
 import ch.sama.sql.query.helper.Condition;
+import ch.sama.sql.query.helper.Value;
 
+import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class TSqlSchema implements Schema {
+    private static final TSqlQueryFactory factory = new TSqlQueryFactory();
+
     private Map<String, Table> tables;
 
-    public TSqlSchema(QueryExecutor executor, QueryFactory factory) {
+    public TSqlSchema(QueryExecutor executor) {
         tables = new HashMap<String, Table>();
 
         List<Map<String, Object>> list = executor.query(
@@ -53,7 +58,8 @@ public class TSqlSchema implements Schema {
                                     factory.field("COLUMN_NAME"),
                                     factory.field("DATA_TYPE"),
                                     factory.field("CHARACTER_MAXIMUM_LENGTH"),
-                                    factory.field("IS_NULLABLE")
+                                    factory.field("IS_NULLABLE"),
+                                    factory.field("COLUMN_DEFAULT")
                             )
                             .from(factory.table("INFORMATION_SCHEMA", "COLUMNS"))
                             .where(Condition.eq(factory.field("TABLE_NAME"), factory.string(table)))
@@ -77,6 +83,12 @@ public class TSqlSchema implements Schema {
                     f.setNullable(true);
                 }
 
+                Object defaultValue = column.get("COLUMN_DEFAULT");
+                if (defaultValue != null) {
+                    // The data type is inconsequential here
+                    f.setDefault(factory.plain(defaultValue.toString()));
+                }
+
                 t.addColumn(f);
             }
 
@@ -85,8 +97,8 @@ public class TSqlSchema implements Schema {
     }
 
     @Override
-    public Map<String, Table> getTables() {
-        return tables;
+    public List<Table> getTables() {
+        return new ArrayList<Table>(tables.values());
     }
 
     @Override
@@ -99,7 +111,7 @@ public class TSqlSchema implements Schema {
     }
 
     public String getTableSchema(Table table) {
-        // TODO: Ignores constraints and defaults
+        // TODO: Ignores FK constraints
 
         StringBuilder builder = new StringBuilder();
         String prefix = "";
@@ -131,6 +143,29 @@ public class TSqlSchema implements Schema {
                 builder.append(" NULL");
             } else {
                 builder.append(" NOT NULL");
+            }
+
+            Value defaultValue = field.getDefault();
+            if (defaultValue != null) {
+                String defaultString = defaultValue.toString();
+
+                if (!defaultString.startsWith("(") && defaultString.endsWith(")")) {
+                    defaultString = "(" + defaultString + ")";
+                }
+
+                builder.append(" CONSTRAINT [DF_");
+                builder.append(table.getName());
+                builder.append("_");
+                builder.append(field.getName());
+                builder.append("] DEFAULT ");
+
+                if (!defaultString.startsWith("(") && defaultString.endsWith(")")) {
+                    builder.append("(");
+                    builder.append(defaultString);
+                    builder.append(")");
+                } else {
+                    builder.append(defaultString);
+                }
             }
 
             prefix = ",\n";

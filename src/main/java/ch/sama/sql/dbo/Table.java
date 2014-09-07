@@ -101,11 +101,11 @@ public class Table implements Cloneable {
     }
 
     public void setPrimaryKey(String name) {
-        primaryKey = name;
-
         if (!columns.containsKey(name)) {
-            addColumn(name);
+            throw new ObjectNotFoundException("Column " + name + " could not be found");
         }
+
+        primaryKey = name;
     }
 
     public Field getPrimaryKey() {

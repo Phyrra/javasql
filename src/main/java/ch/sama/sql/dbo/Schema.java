@@ -1,9 +1,9 @@
 package ch.sama.sql.dbo;
 
-import java.util.Map;
+import java.util.List;
 
 public interface Schema {
-    public Map<String, Table> getTables();
+    public List<Table> getTables();
 
     public Table getTable(String name);
 }

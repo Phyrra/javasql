@@ -33,11 +33,20 @@ public class TSqlValue extends Value {
 		
 		return builder.toString();
 	}
+
+    public TSqlValue() { }
 	
 	public TSqlValue(String s) {
 		super(s);
         value = "'" + s.replace("'", "''") + "'";
 	}
+
+    public static TSqlValue plain(String s) { // This is "unsafe"!
+        TSqlValue val = new TSqlValue();
+        val.value = s;
+
+        return val;
+    }
 	
 	public TSqlValue(Integer i) {
 		super(i);

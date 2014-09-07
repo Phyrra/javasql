@@ -47,10 +47,10 @@ public class ServerConnection {
         System.out.println("---");
         System.out.println("");
 
-        TSqlSchema schema = new TSqlSchema(executor, factory);
-        Map<String, Table> tables = schema.getTables();
+        TSqlSchema schema = new TSqlSchema(executor);
+        List<Table> tables = schema.getTables();
 
-        for (Table table : tables.values()) {
+        for (Table table : tables) {
             System.out.println(schema.getTableSchema(table));
         }
     }

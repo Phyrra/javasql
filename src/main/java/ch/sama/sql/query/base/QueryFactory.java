@@ -32,6 +32,7 @@ public interface QueryFactory {
     public Value field(String table, String field);
     public Value field(Table table, String field);
 
+    public Value plain(String s);
     public Value date(Date date);
     public Value string(String s);
     public Value numeric(Integer i);

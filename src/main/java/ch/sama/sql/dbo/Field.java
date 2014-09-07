@@ -2,6 +2,7 @@ package ch.sama.sql.dbo;
 
 import ch.sama.sql.query.exception.IllegalIdentifierException;
 import ch.sama.sql.query.helper.Identifier;
+import ch.sama.sql.query.helper.Value;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +14,7 @@ public class Field {
 
     private String dataType;
     private boolean nullable = true;
+    private Value defaultValue;
 	
 	public Field(String field) {
         if (!Identifier.test(field)) {
@@ -81,5 +83,13 @@ public class Field {
 
     public boolean getNullable() {
         return nullable;
+    }
+
+    public void setDefault(Value val) {
+        this.defaultValue = val;
+    }
+
+    public Value getDefault() {
+        return this.defaultValue;
     }
 }

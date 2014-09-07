@@ -93,6 +93,11 @@ public class TSqlQueryFactory implements QueryFactory {
     }
 
     @Override
+    public Value plain(String s) {
+        return TSqlValue.plain(s);
+    }
+
+    @Override
     public Value date(Date date) {
         return new TSqlValue(date);
     }

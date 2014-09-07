@@ -69,12 +69,12 @@ public class QueryFinderTest {
     @Test
     public void getFunctions() {
         IQuery query = fac.create()
-                .select(fac.field("FIELD1"), fac.function("A(FIELD1"), fac.field("FIELD2"), fac.function("B(FIELD2)"), fac.function("C(FIELD3)"))
+                .select(fac.field("FIELD1"), fac.function("A(FIELD1)"), fac.field("FIELD2"), fac.function("B(FIELD2)"), fac.function("C(FIELD3)"))
                 .from(fac.table("TABLE"));
 
-        List<Function> fields = finder.getSelected(query, Function.class);
+        List<Function> functions = finder.getSelected(query, Function.class);
 
-        assertEquals(3, fields.size());
+        assertEquals(3, functions.size());
     }
 
     @Test

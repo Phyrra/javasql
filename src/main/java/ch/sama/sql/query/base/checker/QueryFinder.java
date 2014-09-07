@@ -50,8 +50,11 @@ public class QueryFinder {
         List<T> fields = new ArrayList<T>();
         for (Value v : values) {
             Object o = v.getSource();
-            if (dst.isAssignableFrom(o.getClass())) {
-                fields.add((T)o);
+
+            if (o != null) {
+                if (dst.isAssignableFrom(o.getClass())) {
+                    fields.add((T) o);
+                }
             }
         }
 
