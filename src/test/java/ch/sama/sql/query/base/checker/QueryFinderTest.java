@@ -58,7 +58,7 @@ public class QueryFinderTest {
     @Test
     public void getFields() {
         IQuery query = fac.create()
-                .select(fac.field("FIELD1"), fac.function("A(FIELD1"), fac.field("FIELD2"), fac.function("B(FIELD2)"))
+                .select(fac.field("FIELD1"), fac.function("A(FIELD1)"), fac.field("FIELD2"), fac.function("B(FIELD2)"))
                 .from(fac.table("TABLE"));
 
         List<Field> fields = finder.getSelected(query, Field.class);

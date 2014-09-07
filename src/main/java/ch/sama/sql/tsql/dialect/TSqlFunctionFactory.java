@@ -60,7 +60,7 @@ public class TSqlFunctionFactory {
 
         builder.append("\nEND)");
 
-        return new Function(builder.toString());
+        return new Function(builder.toString(), false);
     }
 
     // extend at leisure

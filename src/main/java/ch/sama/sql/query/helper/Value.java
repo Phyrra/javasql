@@ -1,5 +1,6 @@
 package ch.sama.sql.query.helper;
 
+import ch.sama.sql.query.base.checker.Identifier;
 import ch.sama.sql.query.exception.IllegalIdentifierException;
 import ch.sama.sql.query.exception.UnknownValueException;
 

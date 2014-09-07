@@ -35,8 +35,8 @@ public class UnionTest {
         assertEquals(
                 "SELECT *\nFROM [TABLE1]\nWHERE [FIELD] = 1 UNION ALL\nSELECT *\nFROM [TABLE2]\nWHERE [FIELD] = 1",
                 query
-                        .select(new TSqlValue(new Function("*"))).from(new Table("TABLE1")).where(c).union()
-                        .select(new TSqlValue(new Function("*"))).from(new Table("TABLE2")).where(c)
+                        .select(new TSqlValue(TSqlValue.ALL)).from(new Table("TABLE1")).where(c).union()
+                        .select(new TSqlValue(TSqlValue.ALL)).from(new Table("TABLE2")).where(c)
                 .toString()
         );
     }
@@ -48,8 +48,8 @@ public class UnionTest {
         assertEquals(
                 "SELECT *\nFROM [TABLE1]\nJOIN [TABLE2] ON 1 = 1 UNION ALL\nSELECT *\nFROM [TABLE3]",
                 query
-                        .select(new TSqlValue(new Function("*"))).from(new Table("TABLE1")).join(new Table("TABLE2")).on(c).union()
-                        .select(new TSqlValue(new Function("*"))).from(new Table("TABLE3"))
+                        .select(new TSqlValue(TSqlValue.ALL)).from(new Table("TABLE1")).join(new Table("TABLE2")).on(c).union()
+                        .select(new TSqlValue(TSqlValue.ALL)).from(new Table("TABLE3"))
                 .toString()
         );
     }

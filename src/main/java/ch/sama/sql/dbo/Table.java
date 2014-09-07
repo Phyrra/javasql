@@ -2,7 +2,7 @@ package ch.sama.sql.dbo;
 
 import ch.sama.sql.query.exception.IllegalIdentifierException;
 import ch.sama.sql.query.exception.ObjectNotFoundException;
-import ch.sama.sql.query.helper.Identifier;
+import ch.sama.sql.query.base.checker.Identifier;
 
 import java.util.ArrayList;
 import java.util.HashMap;

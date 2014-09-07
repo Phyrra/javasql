@@ -1,11 +1,8 @@
 package ch.sama.sql.dbo;
 
 import ch.sama.sql.query.exception.IllegalIdentifierException;
-import ch.sama.sql.query.helper.Identifier;
+import ch.sama.sql.query.base.checker.Identifier;
 import ch.sama.sql.query.helper.Value;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class Field {
     private Table table;
