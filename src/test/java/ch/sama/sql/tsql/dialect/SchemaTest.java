@@ -137,6 +137,24 @@ public class SchemaTest {
         assertEquals("(1337)", field.getDefault().toString());
     }
 
+    @Test
+    public void fieldDefaultFunction() {
+        List<Table> list = new TSqlSchema(
+                "CREATE TABLE [tblTable](\n" +
+                "   [uidId] [uniqueidentifier] NOT NULL CONSTRAINT [DF_tblTable_uidId] DEFAULT (newsequentialid())\n" +
+                ")"
+        ).getTables();
+
+        Table table = list.get(0);
+        List<Field> columns = table.getColumns();
+        Field field = columns.get(0);
+
+        assertEquals("uidId", field.getName());
+        assertEquals("uniqueidentifier", field.getDataType());
+        assertEquals(false, field.getNullable());
+        assertEquals("(newsequentialid())", field.getDefault().toString());
+    }
+
     // PKey
 
     @Test

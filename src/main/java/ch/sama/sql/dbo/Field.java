@@ -89,4 +89,36 @@ public class Field {
     public Value getDefault() {
         return this.defaultValue;
     }
+
+    public Table getTable() {
+        return this.table;
+    }
+
+    public boolean compareTo(Field other) {
+        if (nullable != other.getNullable()) {
+            return false;
+        }
+
+        String otherType = other.getDataType();
+        if (dataType == null && otherType != null || dataType != null && otherType == null) {
+            return false;
+        }
+        if (dataType != null && otherType != null) {
+            if (!dataType.equals(otherType)) {
+                return false;
+            }
+        }
+
+        Value otherDefault = other.getDefault();
+        if (defaultValue == null && otherDefault != null || defaultValue != null && otherDefault == null) {
+            return false;
+        }
+        if (defaultValue != null && otherDefault != null) {
+            if (!defaultValue.toString().equals(otherDefault.toString())) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

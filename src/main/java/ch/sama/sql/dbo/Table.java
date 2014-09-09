@@ -96,6 +96,10 @@ public class Table implements Cloneable {
         return columns.get(name);
     }
 
+    public boolean hasColumn(String name) {
+        return columns.containsKey(name);
+    }
+
     public List<Field> getColumns() {
         return new ArrayList<Field>(columns.values());
     }

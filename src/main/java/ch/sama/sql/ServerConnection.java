@@ -1,6 +1,5 @@
 package ch.sama.sql;
 
-import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dbo.connection.ResultSetTransformer;
 import ch.sama.sql.query.helper.Value;
@@ -9,6 +8,7 @@ import ch.sama.sql.tsql.connection.TSqlExecutor;
 import ch.sama.sql.tsql.dialect.TSqlQueryFactory;
 import ch.sama.sql.tsql.dialect.TSqlSchema;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -47,11 +47,19 @@ public class ServerConnection {
         System.out.println("---");
         System.out.println("");
 
-        TSqlSchema schema = new TSqlSchema(executor);
-        List<Table> tables = schema.getTables();
+        TSqlSchema fromDB = new TSqlSchema(executor);
+        List<Table> tables = fromDB.getTables();
 
         for (Table table : tables) {
-            System.out.println(schema.getTableSchema(table));
+            System.out.println(TSqlSchema.getTableSchema(table));
         }
+
+        System.out.println("");
+        System.out.println("---");
+        System.out.println("");
+
+        TSqlSchema fromFile = new TSqlSchema(new File("src/main/resources/Schema.sql"));
+
+        System.out.println(TSqlSchema.diff(fromDB, fromFile));
     }
 }

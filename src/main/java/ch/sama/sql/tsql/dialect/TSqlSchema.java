@@ -136,6 +136,11 @@ public class TSqlSchema implements Schema {
     }
 
     @Override
+    public boolean hasTable(String name) {
+        return tables.containsKey(name);
+    }
+
+    @Override
     public Table getTable(String name) {
         if (!tables.containsKey(name)) {
             throw new ObjectNotFoundException("Table " + name + " could not be cound");
@@ -144,7 +149,7 @@ public class TSqlSchema implements Schema {
         return tables.get(name);
     }
 
-    public String getTableSchema(Table table) {
+    public static String getTableSchema(Table table) {
         // TODO: Ignores FK constraints
 
         StringBuilder builder = new StringBuilder();
@@ -156,51 +161,8 @@ public class TSqlSchema implements Schema {
 
         for (Field field : table.getColumns()) {
             builder.append(prefix);
-
-            builder.append("\t[");
-            builder.append(field.getName());
-            builder.append("] [");
-
-            String dataType = field.getDataType();
-            if (dataType.contains("(")) {
-                int idx = dataType.indexOf("(");
-
-                builder.append(dataType.substring(0, idx));
-                builder.append("]");
-                builder.append(dataType.substring(idx));
-            } else {
-                builder.append(dataType);
-                builder.append("]");
-            }
-
-            if (field.getNullable()) {
-                builder.append(" NULL");
-            } else {
-                builder.append(" NOT NULL");
-            }
-
-            Value defaultValue = field.getDefault();
-            if (defaultValue != null) {
-                String defaultString = defaultValue.toString();
-
-                if (!defaultString.startsWith("(") && defaultString.endsWith(")")) {
-                    defaultString = "(" + defaultString + ")";
-                }
-
-                builder.append(" CONSTRAINT [DF_");
-                builder.append(table.getName());
-                builder.append("_");
-                builder.append(field.getName());
-                builder.append("] DEFAULT ");
-
-                if (!defaultString.startsWith("(") && defaultString.endsWith(")")) {
-                    builder.append("(");
-                    builder.append(defaultString);
-                    builder.append(")");
-                } else {
-                    builder.append(defaultString);
-                }
-            }
+            builder.append("\t");
+            builder.append(getColumnSchema(field));
 
             prefix = ",\n";
         }
@@ -211,6 +173,57 @@ public class TSqlSchema implements Schema {
         builder.append(table.getPrimaryKey().getName());
         builder.append("] ASC\n\t)\n) ON [PRIMARY]");
         // Ignores all the options: WITH  (...) ON [PRIMARY]
+
+        return builder.toString();
+    }
+
+    public static String getColumnSchema(Field field) {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("[");
+        builder.append(field.getName());
+        builder.append("] [");
+
+        String dataType = field.getDataType();
+        if (dataType.contains("(")) {
+            int idx = dataType.indexOf("(");
+
+            builder.append(dataType.substring(0, idx));
+            builder.append("]");
+            builder.append(dataType.substring(idx));
+        } else {
+            builder.append(dataType);
+            builder.append("]");
+        }
+
+        if (field.getNullable()) {
+            builder.append(" NULL");
+        } else {
+            builder.append(" NOT NULL");
+        }
+
+        Value defaultValue = field.getDefault();
+        if (defaultValue != null) {
+            String defaultString = defaultValue.toString();
+
+            if (!defaultString.startsWith("(") && defaultString.endsWith(")")) {
+                defaultString = "(" + defaultString + ")";
+            }
+
+            builder.append(" CONSTRAINT [DF_");
+            builder.append(field.getTable().getName());
+            builder.append("_");
+            builder.append(field.getName());
+            builder.append("] DEFAULT ");
+
+            if (!defaultString.startsWith("(") && defaultString.endsWith(")")) {
+                builder.append("(");
+                builder.append(defaultString);
+                builder.append(")");
+            } else {
+                builder.append(defaultString);
+            }
+        }
 
         return builder.toString();
     }
@@ -274,6 +287,8 @@ public class TSqlSchema implements Schema {
                 } else if (currentBlock == PRIMARY_BLOCK) {
                     currentBlock = TABLE_BLOCK;
                 }
+            } else if (line.startsWith("--") || line.length() == 0) {
+                // ignore
             } else {
                 Matcher matcher = pattern.matcher(line);
                 String fieldName = null;
@@ -318,7 +333,8 @@ public class TSqlSchema implements Schema {
                         }
 
                         if (line.contains("CONSTRAINT") && line.contains("DEFAULT")) { // The only supported constraint is DEFAULT
-                            int idx1 = line.lastIndexOf("(");
+                            int idx0 = line.indexOf("DEFAULT");
+                            int idx1 = line.indexOf("(", idx0 + 1);
                             int idx2 = line.lastIndexOf(")");
 
                             String defaultValue = line.substring(idx1, idx2 + 1);
@@ -350,5 +366,59 @@ public class TSqlSchema implements Schema {
                 }
             }
         }
+    }
+
+    public static String diff(TSqlSchema lhs, TSqlSchema rhs) {
+        // This only executes non-destructive updates
+        //  - No drop table
+        //  - No drop column
+        //  - No change of PRIMARY KEY (that would require DROP and re-CREATE)
+
+        StringBuilder builder = new StringBuilder();
+        String prefix = "";
+
+        List<Table> rhTables = rhs.getTables();
+
+        for (Table tr : rhTables) {
+            String rhTableName = tr.getName();
+
+            if (lhs.hasTable(rhTableName)) {
+                Table tl = lhs.getTable(rhTableName);
+                List<Field> rhColumns = tr.getColumns();
+
+                for (Field fr : rhColumns) {
+                    String rhColumnName = fr.getName();
+
+                    if (tl.hasColumn(rhColumnName)) {
+                        Field fl = tl.getColumn(rhColumnName);
+
+                        if (!fr.compareTo(fl)) {
+                            builder.append(prefix);
+                            builder.append("ALTER TABLE ");
+                            builder.append(tr.toString());
+                            builder.append(" ALTER COLUMN ");
+                            builder.append(getColumnSchema(fr));
+
+                            prefix = "\n";
+                        }
+                    } else {
+                        builder.append(prefix);
+                        builder.append("ALTER TABLE ");
+                        builder.append(tr.toString());
+                        builder.append(" ADD ");
+                        builder.append(getColumnSchema(fr));
+
+                        prefix = "\n";
+                    }
+                }
+            } else {
+                builder.append(prefix);
+                builder.append(getTableSchema(tr));
+
+                prefix = "\n";
+            }
+        }
+
+        return builder.toString();
     }
 }
