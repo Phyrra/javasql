@@ -5,6 +5,7 @@ import ch.sama.sql.dbo.connection.QueryExecutor;
 import ch.sama.sql.dbo.connection.ResultSetTransformer;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.exception.BadSqlException;
+import ch.sama.sql.query.exception.ConnectionException;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -37,14 +38,23 @@ public class TSqlExecutor implements QueryExecutor {
         try {
             Connection con = connection.open();
             statement = con.createStatement();
-
-            statement.executeUpdate(query);
         } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
+            connection.close();
+
+            throw new ConnectionException(e);
+        }
+
+        try {
+            statement.executeUpdate(query);
+        } catch (SQLException e) {
             closeStatement(statement);
             connection.close();
+
+            throw new BadSqlException(e);
         }
+
+        closeStatement(statement);
+        connection.close();
     }
 
     public void execute(IQuery query) {
@@ -59,15 +69,24 @@ public class TSqlExecutor implements QueryExecutor {
         try {
             Connection con = connection.open();
             statement = con.createStatement();
+        } catch (Exception e) {
+            connection.close();
 
+            throw new ConnectionException(e);
+        }
+
+        try {
             ResultSet resultSet = statement.executeQuery(query);
             list = transformer.transform(resultSet);
-        } catch (Exception e) {
-            throw new BadSqlException(e.getMessage());
-        } finally {
+        } catch (SQLException e) {
             closeStatement(statement);
             connection.close();
+
+            throw new BadSqlException(e);
         }
+
+        closeStatement(statement);
+        connection.close();
 
         return list;
     }
@@ -84,15 +103,24 @@ public class TSqlExecutor implements QueryExecutor {
         try {
             Connection con = connection.open();
             statement = con.createStatement();
+        } catch (Exception e) {
+            connection.close();
 
+            throw new ConnectionException(e);
+        }
+
+        try {
             ResultSet resultSet = statement.executeQuery(query);
             list = transformer.transform(resultSet);
-        } catch (Exception e) {
-            throw new BadSqlException(e.getMessage());
-        } finally {
+        } catch (SQLException e) {
             closeStatement(statement);
             connection.close();
+
+            throw new BadSqlException(e);
         }
+
+        closeStatement(statement);
+        connection.close();
 
         if (list.size() != 1) {
             throw new BadSqlException("Expected 1 Result, got " + list.size());
