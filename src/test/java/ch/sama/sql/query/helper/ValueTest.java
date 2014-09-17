@@ -44,6 +44,11 @@ public class ValueTest {
 	public void field() {
 		assertEquals("[TABLE].[FIELD]", fac.field("TABLE", "FIELD").toString());
 	}
+
+    @Test
+    public void table() {
+        assertEquals("[TABLE].*", fac.tableFields("TABLE").toString());
+    }
 	
 	@Test
 	public void nameAlias() {

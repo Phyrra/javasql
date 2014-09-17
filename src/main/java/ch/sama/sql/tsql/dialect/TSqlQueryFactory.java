@@ -73,6 +73,16 @@ public class TSqlQueryFactory implements QueryFactory {
     }
 
     @Override
+    public Value tableFields(String table) {
+        return TSqlValue.plain("[" + table + "].*");
+    }
+
+    @Override
+    public Value tableFields(Table table) {
+        return TSqlValue.plain(table.toString() + ".*");
+    }
+
+    @Override
     public Value field(Field field) {
         return new TSqlValue(field);
     }

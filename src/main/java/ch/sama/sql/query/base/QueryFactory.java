@@ -27,6 +27,9 @@ public interface QueryFactory {
     public Table table(String name);
     public Table table(String schema, String name);
 
+    public Value tableFields(String table);
+    public Value tableFields(Table table);
+
     public Value field(Field field);
     public Value field(String field);
     public Value field(String table, String field);
