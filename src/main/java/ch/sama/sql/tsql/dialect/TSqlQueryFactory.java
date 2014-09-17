@@ -64,12 +64,12 @@ public class TSqlQueryFactory implements QueryFactory {
 
     @Override
     public Table table(String name) {
-        return new Table(name);
+        return new TSqlTable(name);
     }
 
     @Override
     public Table table(String schema, String name) {
-        return new Table(schema, name);
+        return new TSqlTable(schema, name);
     }
 
     @Override
@@ -79,17 +79,17 @@ public class TSqlQueryFactory implements QueryFactory {
 
     @Override
     public Value field(String field) {
-        return new TSqlValue(new Field(field));
+        return new TSqlValue(new TSqlField(field));
     }
 
     @Override
     public Value field(String table, String field) {
-        return new TSqlValue(new Field(table, field));
+        return new TSqlValue(new TSqlField(table, field));
     }
 
     @Override
     public Value field(Table table, String field) {
-        return new TSqlValue(new Field(table, field));
+        return new TSqlValue(new TSqlField(table, field));
     }
 
     @Override

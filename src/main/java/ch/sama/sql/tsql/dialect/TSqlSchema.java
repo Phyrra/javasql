@@ -69,7 +69,7 @@ public class TSqlSchema implements Schema {
             );
 
             for (Map<String, Object> column : columns) {
-                Field f = new Field(t, column.get("COLUMN_NAME").toString());
+                TSqlField f = new TSqlField(t, column.get("COLUMN_NAME").toString());
 
                 String dataType = column.get("DATA_TYPE").toString();
                 Object maxLength = column.get("CHARACTER_MAXIMUM_LENGTH");
@@ -211,7 +211,7 @@ public class TSqlSchema implements Schema {
             }
 
             builder.append(" CONSTRAINT [DF_");
-            builder.append(field.getTable().getName());
+            builder.append(field.getTableName());
             builder.append("_");
             builder.append(field.getName());
             builder.append("] DEFAULT ");
@@ -238,7 +238,7 @@ public class TSqlSchema implements Schema {
 
         tables = new HashMap<String, Table>();
         int currentBlock = NONE;
-        Table table = null;
+        TSqlTable table = null;
 
         Pattern pattern = Pattern.compile("\\[(\\w+)\\](\\(\\d+\\))?");
 
@@ -270,9 +270,9 @@ public class TSqlSchema implements Schema {
                     throw new BadSqlException("Schema error: " + line);
                 } else if (i == 1) {
                     tableName = tableSchema;
-                    table = new Table(tableName);
+                    table = new TSqlTable(tableName);
                 } else {
-                    table = new Table(tableSchema, tableName);
+                    table = new TSqlTable(tableSchema, tableName);
                 }
 
                 tables.put(tableName, table);
@@ -320,7 +320,7 @@ public class TSqlSchema implements Schema {
                             throw new BadSqlException("Schema error, no field name: " + line);
                         }
 
-                        Field field = new Field(table, fieldName);
+                        TSqlField field = new TSqlField(table, fieldName);
 
                         if (line.contains("NOT NULL")) {
                             field.setNullable(false);

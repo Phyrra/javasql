@@ -2,25 +2,39 @@ package ch.sama.sql.tsql.dialect;
 
 import static org.junit.Assert.*;
 
+import ch.sama.sql.query.base.QueryFactory;
 import org.junit.Test;
 
-import ch.sama.sql.dbo.Field;
-
 public class SelectQueryTest {
-	private static final TSqlQuery query = new TSqlQuery();
+    private static final QueryFactory fac = new TSqlQueryFactory();
 	
 	@Test
 	public void single() {
-		assertEquals("SELECT [A]", query.select(new TSqlValue(new Field("A"))).toString());
+		assertEquals(
+                "SELECT [A]",
+                fac.create()
+                        .select(fac.field("A"))
+                .toString()
+        );
 	}
 	
 	@Test
 	public void multi() {
-		assertEquals("SELECT [A], [B]", query.select(new TSqlValue(new Field("A")), new TSqlValue(new Field("B"))).toString());
+		assertEquals(
+                "SELECT [A], [B]",
+                fac.create()
+                        .select(fac.field("A"), fac.field("B"))
+                .toString()
+        );
 	}
 	
 	@Test
 	public void top() {
-		assertEquals("SELECT TOP 10 [A]", query.select(new TSqlValue(new Field("A"))).top(10).toString());
+		assertEquals(
+                "SELECT TOP 10 [A]",
+                fac.create()
+                        .select(fac.field("A")).top(10)
+                .toString()
+        );
 	}
 }

@@ -2,17 +2,17 @@ package ch.sama.sql.tsql.dialect;
 
 import static org.junit.Assert.*;
 
+import ch.sama.sql.query.base.QueryFactory;
 import org.junit.Test;
 
-import ch.sama.sql.dbo.Field;
-import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.base.FromQuery;
 import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.Order;
 
 public class OrderQueryTest {
-	private static final FromQuery query = new TSqlQuery().select(new TSqlValue(new Field("F"))).from(new Table("T"));
-	private static final Order order = Order.asc(new TSqlValue(new Field("F")));
+    private static final QueryFactory fac = new TSqlQueryFactory();
+	private static final FromQuery query = fac.create().select(fac.field("F")).from(fac.table("T"));
+	private static final Order order = Order.asc(fac.field("F"));
 	
 	@Test
 	public void afterFrom() {
@@ -24,8 +24,8 @@ public class OrderQueryTest {
 		assertEquals(
 			"SELECT [F]\nFROM [T]\nJOIN [J] ON 2 = 2\nORDER BY [F] ASC",
 			query
-				.join(new Table("J"))
-					.on(Condition.eq(new TSqlValue(2), new TSqlValue(2)))
+				.join(fac.table("J"))
+					.on(Condition.eq(fac.numeric(2), fac.numeric(2)))
 				.order(order)
             .toString()
 		);
@@ -36,8 +36,8 @@ public class OrderQueryTest {
         assertEquals(
             "SELECT [F]\nFROM [T]\nORDER BY [A] ASC, [B] DESC",
             query
-                .order(Order.asc(new TSqlValue(new Field("A"))))
-                .order(Order.desc(new TSqlValue(new Field("B"))))
+                .order(Order.asc(fac.field("A")))
+                .order(Order.desc(fac.field("B")))
             .toString()
         );
     }

@@ -2,26 +2,26 @@ package ch.sama.sql.tsql.dialect;
 
 import static org.junit.Assert.*;
 
+import ch.sama.sql.query.base.QueryFactory;
 import org.junit.Test;
 
-import ch.sama.sql.dbo.Field;
-import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.base.FromQuery;
 import ch.sama.sql.query.helper.Condition;
 
 public class JoinQueryTest {
-	private static final FromQuery query = new TSqlQuery().select(new TSqlValue(new Field("F"))).from(new Table("T"));
+    private static final QueryFactory fac = new TSqlQueryFactory();
+	private static final FromQuery query = fac.create().select(fac.field("F")).from(fac.table("T"));
 	
 	@Test
 	public void single() {
 		Condition c = Condition.eq(new TSqlValue(1), new TSqlValue(1));
-		assertEquals("SELECT [F]\nFROM [T]\nJOIN [J] ON 1 = 1", query.join(new Table("J")).on(c).toString());
+		assertEquals("SELECT [F]\nFROM [T]\nJOIN [J] ON 1 = 1", query.join(fac.table("J")).on(c).toString());
 	}
 
     @Test
     public void alias() {
         Condition c = Condition.eq(new TSqlValue(1), new TSqlValue(1));
-        assertEquals("SELECT [F]\nFROM [T]\nJOIN [J] AS [A] ON 1 = 1", query.join(new Table("J").as("A")).on(c).toString());
+        assertEquals("SELECT [F]\nFROM [T]\nJOIN [J] AS [A] ON 1 = 1", query.join(fac.table("J").as("A")).on(c).toString());
     }
 	
 	@Test
@@ -32,8 +32,8 @@ public class JoinQueryTest {
 		assertEquals(
 			"SELECT [F]\nFROM [T]\nJOIN [J1] ON 1 = 1\nJOIN [J2] ON 2 = 2",
 			query
-				.join(new Table("J1")).on(c1)
-				.join(new Table("J2")).on(c2)
+				.join(fac.table("J1")).on(c1)
+				.join(fac.table("J2")).on(c2)
 			.toString()
 		);
 	}

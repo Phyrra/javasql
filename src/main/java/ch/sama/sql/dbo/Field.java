@@ -4,9 +4,9 @@ import ch.sama.sql.query.exception.IllegalIdentifierException;
 import ch.sama.sql.query.base.checker.Identifier;
 import ch.sama.sql.query.helper.Value;
 
-public class Field {
+public abstract class Field {
     private Table table;
-	private String tableName;
+    private String tableName;
 	private String field;
 
     private String dataType;
@@ -20,19 +20,19 @@ public class Field {
 
 		this.field = field;
 	}
-	
-	public Field(String table, String field) {
-        if (!Identifier.test(table)) {
-            throw new IllegalIdentifierException(table);
-        }
 
+    public Field(String table, String field) {
         if (!Identifier.test(field)) {
             throw new IllegalIdentifierException(field);
         }
 
-		this.tableName = table;
-		this.field = field;
-	}
+        if (!Identifier.test(table)) {
+            throw new IllegalIdentifierException(table);
+        }
+
+        this.tableName = table;
+        this.field = field;
+    }
 
     public Field(Table table, String field) {
         if (!Identifier.test(field)) {
@@ -47,24 +47,7 @@ public class Field {
         return field;
     }
 	
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-
-		if (table != null) {
-			builder.append(table.toString());
-			builder.append(".");
-		} else if (tableName != null) {
-            builder.append("[");
-            builder.append(tableName);
-            builder.append("].");
-        }
-
-        builder.append("[");
-		builder.append(field);
-        builder.append("]");
-		
-		return builder.toString();
-	}
+	public abstract String toString();
 
     public void setDataType(String dataType) {
         this.dataType = dataType;
@@ -92,6 +75,14 @@ public class Field {
 
     public Table getTable() {
         return this.table;
+    }
+
+    public String getTableName() {
+        if (this.table == null) {
+            return this.tableName;
+        } else {
+            return this.table.getName(); // This will break if the table has an alias
+        }
     }
 
     public boolean compareTo(Field other) {

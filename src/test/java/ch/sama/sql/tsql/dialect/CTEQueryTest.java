@@ -2,27 +2,28 @@ package ch.sama.sql.tsql.dialect;
 
 import static org.junit.Assert.*;
 
+import ch.sama.sql.query.base.QueryFactory;
 import org.junit.Test;
 
-import ch.sama.sql.dbo.Field;
-import ch.sama.sql.dbo.Table;
-import ch.sama.sql.query.base.Query;
-
 public class CTEQueryTest {
-	private static final Query query = new TSqlQuery();
+    private static final QueryFactory fac = new TSqlQueryFactory();
 	
 	@Test(expected = NullPointerException.class)
 	public void nullPointer() {
-		query.with("CTE").toString();
+		fac.create()
+                .with("CTE")
+        .toString();
 	}
 	
 	@Test
 	public void cte() {
 		assertEquals(
 			"WITH CTE AS (\nSELECT [F]\nFROM [T]\n)",
-			query
+			fac.create()
 				.with("CTE").as(
-					new TSqlQuery().select(new TSqlValue(new Field("F"))).from(new Table("T"))
+					fac.create()
+                            .select(fac.field("F"))
+                            .from(fac.table("T"))
 				)
 			.toString()
 		);
@@ -32,11 +33,14 @@ public class CTEQueryTest {
 	public void selectCte() {
 		assertEquals(
 			"WITH CTE AS (\nSELECT [F]\nFROM [T]\n)\nSELECT [F]\nFROM [CTE]",
-			query
+			fac.create()
 				.with("CTE").as(
-					new TSqlQuery().select(new TSqlValue(new Field("F"))).from(new Table("T"))
+					fac.create()
+                            .select(fac.field("F"))
+                            .from(fac.table("T"))
 				)
-				.select(new TSqlValue(new Field("F"))).from(new Table("CTE"))
+				.select(fac.field("F"))
+                .from(fac.table("CTE"))
             .toString()
 		);
 	}
@@ -45,14 +49,19 @@ public class CTEQueryTest {
     public void multiCte() {
         assertEquals(
             "WITH CTE1 AS (\nSELECT [F]\nFROM [T]\n), CTE2 AS (\nSELECT [F]\nFROM [T]\n)\nSELECT [F]\nFROM [CTE1]",
-            query
+            fac.create()
                 .with("CTE1").as(
-                    new TSqlQuery().select(new TSqlValue(new Field("F"))).from(new Table("T"))
+                    fac.create()
+                            .select(fac.field("F"))
+                            .from(fac.table("T"))
                 )
                 .with("CTE2").as(
-                    new TSqlQuery().select(new TSqlValue(new Field("F"))).from(new Table("T"))
+                    fac.create()
+                            .select(fac.field("F"))
+                            .from(fac.table("T"))
                 )
-                .select(new TSqlValue(new Field("F"))).from(new Table("CTE1"))
+                .select(fac.field("F"))
+                .from(fac.table("CTE1"))
             .toString()
         );
     }

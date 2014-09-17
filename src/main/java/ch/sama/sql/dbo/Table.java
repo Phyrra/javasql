@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Table implements Cloneable {
+public abstract class Table implements Cloneable {
     private String schema;
 	private String table;
 	private String alias;
@@ -38,27 +38,7 @@ public class Table implements Cloneable {
         this.table = table;
     }
 	
-	public String toString() {
-        StringBuilder builder = new StringBuilder();
-
-        if (schema != null) {
-            builder.append("[");
-            builder.append(schema);
-            builder.append("].");
-        }
-
-        builder.append("[");
-        builder.append(table);
-        builder.append("]");
-
-        if (alias != null) {
-            builder.append(" AS [");
-            builder.append(alias);
-            builder.append("]");
-        }
-
-		return builder.toString();
-	}
+	public abstract String toString();
 
     public Table as(String alias) {
         if (!Identifier.test(alias)) {
@@ -80,8 +60,12 @@ public class Table implements Cloneable {
         return table;
     }
 
-    public void addColumn(String field) {
-        columns.put(field, new Field(this, field));
+    public String getSchema() {
+        return schema;
+    }
+
+    public String getAlias() {
+        return alias;
     }
 
     public void addColumn(Field field) {
