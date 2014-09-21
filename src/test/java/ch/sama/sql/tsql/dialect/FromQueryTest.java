@@ -32,4 +32,16 @@ public class FromQueryTest {
                 .toString()
         );
 	}
+
+    @Test
+    public void query() {
+        assertEquals(
+                "SELECT [F]\nFROM (\nSELECT [F]\nFROM [A]\n)",
+                query
+                        .from(fac.query(
+                                query.from(fac.table("A"))
+                        ))
+                .toString()
+        );
+    }
 }
