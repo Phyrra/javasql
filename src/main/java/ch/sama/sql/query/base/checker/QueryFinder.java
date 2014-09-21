@@ -77,4 +77,35 @@ public class QueryFinder {
 
         return sources;
     }
+
+    public<T> List<T> getSources(IQuery src, Class<T> dst) {
+        List<T> sources = new ArrayList<T>();
+
+        FromQuery from = get(src, FromQuery.class); // There can be only one
+        List<JoinQuery> joins = getAll(src, JoinQuery.class);
+
+        List<Source> tmp = from.getSources();
+        for (Source s : tmp) {
+            Object o = s.getSource();
+
+            if (o != null) {
+                if (dst.isAssignableFrom(o.getClass())) {
+                    sources.add((T) o);
+                }
+            }
+        }
+
+        for (JoinQuery j : joins) {
+            Source s = j.getSource();
+            Object o = s.getSource();
+
+            if (o != null) {
+                if (dst.isAssignableFrom(o.getClass())) {
+                    sources.add((T) o);
+                }
+            }
+        }
+
+        return sources;
+    }
 }

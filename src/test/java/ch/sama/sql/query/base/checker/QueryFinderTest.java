@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Function;
+import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.Source;
 import ch.sama.sql.query.helper.Value;
@@ -85,7 +86,7 @@ public class QueryFinderTest {
                 .select(value.field("FIELD"))
                 .from(fac.table("TABLE1"), fac.table("TABLE2"));
 
-        List<Source> sources = finder.getSources(query);
+        List<Table> sources = finder.getSources(query, Table.class);
 
         assertEquals(2, sources.size());
     }
@@ -98,8 +99,30 @@ public class QueryFinderTest {
                 .join(fac.table("TABLE2")).on(Condition.eq(value.numeric(1), value.numeric(1)))
                 .join(fac.table("TABLE3")).on(Condition.eq(value.numeric(1), value.numeric(1)));
 
-        List<Source> sources = finder.getSources(query);
+        List<Table> sources = finder.getSources(query, Table.class);
 
         assertEquals(3, sources.size());
+    }
+
+    @Test
+    public void getQuerySources() {
+        IQuery query = fac.create()
+                .select(value.field("FIELD"))
+                .from(fac.table("TABLE1"), fac.query(fac.create().select(value.numeric(1))));
+
+        List<IQuery> sources = finder.getSources(query, IQuery.class);
+
+        assertEquals(1, sources.size());
+    }
+
+    @Test
+    public void getAllSources() {
+        IQuery query = fac.create()
+                .select(value.field("FIELD"))
+                .from(fac.table("TABLE1"), fac.query(fac.create().select(value.numeric(1))));
+
+        List<Source> sources = finder.getSources(query);
+
+        assertEquals(2, sources.size());
     }
 }
