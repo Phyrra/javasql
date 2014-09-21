@@ -15,9 +15,4 @@ public class TableTest {
 	public void withSchema() {
 		assertEquals("[dbo].[NAME]", new TSqlTable("dbo", "NAME").toString());
 	}
-
-    @Test
-    public void withAlias() {
-        assertEquals("[NAME] AS [OTHER]", new TSqlTable("NAME").as("OTHER").toString());
-    }
 }

@@ -26,13 +26,6 @@ public class TSqlTable extends Table {
         builder.append(getName());
         builder.append("]");
 
-        String alias = getAlias();
-        if (alias != null) {
-            builder.append(" AS [");
-            builder.append(alias);
-            builder.append("]");
-        }
-
         return builder.toString();
     }
 }

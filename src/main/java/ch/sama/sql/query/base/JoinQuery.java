@@ -1,14 +1,14 @@
 package ch.sama.sql.query.base;
 
-import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.exception.BadSqlException;
 import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.Order;
+import ch.sama.sql.query.helper.Source;
 
 public abstract class JoinQuery implements IQuery {
 	QueryFactory factory;
 	private IQuery parent;
-	private Table table;
+	private Source source;
 	private Condition condition;
 	private String type;
 	
@@ -20,8 +20,8 @@ public abstract class JoinQuery implements IQuery {
 		return factory;
 	}
 	
-	public Table getTable() {
-		return table;
+	public Source getSource() {
+		return source;
 	}
 	
 	public Condition getCondition() {
@@ -32,10 +32,10 @@ public abstract class JoinQuery implements IQuery {
 		return type;
 	}
 	
-	public JoinQuery(QueryFactory factory, IQuery parent, Table table) {
+	public JoinQuery(QueryFactory factory, IQuery parent, Source source) {
 		this.factory = factory;
 		this.parent = parent;
-		this.table = table;
+		this.source = source;
 		this.type = null;
 	}
 	
@@ -63,10 +63,10 @@ public abstract class JoinQuery implements IQuery {
         }
     }
 	
-	public JoinQuery join(Table table) {
+	public JoinQuery join(Source source) {
         assertCondition();
 
-        return factory.joinQuery(factory, this, table);
+        return factory.joinQuery(factory, this, source);
 	}
 	
 	public OrderQuery order(Order order) {

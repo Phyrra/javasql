@@ -2,14 +2,14 @@ package ch.sama.sql.query.base;
 
 import java.util.*;
 
-import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.Order;
+import ch.sama.sql.query.helper.Source;
 
 public abstract class FromQuery implements IQuery {
 	QueryFactory factory;
 	private IQuery parent;
-	private List<Table> tables;
+	private List<Source> sources;
 	
 	public IQuery getParent() {
 		return parent;
@@ -19,22 +19,22 @@ public abstract class FromQuery implements IQuery {
 		return factory;
 	}
 	
-	public List<Table> getTables() {
-		return tables;
+	public List<Source> getSources() {
+		return sources;
 	}
 	
-	public FromQuery(QueryFactory factory, IQuery parent, Table... t) {
+	public FromQuery(QueryFactory factory, IQuery parent, Source... s) {
 		this.factory = factory;
 		this.parent = parent;
-		tables = new ArrayList<Table>();
+		sources = new ArrayList<Source>();
 		
-		for (int i = 0; i < t.length; ++i) {
-			tables.add(t[i]);
+		for (int i = 0; i < s.length; ++i) {
+			sources.add(s[i]);
 		}
 	}
 	
-	public JoinQuery join(Table table) {
-		return factory.joinQuery(factory, this, table);
+	public JoinQuery join(Source source) {
+		return factory.joinQuery(factory, this, source);
 	}
 	
 	public OrderQuery order(Order order) {

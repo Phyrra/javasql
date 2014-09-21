@@ -2,7 +2,7 @@ package ch.sama.sql.query.base;
 
 import java.util.*;
 
-import ch.sama.sql.dbo.Table;
+import ch.sama.sql.query.helper.Source;
 import ch.sama.sql.query.helper.Value;
 
 public abstract class SelectQuery implements IQuery {
@@ -43,8 +43,8 @@ public abstract class SelectQuery implements IQuery {
 		return this;
 	}
 	
-	public FromQuery from(Table... t) {
-		return factory.fromQuery(factory, this, t);
+	public FromQuery from(Source... s) {
+		return factory.fromQuery(factory, this, s);
 	}
 
     public Query union() {

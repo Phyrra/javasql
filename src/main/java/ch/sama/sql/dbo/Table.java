@@ -9,10 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class Table implements Cloneable {
+public abstract class Table {
     private String schema;
 	private String table;
-	private String alias;
 
     private String primaryKey;
 
@@ -40,32 +39,12 @@ public abstract class Table implements Cloneable {
 	
 	public abstract String toString();
 
-    public Table as(String alias) {
-        if (!Identifier.test(alias)) {
-            throw new IllegalIdentifierException(alias);
-        }
-
-        Table table = null;
-        try {
-            table = (Table)this.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
-        }
-
-        table.alias = alias;
-        return table;
-    }
-
     public String getName() {
         return table;
     }
 
     public String getSchema() {
         return schema;
-    }
-
-    public String getAlias() {
-        return alias;
     }
 
     public void addColumn(Field field) {

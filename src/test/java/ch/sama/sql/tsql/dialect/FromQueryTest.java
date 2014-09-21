@@ -3,13 +3,15 @@ package ch.sama.sql.tsql.dialect;
 import static org.junit.Assert.*;
 
 import ch.sama.sql.query.base.QueryFactory;
+import ch.sama.sql.query.base.ValueFactory;
 import org.junit.Test;
 
 import ch.sama.sql.query.base.SelectQuery;
 
 public class FromQueryTest {
     private static final QueryFactory fac = new TSqlQueryFactory();
-	private static final SelectQuery query = fac.create().select(fac.field("F"));
+    private static final ValueFactory value = new TSqlValueFactory();
+	private static final SelectQuery query = fac.create().select(value.field("F"));
 	
 	@Test
 	public void single() {

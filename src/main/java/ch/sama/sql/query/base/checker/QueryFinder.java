@@ -1,11 +1,10 @@
 package ch.sama.sql.query.base.checker;
 
-import ch.sama.sql.dbo.Field;
-import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.base.FromQuery;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.base.JoinQuery;
 import ch.sama.sql.query.base.SelectQuery;
+import ch.sama.sql.query.helper.Source;
 import ch.sama.sql.query.helper.Value;
 
 import java.util.ArrayList;
@@ -61,21 +60,21 @@ public class QueryFinder {
         return fields;
     }
 
-    public List<Table> getSources(IQuery src) {
-        List<Table> tables = new ArrayList<Table>();
+    public List<Source> getSources(IQuery src) {
+        List<Source> sources = new ArrayList<Source>();
 
         FromQuery from = get(src, FromQuery.class); // There can be only one
         List<JoinQuery> joins = getAll(src, JoinQuery.class);
 
-        List<Table> tmp = from.getTables();
-        for (Table t : tmp) {
-            tables.add(t);
+        List<Source> tmp = from.getSources();
+        for (Source s : tmp) {
+            sources.add(s);
         }
 
         for (JoinQuery j : joins) {
-            tables.add(j.getTable());
+            sources.add(j.getSource());
         }
 
-        return tables;
+        return sources;
     }
 }

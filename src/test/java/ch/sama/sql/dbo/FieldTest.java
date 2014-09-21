@@ -21,15 +21,4 @@ public class FieldTest {
     public void withTable() {
         assertEquals("[TABLE].[NAME]", new TSqlField(new TSqlTable("TABLE"), "NAME").toString());
     }
-
-    @Test
-    public void withAliasTable() {
-        // e.g. from schema
-        Table t = new TSqlTable("TABLE");
-
-        // after using it in a join or equal
-        t.as("OTHER");
-
-        assertEquals("[TABLE].[NAME]", new TSqlField(t, "NAME").toString());
-    }
 }

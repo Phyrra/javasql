@@ -3,6 +3,7 @@ package ch.sama.sql.tsql.dialect;
 import static org.junit.Assert.*;
 
 import ch.sama.sql.query.base.QueryFactory;
+import ch.sama.sql.query.base.ValueFactory;
 import org.junit.Test;
 
 import ch.sama.sql.query.base.FromQuery;
@@ -10,7 +11,8 @@ import ch.sama.sql.query.helper.Condition;
 
 public class JoinQueryTest {
     private static final QueryFactory fac = new TSqlQueryFactory();
-	private static final FromQuery query = fac.create().select(fac.field("F")).from(fac.table("T"));
+    private static final ValueFactory value = new TSqlValueFactory();
+	private static final FromQuery query = fac.create().select(value.field("F")).from(fac.table("T"));
 	
 	@Test
 	public void single() {
@@ -32,8 +34,8 @@ public class JoinQueryTest {
 		assertEquals(
 			"SELECT [F]\nFROM [T]\nJOIN [J1] ON 1 = 1\nJOIN [J2] ON 2 = 2",
 			query
-				.join(fac.table("J1")).on(c1)
-				.join(fac.table("J2")).on(c2)
+                    .join(fac.table("J1")).on(c1)
+                    .join(fac.table("J2")).on(c2)
 			.toString()
 		);
 	}

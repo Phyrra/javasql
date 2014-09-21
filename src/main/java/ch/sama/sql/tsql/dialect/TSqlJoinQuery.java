@@ -1,13 +1,13 @@
 package ch.sama.sql.tsql.dialect;
 
-import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.base.JoinQuery;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.base.QueryFactory;
+import ch.sama.sql.query.helper.Source;
 
 public class TSqlJoinQuery extends JoinQuery {
-	public TSqlJoinQuery(QueryFactory factory, IQuery parent, Table table) {
-		super(factory, parent, table);
+	public TSqlJoinQuery(QueryFactory factory, IQuery parent, Source source) {
+		super(factory, parent, source);
 	}
 	
 	@Override
@@ -24,7 +24,7 @@ public class TSqlJoinQuery extends JoinQuery {
 		}
 		builder.append("JOIN ");
 		
-		builder.append(getTable().toString());
+		builder.append(getSource().toString());
 		
 		builder.append(" ON ");
 		builder.append(getCondition().toString(getFactory().conditionParser()));

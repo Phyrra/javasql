@@ -1,6 +1,6 @@
 package ch.sama.sql.tsql.dialect;
 
-import ch.sama.sql.query.base.QueryFactory;
+import ch.sama.sql.query.base.ValueFactory;
 import ch.sama.sql.query.exception.BadParameterException;
 import ch.sama.sql.query.exception.IllegalIdentifierException;
 import org.junit.Test;
@@ -8,73 +8,73 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class FunctionTest {
-    private static final QueryFactory qfac = new TSqlQueryFactory();
-	private static final TSqlFunctionFactory fac = new TSqlFunctionFactory();
+    private static final ValueFactory value = new TSqlValueFactory();
+	private static final TSqlFunctionFactory function = new TSqlFunctionFactory();
 
     @Test
     public void noParam() {
-        assertEquals("fnc()", qfac.function("fnc()").toString());
+        assertEquals("fnc()", value.function("fnc()").toString());
     }
 
     @Test
     public void oneParam() {
-        assertEquals("fnc(param)", qfac.function("fnc(param)").toString());
+        assertEquals("fnc(param)", value.function("fnc(param)").toString());
     }
 
     @Test
     public void multiParam() {
-        assertEquals("fnc(param1, param2)", qfac.function("fnc(param1, param2)").toString());
+        assertEquals("fnc(param1, param2)", value.function("fnc(param1, param2)").toString());
     }
 
     @Test
     public void nestedParam() {
-        assertEquals("fnc(param, inner(param))", qfac.function("fnc(param, inner(param))").toString());
+        assertEquals("fnc(param, inner(param))", value.function("fnc(param, inner(param))").toString());
     }
 
     @Test (expected = BadParameterException.class)
     public void badFunction() {
-        qfac.function("fnc(*");
+        value.function("fnc(*");
     }
 
     @Test (expected = BadParameterException.class)
     public void noFunction() {
-        qfac.function("(*)");
+        value.function("(*)");
     }
 
     @Test (expected = BadParameterException.class)
     public void noFunctionNested() {
-        qfac.function("(inner())");
+        value.function("(inner())");
     }
 
     @Test (expected = IllegalIdentifierException.class)
     public void badFunctionName() {
-        qfac.function("fun'ction(param)");
+        value.function("fun'ction(param)");
     }
 
     @Test
     public void coalesce() {
-        assertEquals("COALESCE([FIELD], 1)", fac.coalesce(qfac.field("FIELD"), qfac.numeric(1)).toString());
+        assertEquals("COALESCE([FIELD], 1)", function.coalesce(value.field("FIELD"), value.numeric(1)).toString());
     }
 
     @Test
     public void caseWhen() {
         assertEquals(
             "(CASE [FIELD]\nWHEN 1 THEN 'ONE'\nWHEN 2 THEN 'TWO'\nELSE 'UNKNOWN'\nEND)",
-            fac.caseWhen(
-                qfac.field("FIELD"),
-                fac.whenThen(qfac.numeric(1), qfac.string("ONE")),
-                fac.whenThen(qfac.numeric(2), qfac.string("TWO")),
-                fac.whenThen(null, qfac.string("UNKNOWN"))
+            function.caseWhen(
+                    value.field("FIELD"),
+                    function.whenThen(value.numeric(1), value.string("ONE")),
+                    function.whenThen(value.numeric(2), value.string("TWO")),
+                    function.whenThen(null, value.string("UNKNOWN"))
             ).toString());
     }
 
     @Test(expected = BadParameterException.class)
     public void caseElse() {
-        fac.caseWhen(
-            qfac.field("FIELD"),
-            fac.whenThen(qfac.numeric(1), qfac.string("ONE")),
-            fac.whenThen(null, qfac.string("UNKNOWN")),
-            fac.whenThen(qfac.numeric(2), qfac.string("TWO"))
+        function.caseWhen(
+                value.field("FIELD"),
+            function.whenThen(value.numeric(1), value.string("ONE")),
+            function.whenThen(null, value.string("UNKNOWN")),
+            function.whenThen(value.numeric(2), value.string("TWO"))
         );
     }
 }

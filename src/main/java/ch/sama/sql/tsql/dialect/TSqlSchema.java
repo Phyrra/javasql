@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 
 public class TSqlSchema implements Schema {
     private static final TSqlQueryFactory factory = new TSqlQueryFactory();
+    private static final TSqlValueFactory value = new TSqlValueFactory();
 
     private Map<String, Table> tables;
 
@@ -28,17 +29,17 @@ public class TSqlSchema implements Schema {
         List<Map<String, Object>> list = executor.query(
                 factory.create()
                         .select(
-                                factory.field("TABLE_SCHEMA"),
-                                factory.field("TABLE_NAME"),
-                                factory.query(
+                                value.field("TABLE_SCHEMA"),
+                                value.field("TABLE_NAME"),
+                                value.query(
                                         factory.create()
-                                                .select(factory.field("COLUMN_NAME"))
+                                                .select(value.field("COLUMN_NAME"))
                                                 .from(factory.table("INFORMATION_SCHEMA", "TABLE_CONSTRAINTS").as("tc"))
-                                                .join(factory.table("INFORMATION_SCHEMA", "CONSTRAINT_COLUMN_USAGE").as("ccu")).on(Condition.eq(factory.field("tc", "CONSTRAINT_NAME"), factory.field("ccu", "CONSTRAINT_NAME")))
+                                                .join(factory.table("INFORMATION_SCHEMA", "CONSTRAINT_COLUMN_USAGE").as("ccu")).on(Condition.eq(value.field("tc", "CONSTRAINT_NAME"), value.field("ccu", "CONSTRAINT_NAME")))
                                                 .where(
                                                         Condition.and(
-                                                                Condition.eq(factory.field("tc", "CONSTRAINT_TYPE"), factory.string("PRIMARY KEY")),
-                                                                Condition.eq(factory.field("tc", "TABLE_NAME"), factory.field("TABLES", "TABLE_NAME"))
+                                                                Condition.eq(value.field("tc", "CONSTRAINT_TYPE"), value.string("PRIMARY KEY")),
+                                                                Condition.eq(value.field("tc", "TABLE_NAME"), value.field("TABLES", "TABLE_NAME"))
                                                         )
                                                 )
                                 ).as("PRIMARY_KEY")
@@ -51,20 +52,20 @@ public class TSqlSchema implements Schema {
             String schema = row.get("TABLE_SCHEMA").toString();
             String table = row.get("TABLE_NAME").toString();
 
-            Table t = factory.table(schema, table);
+            Table t = new TSqlTable(schema, table);
             tables.put(table, t);
 
             List<Map<String, Object>> columns = executor.query(
                     factory.create()
                             .select(
-                                    factory.field("COLUMN_NAME"),
-                                    factory.field("DATA_TYPE"),
-                                    factory.field("CHARACTER_MAXIMUM_LENGTH"),
-                                    factory.field("IS_NULLABLE"),
-                                    factory.field("COLUMN_DEFAULT")
+                                    value.field("COLUMN_NAME"),
+                                    value.field("DATA_TYPE"),
+                                    value.field("CHARACTER_MAXIMUM_LENGTH"),
+                                    value.field("IS_NULLABLE"),
+                                    value.field("COLUMN_DEFAULT")
                             )
                             .from(factory.table("INFORMATION_SCHEMA", "COLUMNS"))
-                            .where(Condition.eq(factory.field("TABLE_NAME"), factory.string(table)))
+                            .where(Condition.eq(value.field("TABLE_NAME"), value.string(table)))
                     .toString()
             );
 
@@ -88,7 +89,7 @@ public class TSqlSchema implements Schema {
                 Object defaultValue = column.get("COLUMN_DEFAULT");
                 if (defaultValue != null) {
                     // The data type is inconsequential here
-                    f.setDefault(factory.plain(defaultValue.toString()));
+                    f.setDefault(value.plain(defaultValue.toString()));
                 }
 
                 t.addColumn(f);

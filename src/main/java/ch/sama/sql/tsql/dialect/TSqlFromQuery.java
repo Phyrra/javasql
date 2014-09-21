@@ -1,13 +1,13 @@
 package ch.sama.sql.tsql.dialect;
 
-import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.base.FromQuery;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.base.QueryFactory;
+import ch.sama.sql.query.helper.Source;
 
 public class TSqlFromQuery extends FromQuery {
-	public TSqlFromQuery(QueryFactory factory, IQuery parent, Table[] t) {
-		super(factory, parent, t);
+	public TSqlFromQuery(QueryFactory factory, IQuery parent, Source[] s) {
+		super(factory, parent, s);
 	}
 	
 	@Override
@@ -20,9 +20,9 @@ public class TSqlFromQuery extends FromQuery {
 		
 		builder.append("\nFROM ");
 		
-		for (Table t : getTables()) {
+		for (Source s : getSources()) {
 			builder.append(prefix);
-			builder.append(t.toString());
+			builder.append(s.toString());
 			
 			prefix = ", ";
 		}

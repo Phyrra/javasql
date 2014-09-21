@@ -3,10 +3,12 @@ package ch.sama.sql.tsql.dialect;
 import static org.junit.Assert.*;
 
 import ch.sama.sql.query.base.QueryFactory;
+import ch.sama.sql.query.base.ValueFactory;
 import org.junit.Test;
 
 public class CTEQueryTest {
     private static final QueryFactory fac = new TSqlQueryFactory();
+    private static final ValueFactory value = new TSqlValueFactory();
 	
 	@Test(expected = NullPointerException.class)
 	public void nullPointer() {
@@ -22,7 +24,7 @@ public class CTEQueryTest {
 			fac.create()
 				.with("CTE").as(
 					fac.create()
-                            .select(fac.field("F"))
+                            .select(value.field("F"))
                             .from(fac.table("T"))
 				)
 			.toString()
@@ -36,10 +38,10 @@ public class CTEQueryTest {
 			fac.create()
 				.with("CTE").as(
 					fac.create()
-                            .select(fac.field("F"))
+                            .select(value.field("F"))
                             .from(fac.table("T"))
 				)
-				.select(fac.field("F"))
+				.select(value.field("F"))
                 .from(fac.table("CTE"))
             .toString()
 		);
@@ -52,15 +54,15 @@ public class CTEQueryTest {
             fac.create()
                 .with("CTE1").as(
                     fac.create()
-                            .select(fac.field("F"))
+                            .select(value.field("F"))
                             .from(fac.table("T"))
                 )
                 .with("CTE2").as(
                     fac.create()
-                            .select(fac.field("F"))
+                            .select(value.field("F"))
                             .from(fac.table("T"))
                 )
-                .select(fac.field("F"))
+                .select(value.field("F"))
                 .from(fac.table("CTE1"))
             .toString()
         );
