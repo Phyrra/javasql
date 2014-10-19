@@ -1,5 +1,9 @@
 package ch.sama.sql.dbo.connection;
 
+import ch.sama.sql.query.exception.BadSqlException;
+
+import java.io.BufferedReader;
+import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -25,12 +29,38 @@ public class ResultSetTransformer {
             for (int i = 0; i < colCount; ++i) {
                 Object val = resultSet.getObject(i + 1);
 
-                map.put(colNames[i], val);
+                if (val instanceof Clob) {
+                    map.put(colNames[i], clobToString((Clob)val));
+                } else {
+                    map.put(colNames[i], val);
+                }
             }
 
             list.add(map);
         }
 
         return list;
+    }
+
+    private String clobToString(Clob clob) {
+        StringBuilder builder = new StringBuilder();
+
+        String line;
+        BufferedReader bufferedReader;
+        try {
+            String lineBreak = "";
+            bufferedReader = new BufferedReader(clob.getCharacterStream());
+
+            while ((line = bufferedReader.readLine()) != null) {
+                builder.append(lineBreak);
+                builder.append(line);
+
+                lineBreak = "\n";
+            }
+        } catch (Exception e) {
+            throw new BadSqlException(e);
+        }
+
+        return builder.toString();
     }
 }
