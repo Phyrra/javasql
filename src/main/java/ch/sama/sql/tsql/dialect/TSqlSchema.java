@@ -108,7 +108,7 @@ public class TSqlSchema implements Schema {
                     pKeyList.add(f.getName());
                 }
             }
-            
+
             t.setPrimaryKey(pKeyList.toArray(new String[pKeyList.size()]));
         }
     }
