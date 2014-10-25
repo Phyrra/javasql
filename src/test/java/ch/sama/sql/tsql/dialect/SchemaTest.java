@@ -158,7 +158,7 @@ public class SchemaTest {
     // PKey
 
     @Test
-    public void primaryKey() {
+    public void singlePrimaryKey() {
         List<Table> list = new TSqlSchema(
                 "CREATE TABLE [tblTable](\n" +
                 "   [uidId] [uniqueidentifier] NOT NULL CONSTRAINT [DF_tblTable_uidId] DEFAULT (newsequentialid()),\n" +
@@ -171,7 +171,28 @@ public class SchemaTest {
 
         Table table = list.get(0);
 
-        assertEquals(table.getColumn("uidId").toString(), table.getPrimaryKey().toString());
+        assertEquals(table.getColumn("uidId").toString(), table.getPrimaryKey().get(0).toString());
+    }
+
+    @Test
+    public void multiPrimaryKey() {
+        List<Table> list = new TSqlSchema(
+                "CREATE TABLE [tblTable](\n" +
+                "   [uidId1] [uniqueidentifier] NOT NULL CONSTRAINT [DF_tblTable_uidId] DEFAULT (newsequentialid()),\n" +
+                "   [uidId2] [uniqueidentifier] NOT NULL CONSTRAINT [DF_tblTable_uidId] DEFAULT (newsequentialid()),\n" +
+                "   [iField] [int] NULL,\n" +
+                "   CONSTRAINT [PK_tblTable] PRIMARY KEY CLUSTERED (\n" +
+                "       [uidId1] ASC,\n" +
+                "       [uidId2] ASC\n" +
+                "   )\n" +
+                ") ON [PRIMARY]"
+        ).getTables();
+
+        Table table = list.get(0);
+
+        assertEquals(2, table.getPrimaryKey().size());
+        assertEquals(table.getColumn("uidId1").toString(), table.getPrimaryKey().get(0).toString());
+        assertEquals(table.getColumn("uidId2").toString(), table.getPrimaryKey().get(1).toString());
     }
 
     @Test (expected = ObjectNotFoundException.class)

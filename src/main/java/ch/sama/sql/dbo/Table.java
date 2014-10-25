@@ -13,7 +13,7 @@ public abstract class Table {
     private String schema;
 	private String table;
 
-    private String primaryKey;
+    private List<String> primaryKey;
 
     private Map<String, Field> columns = new HashMap<String, Field>();
 
@@ -67,22 +67,36 @@ public abstract class Table {
         return new ArrayList<Field>(columns.values());
     }
 
-    public void setPrimaryKey(String name) {
-        if (!columns.containsKey(name)) {
-            throw new ObjectNotFoundException("Column " + name + " could not be found");
-        }
+    public void setPrimaryKey(String... keys) {
+        primaryKey = new ArrayList<String>();
 
-        primaryKey = name;
+        for (String key : keys) {
+            if (!columns.containsKey(key)) {
+                throw new ObjectNotFoundException("Column " + key + " could not be found");
+            }
+
+            primaryKey.add(key);
+        }
     }
 
-    public Field getPrimaryKey() {
-        return getColumn(primaryKey);
+    public List<Field> getPrimaryKey() {
+        List<Field> key = new ArrayList<Field>();
+
+        if (primaryKey == null) {
+            return key;
+        }
+
+        for (String k : primaryKey) {
+            key.add(getColumn(k));
+        }
+
+        return key;
     }
 
     public boolean isPrimaryKey(String name) {
-        return primaryKey.equalsIgnoreCase(name);
+        return primaryKey.contains(name);
     }
     public boolean isPrimaryKey(Field field) {
-        return primaryKey.equalsIgnoreCase(field.getName());
+        return primaryKey.contains(field.getName());
     }
 }

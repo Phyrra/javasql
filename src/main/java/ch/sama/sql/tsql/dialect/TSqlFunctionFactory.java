@@ -14,7 +14,7 @@ public class TSqlFunctionFactory {
     public TSqlFunctionFactory() { }
     
     public Function coalesce(Value lhs, Value rhs) {
-        return new Function("COALESCE(" + lhs.toString() + ", " + rhs.toString() + ")");
+        return new Function("COALESCE((" + lhs.toString() + "), (" + rhs.toString() + "))", false);
     }
 
     public static class WhenThen {

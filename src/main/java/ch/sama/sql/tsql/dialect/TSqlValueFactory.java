@@ -76,6 +76,11 @@ public class TSqlValueFactory implements ValueFactory {
     }
 
     @Override
+    public Value function(Function fnc) {
+        return new TSqlValue(fnc);
+    }
+
+    @Override
     public Value query(IQuery query) {
         return new TSqlValue(query);
     }

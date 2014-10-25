@@ -1,6 +1,7 @@
 package ch.sama.sql.query.base;
 
 import ch.sama.sql.dbo.Field;
+import ch.sama.sql.dbo.Function;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.helper.Value;
 
@@ -22,6 +23,7 @@ public interface ValueFactory {
     public Value numeric(Float f);
     public Value numeric(Double d);
     public Value function(String fnc);
+    public Value function(Function fnc);
     public Value query(IQuery query);
     public Value value(Value.VALUE val);
 }

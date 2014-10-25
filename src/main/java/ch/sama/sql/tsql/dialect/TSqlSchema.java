@@ -24,28 +24,18 @@ public class TSqlSchema implements Schema {
     private Map<String, Table> tables;
 
     public TSqlSchema(QueryExecutor executor) {
+        TSqlFunctionFactory fnc = new TSqlFunctionFactory();
+
         tables = new HashMap<String, Table>();
 
         List<Map<String, Object>> list = executor.query(
                 factory.create()
                         .select(
                                 value.field("TABLE_SCHEMA"),
-                                value.field("TABLE_NAME"),
-                                value.query(
-                                        factory.create()
-                                                .select(value.field("COLUMN_NAME"))
-                                                .from(factory.table("INFORMATION_SCHEMA", "TABLE_CONSTRAINTS").as("tc"))
-                                                .join(factory.table("INFORMATION_SCHEMA", "CONSTRAINT_COLUMN_USAGE").as("ccu")).on(Condition.eq(value.field("tc", "CONSTRAINT_NAME"), value.field("ccu", "CONSTRAINT_NAME")))
-                                                .where(
-                                                        Condition.and(
-                                                                Condition.eq(value.field("tc", "CONSTRAINT_TYPE"), value.string("PRIMARY KEY")),
-                                                                Condition.eq(value.field("tc", "TABLE_NAME"), value.field("TABLES", "TABLE_NAME"))
-                                                        )
-                                                )
-                                ).as("PRIMARY_KEY")
+                                value.field("TABLE_NAME")
                         )
                         .from(factory.table("INFORMATION_SCHEMA", "TABLES"))
-                        .toString()
+                .toString()
         );
 
         for (Map<String, Object> row : list) {
@@ -62,24 +52,44 @@ public class TSqlSchema implements Schema {
                                     value.field("DATA_TYPE"),
                                     value.field("CHARACTER_MAXIMUM_LENGTH"),
                                     value.field("IS_NULLABLE"),
-                                    value.field("COLUMN_DEFAULT")
+                                    value.field("COLUMN_DEFAULT"),
+                                    value.function(
+                                            fnc.coalesce(
+                                                    value.query(
+                                                            factory.create()
+                                                                    .select(value.numeric(1))
+                                                                    .from(factory.table("INFORMATION_SCHEMA", "TABLE_CONSTRAINTS").as("tc"))
+                                                                    .join(factory.table("INFORMATION_SCHEMA", "CONSTRAINT_COLUMN_USAGE").as("ccu")).on(Condition.eq(value.field("tc", "CONSTRAINT_NAME"), value.field("ccu", "CONSTRAINT_NAME")))
+                                                                    .where(
+                                                                            Condition.and(
+                                                                                    Condition.eq(value.field("tc", "CONSTRAINT_TYPE"), value.string("PRIMARY KEY")),
+                                                                                    Condition.eq(value.field("tc", "TABLE_NAME"), value.string(table)),
+                                                                                    Condition.eq(value.field("ccu", "COLUMN_NAME"), value.field("COLUMNS", "COLUMN_NAME"))
+                                                                            )
+                                                                    )
+                                                    ),
+                                                    value.numeric(0)
+                                            )
+                                    ).as("IS_PKEY")
                             )
                             .from(factory.table("INFORMATION_SCHEMA", "COLUMNS"))
                             .where(Condition.eq(value.field("TABLE_NAME"), value.string(table)))
                     .toString()
             );
 
-            for (Map<String, Object> column : columns) {
-                TSqlField f = new TSqlField(t, column.get("COLUMN_NAME").toString());
+            List<String> pKeyList = new ArrayList<String>();
 
-                String dataType = column.get("DATA_TYPE").toString();
+            for (Map<String, Object> column : columns) {
+                TSqlField f = new TSqlField(t, (String)column.get("COLUMN_NAME"));
+
+                String dataType = (String)column.get("DATA_TYPE");
                 Object maxLength = column.get("CHARACTER_MAXIMUM_LENGTH");
                 if (maxLength != null) {
                     dataType += "(" + maxLength.toString() + ")";
                 }
                 f.setDataType(dataType);
 
-                String nullable = column.get("IS_NULLABLE").toString();
+                String nullable = (String)column.get("IS_NULLABLE");
                 if ("NO".equals(nullable)) {
                     f.setNullable(false);
                 } else {
@@ -93,9 +103,13 @@ public class TSqlSchema implements Schema {
                 }
 
                 t.addColumn(f);
-            }
 
-            t.setPrimaryKey(row.get("PRIMARY_KEY").toString());
+                if ((Integer)column.get("IS_PKEY") == 1) {
+                    pKeyList.add(f.getName());
+                }
+            }
+            
+            t.setPrimaryKey(pKeyList.toArray(new String[pKeyList.size()]));
         }
     }
 
@@ -170,9 +184,19 @@ public class TSqlSchema implements Schema {
 
         builder.append(",\n\tCONSTRAINT [PK_");
         builder.append(table.getName());
-        builder.append("] PRIMARY KEY CLUSTERED (\n\t\t[");
-        builder.append(table.getPrimaryKey().getName());
-        builder.append("] ASC\n\t)\n) ON [PRIMARY]");
+        builder.append("] PRIMARY KEY CLUSTERED (\n");
+
+        prefix = "";
+        for (Field pKey : table.getPrimaryKey()) {
+            builder.append(prefix);
+            builder.append("\t\t[");
+            builder.append(pKey.getName());
+            builder.append("] ASC");
+
+            prefix = ",\n";
+        }
+
+        builder.append("\n\t)\n) ON [PRIMARY]");
         // Ignores all the options: WITH  (...) ON [PRIMARY]
 
         return builder.toString();
@@ -241,6 +265,8 @@ public class TSqlSchema implements Schema {
         int currentBlock = NONE;
         TSqlTable table = null;
 
+        List<String> primaryKeys = null;
+
         Pattern pattern = Pattern.compile("\\[(\\w+)\\](\\(\\d+\\))?");
 
         String[] lines = schema.split("\n");
@@ -276,6 +302,8 @@ public class TSqlSchema implements Schema {
                     table = new TSqlTable(tableSchema, tableName);
                 }
 
+                primaryKeys = new ArrayList<String>();
+
                 tables.put(tableName, table);
             } else if (line.startsWith("CONSTRAINT")) { // the only supported constraint is PRIMARY
                 currentBlock = PRIMARY_BLOCK;
@@ -286,6 +314,12 @@ public class TSqlSchema implements Schema {
                     table = null;
                     currentBlock = NONE;
                 } else if (currentBlock == PRIMARY_BLOCK) {
+                    if (table == null) {
+                        throw new BadSqlException("Schema error, primary key block without table: " + line);
+                    } else {
+                        table.setPrimaryKey(primaryKeys.toArray(new String[primaryKeys.size()]));
+                    }
+
                     currentBlock = TABLE_BLOCK;
                 }
             } else if (line.startsWith("--") || line.length() == 0) {
@@ -359,7 +393,7 @@ public class TSqlSchema implements Schema {
                             throw new BadSqlException("Schema error, no field name: " + line);
                         }
 
-                        table.setPrimaryKey(fieldName);
+                        primaryKeys.add(fieldName);
 
                         break;
                     default:
