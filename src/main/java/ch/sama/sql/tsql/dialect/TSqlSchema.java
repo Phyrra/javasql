@@ -465,4 +465,55 @@ public class TSqlSchema implements Schema {
 
         return builder.toString();
     }
+
+    public static interface TableFilter {
+        public boolean filter(String table);
+    }
+
+    public void createClasses(String srcFolder, String pkg, TableFilter filter) {
+        for (Table table : tables.values()) {
+            if (filter.filter(table.getName())) {
+                try {
+                    createClass(table, srcFolder, pkg);
+                } catch (IOException e) {
+                    // hmm.. something should be done about that :D
+                }
+            }
+        }
+    }
+
+    private void createClass(Table table, String srcFolder, String pkg) throws IOException {
+        String separator = System.getProperty("file.separator");
+        String path = pkg.replace(".", separator);
+
+        File file = new File(srcFolder + separator + path + separator + table.getName() + ".java");
+
+        if (!file.exists()) {
+            file.createNewFile();
+        }
+
+        FileWriter fileWriter = new FileWriter(file.getAbsoluteFile(), true);
+        BufferedWriter writer = new BufferedWriter(fileWriter);
+
+        String selfName = "self";
+        String tableName = table.getName();
+
+        writer.write("package " + pkg + ";\n\n");
+        writer.write("import ch.sama.sql.dbo.Table;\n");
+        writer.write("import ch.sama.sql.dbo.Field;\n");
+        writer.write("import ch.sama.sql.tsql.dialect.TSqlTable;\n");
+        writer.write("import ch.sama.sql.tsql.dialect.TSqlField;\n\n");
+        writer.write("public class " + tableName + " {\n");
+        writer.write("\tpublic static Table " + selfName + " = new TSqlTable(\"" + tableName + "\");\n\n");
+
+        for (Field field : table.getColumns()) {
+            String fieldName = field.getName();
+
+            writer.write("\tpublic static Field " + fieldName + " = new TSqlField(" + selfName + ", \"" + fieldName + "\");\n");
+        }
+
+        writer.write("\n}");
+
+        writer.close();
+    }
 }
