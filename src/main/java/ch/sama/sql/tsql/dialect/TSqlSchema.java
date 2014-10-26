@@ -77,8 +77,6 @@ public class TSqlSchema implements Schema {
                     .toString()
             );
 
-            List<String> pKeyList = new ArrayList<String>();
-
             for (Map<String, Object> column : columns) {
                 TSqlField f = new TSqlField(t, (String)column.get("COLUMN_NAME"));
 
@@ -111,11 +109,9 @@ public class TSqlSchema implements Schema {
                 t.addColumn(f);
 
                 if ((Integer)column.get("IS_PKEY") == 1) {
-                    pKeyList.add(f.getName());
+                    f.setAsPrivateKey();
                 }
             }
-
-            t.setPrimaryKey(pKeyList.toArray(new String[pKeyList.size()]));
         }
     }
 
@@ -281,8 +277,6 @@ public class TSqlSchema implements Schema {
         int currentBlock = NONE;
         TSqlTable table = null;
 
-        List<String> primaryKeys = null;
-
         Pattern pattern = Pattern.compile("\\[(\\w+)\\](\\((\\d+|[m|M][a|A][x|X])\\))?");
 
         String[] lines = schema.split("\n");
@@ -318,8 +312,6 @@ public class TSqlSchema implements Schema {
                     table = new TSqlTable(tableSchema, tableName);
                 }
 
-                primaryKeys = new ArrayList<String>();
-
                 tables.put(tableName, table);
             } else if (line.startsWith("CONSTRAINT")) { // the only supported constraint is PRIMARY
                 currentBlock = PRIMARY_BLOCK;
@@ -332,8 +324,6 @@ public class TSqlSchema implements Schema {
                 } else if (currentBlock == PRIMARY_BLOCK) {
                     if (table == null) {
                         throw new BadSqlException("Schema error, primary key block without table: " + line);
-                    } else {
-                        table.setPrimaryKey(primaryKeys.toArray(new String[primaryKeys.size()]));
                     }
 
                     currentBlock = TABLE_BLOCK;
@@ -409,7 +399,7 @@ public class TSqlSchema implements Schema {
                             throw new BadSqlException("Schema error, no field name: " + line);
                         }
 
-                        primaryKeys.add(fieldName);
+                        table.getColumn(fieldName).setAsPrivateKey();
 
                         break;
                     default:

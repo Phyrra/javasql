@@ -12,6 +12,7 @@ public abstract class Field {
     private String dataType;
     private boolean nullable = true;
     private Value defaultValue;
+    private boolean isPrivateKey = false;
 	
 	public Field(String field) {
         if (!Identifier.test(field)) {
@@ -83,6 +84,14 @@ public abstract class Field {
         } else {
             return this.table.getName(); // This will break if the table has an alias
         }
+    }
+
+    public void setAsPrivateKey() {
+        isPrivateKey = true;
+    }
+
+    public boolean isPrivateKey() {
+        return isPrivateKey;
     }
 
     public boolean compareTo(Field other) {
