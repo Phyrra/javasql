@@ -53,7 +53,7 @@ public class FunctionTest {
 
     @Test
     public void coalesce() {
-        assertEquals("COALESCE([FIELD], 1)", function.coalesce(value.field("FIELD"), value.numeric(1)).toString());
+        assertEquals("COALESCE(([FIELD]), (1))", function.coalesce(value.field("FIELD"), value.numeric(1)).toString());
     }
 
     @Test

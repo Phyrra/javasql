@@ -16,7 +16,7 @@ public class Function {
 	
 	public Function(String function, boolean test) {
         if (test) {
-            Pattern pattern = Pattern.compile("^(.+)\\(.*\\)$"); // TODO: The pattern is not yet perfect (thus the indexOf)
+            Pattern pattern = Pattern.compile("^(.+)\\((.*)?\\)$");
             Matcher matcher = pattern.matcher(function);
             int idx = function.indexOf("(");
 
