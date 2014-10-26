@@ -103,6 +103,23 @@ public class SchemaTest {
     }
 
     @Test
+    public void fieldVarcharMax() {
+        List<Table> list = new TSqlSchema(
+                "CREATE TABLE [tblTable](\n" +
+                "   [sField] [varchar](max)\n" +
+                ")"
+        ).getTables();
+
+        Table table = list.get(0);
+        List<Field> columns = table.getColumns();
+        Field field = columns.get(0);
+
+        assertEquals("sField", field.getName());
+        assertEquals("varchar(max)", field.getDataType());
+        assertEquals(true, field.getNullable());
+    }
+
+    @Test
     public void fieldNotNullable() {
         List<Table> list = new TSqlSchema(
                 "CREATE TABLE [tblTable](\n" +

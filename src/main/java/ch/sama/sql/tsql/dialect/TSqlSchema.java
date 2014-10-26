@@ -85,7 +85,13 @@ public class TSqlSchema implements Schema {
                 String dataType = (String)column.get("DATA_TYPE");
                 Object maxLength = column.get("CHARACTER_MAXIMUM_LENGTH");
                 if (maxLength != null) {
-                    dataType += "(" + maxLength.toString() + ")";
+                    int l = (Integer)maxLength;
+
+                    if (l == -1) {
+                        dataType += "(max)";
+                    } else {
+                        dataType += "(" + l + ")";
+                    }
                 }
                 f.setDataType(dataType);
 
@@ -118,26 +124,36 @@ public class TSqlSchema implements Schema {
     }
 
     public TSqlSchema(File file) {
-        StringBuilder builder = new StringBuilder();
-        String prefix = "";
-
-        BufferedReader br = null;
+        InputStream stream = null;
         try {
-            br = new BufferedReader(new FileReader(file));
+            stream = new FileInputStream(file);
         } catch(FileNotFoundException e) {
             throw new ObjectNotFoundException(e.getMessage(), e);
         }
 
+        load(stream);
+    }
+
+    public TSqlSchema(InputStream stream) {
+        load(stream);
+    }
+
+    private void load(InputStream stream) {
+        StringBuilder builder = new StringBuilder();
+        String prefix = "";
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+
         try {
             String line;
-            while ((line = br.readLine()) != null) {
+            while ((line = reader.readLine()) != null) {
                 builder.append(prefix);
                 builder.append(line);
 
                 prefix = "\n";
             }
 
-            br.close();
+            reader.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -267,7 +283,7 @@ public class TSqlSchema implements Schema {
 
         List<String> primaryKeys = null;
 
-        Pattern pattern = Pattern.compile("\\[(\\w+)\\](\\(\\d+\\))?");
+        Pattern pattern = Pattern.compile("\\[(\\w+)\\](\\((\\d+|[m|M][a|A][x|X])\\))?");
 
         String[] lines = schema.split("\n");
         for (String line : lines) {
@@ -404,6 +420,9 @@ public class TSqlSchema implements Schema {
     }
 
     public static String diff(TSqlSchema lhs, TSqlSchema rhs) {
+        // lhs: actual
+        // rhs: expected
+
         // This only executes non-destructive updates
         //  - No drop table
         //  - No drop column
