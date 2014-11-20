@@ -1,6 +1,7 @@
 package ch.sama.sql.query.helper;
 
 import ch.sama.sql.query.base.IQuery;
+import ch.sama.sql.query.base.IQueryRenderer;
 
 import java.util.List;
 

@@ -8,11 +8,11 @@ import static org.junit.Assert.assertEquals;
 public class TableTest {
 	@Test
 	public void nameOnly() {
-		assertEquals("[NAME]", new TSqlTable("NAME").toString());
+		assertEquals("[NAME]", new TSqlTable("NAME").getString());
 	}
 	
 	@Test
 	public void withSchema() {
-		assertEquals("[dbo].[NAME]", new TSqlTable("dbo", "NAME").toString());
+		assertEquals("[dbo].[NAME]", new TSqlTable("dbo", "NAME").getString());
 	}
 }

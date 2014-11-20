@@ -2,32 +2,30 @@ package ch.sama.sql.query.base;
 
 import ch.sama.sql.query.helper.Value;
 
-public abstract class Query implements IQuery {
-	private QueryFactory factory;
+public class Query implements IQuery {
     private IQuery parent;
 	
-	public Query(QueryFactory factory) {
-		this.factory = factory;
-	}
+	public Query() { }
 
-    public Query(QueryFactory factory, IQuery parent) {
-        this.factory = factory;
+    public Query(IQuery parent) {
         this.parent = parent;
     }
-	
+
+    @Override
 	public IQuery getParent() {
 		return parent;
 	}
 	
-	public QueryFactory getFactory() {
-		return factory;
-	}
-	
 	public CTEQuery with(String name) {
-		return factory.cteQuery(factory, this, name);
+		return new CTEQuery(this, name);
 	}
 		
 	public SelectQuery select(Value... v) {
-		return factory.selectQuery(factory, this, v);
+		return new SelectQuery(this, v);
 	}
+
+    @Override
+    public String getSql(IQueryRenderer renderer) {
+        return renderer.render(this);
+    }
 }

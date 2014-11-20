@@ -5,18 +5,14 @@ import java.util.*;
 import ch.sama.sql.query.helper.Source;
 import ch.sama.sql.query.helper.Value;
 
-public abstract class SelectQuery implements IQuery {
-	private QueryFactory factory;
+public class SelectQuery implements IQuery {
 	private IQuery parent;
 	private List<Value> values;	
 	private int n;
-	
+
+    @Override
 	public IQuery getParent() {
 		return parent;
-	}
-	
-	public QueryFactory getFactory() {
-		return factory;
 	}
 	
 	public List<Value> getValues() {
@@ -27,8 +23,7 @@ public abstract class SelectQuery implements IQuery {
 		return n;
 	}
 	
-	public SelectQuery(QueryFactory factory, IQuery parent, Value... v) {
-		this.factory = factory;
+	public SelectQuery(IQuery parent, Value... v) {
 		this.parent = parent;
 		this.values = new ArrayList<Value>();
 		this.n = -1;
@@ -44,10 +39,15 @@ public abstract class SelectQuery implements IQuery {
 	}
 	
 	public FromQuery from(Source... s) {
-		return factory.fromQuery(factory, this, s);
+		return new FromQuery(this, s);
 	}
 
     public Query union() {
-        return factory.create(factory, this);
+        return new Query(this);
+    }
+
+    @Override
+    public String getSql(IQueryRenderer renderer) {
+        return renderer.render(this);
     }
 }

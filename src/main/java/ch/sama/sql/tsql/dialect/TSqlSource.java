@@ -2,12 +2,15 @@ package ch.sama.sql.tsql.dialect;
 
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.base.IQuery;
+import ch.sama.sql.query.base.IQueryRenderer;
 import ch.sama.sql.query.helper.Source;
 
 public class TSqlSource extends Source {
+    private IQueryRenderer renderer = new TSqlQueryRenderer();
     private String value;
 
-    public String toString() {
+    @Override
+    public String getString() {
         StringBuilder builder = new StringBuilder();
 
         builder.append(value);
@@ -25,12 +28,12 @@ public class TSqlSource extends Source {
     public TSqlSource(Table table) {
         super(table);
 
-        this.value = table.toString();
+        this.value = table.getString();
     }
 
     public TSqlSource(IQuery query) {
         super(query);
 
-        this.value = "(\n" + query.toString() + "\n)";
+        this.value = "(\n" + query.getSql(renderer) + "\n)";
     }
 }

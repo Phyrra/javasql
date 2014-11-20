@@ -48,7 +48,7 @@ public abstract class Field {
         return field;
     }
 	
-	public abstract String toString();
+	public abstract String getString();
 
     public void setDataType(String dataType) {
         this.dataType = dataType;

@@ -7,7 +7,7 @@ import ch.sama.sql.query.helper.Value;
 
 import java.util.Date;
 
-public interface ValueFactory {
+public interface IValueFactory {
     public Value table(String table);
     public Value table(Table table);
 

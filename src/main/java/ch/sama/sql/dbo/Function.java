@@ -34,7 +34,7 @@ public class Function {
 		this.function = function;
 	}
 	
-	public String toString() {
+	public String getString() {
 		return function;
 	}
 }

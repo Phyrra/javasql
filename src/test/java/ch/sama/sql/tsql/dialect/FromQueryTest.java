@@ -2,24 +2,22 @@ package ch.sama.sql.tsql.dialect;
 
 import static org.junit.Assert.*;
 
-import ch.sama.sql.query.base.QueryFactory;
-import ch.sama.sql.query.base.ValueFactory;
+import ch.sama.sql.query.base.*;
 import org.junit.Test;
 
-import ch.sama.sql.query.base.SelectQuery;
-
 public class FromQueryTest {
-    private static final QueryFactory fac = new TSqlQueryFactory();
-    private static final ValueFactory value = new TSqlValueFactory();
-	private static final SelectQuery query = fac.create().select(value.field("F"));
+    private static final IQueryRenderer renderer = new TSqlQueryRenderer();
+    private static final IValueFactory value = new TSqlValueFactory();
+    private static final ISourceFactory source = new TSqlSourceFactory();
+	private static final SelectQuery query = new Query().select(value.field("F"));
 	
 	@Test
 	public void single() {
 		assertEquals(
                 "SELECT [F]\nFROM [A]",
                 query
-                        .from(fac.table("A"))
-                .toString()
+                        .from(source.table("A"))
+                .getSql(renderer)
         );
 	}
 	
@@ -28,8 +26,8 @@ public class FromQueryTest {
 		assertEquals(
                 "SELECT [F]\nFROM [A], [B]",
                 query
-                        .from(fac.table("A"), fac.table("B"))
-                .toString()
+                        .from(source.table("A"), source.table("B"))
+                .getSql(renderer)
         );
 	}
 
@@ -38,10 +36,10 @@ public class FromQueryTest {
         assertEquals(
                 "SELECT [F]\nFROM (\nSELECT [F]\nFROM [A]\n)",
                 query
-                        .from(fac.query(
-                                query.from(fac.table("A"))
+                        .from(source.query(
+                                query.from(source.table("A"))
                         ))
-                .toString()
+                .getSql(renderer)
         );
     }
 }

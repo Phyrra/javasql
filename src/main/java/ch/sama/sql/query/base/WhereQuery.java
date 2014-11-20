@@ -3,34 +3,34 @@ package ch.sama.sql.query.base;
 import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.Order;
 
-public abstract class WhereQuery implements IQuery {
-	private QueryFactory factory;
+public class WhereQuery implements IQuery {
 	private IQuery parent;
 	private Condition condition;
-	
+
+    @Override
 	public IQuery getParent() {
 		return parent;
-	}
-	
-	public QueryFactory getFactory() {
-		return factory;
 	}
 	
 	public Condition getCondition() {
 		return condition;
 	}
 	
-	public WhereQuery(QueryFactory factory, IQuery parent, Condition condition) {
-		this.factory = factory;
+	public WhereQuery(IQuery parent, Condition condition) {
 		this.parent = parent;
 		this.condition = condition;
 	}
 	
 	public OrderQuery order(Order order) {
-		return factory.orderQuery(factory, this, order);
+		return new OrderQuery(this, order);
 	}
 
     public Query union() {
-        return factory.create(factory, this);
+        return new Query(this);
+    }
+
+    @Override
+    public String getSql(IQueryRenderer renderer) {
+        return renderer.render(this);
     }
 }

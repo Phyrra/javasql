@@ -18,7 +18,7 @@ public class Order {
 		this.type = type;
 	}
 
-    public String toString(OrderParser parser) {
+    public String getString(OrderParser parser) {
         switch (type) {
             case ASC:
                 return parser.asc(values);

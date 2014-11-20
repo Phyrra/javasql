@@ -17,14 +17,14 @@ public class TSqlField extends Field {
     }
 
     @Override
-    public String toString() {
+    public String getString() {
         StringBuilder builder = new StringBuilder();
 
         Table table = getTable();
         String tableName = getTableName();
 
         if (table != null) {
-            builder.append(table.toString());
+            builder.append(table.getString());
             builder.append(".");
         } else if (tableName != null) {
             builder.append("[");

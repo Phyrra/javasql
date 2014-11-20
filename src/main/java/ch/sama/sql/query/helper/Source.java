@@ -29,4 +29,6 @@ public abstract class Source {
         this.alias = alias;
         return this;
     }
+
+    public abstract String getString();
 }

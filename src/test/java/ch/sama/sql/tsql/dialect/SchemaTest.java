@@ -18,7 +18,7 @@ public class SchemaTest {
         List<Table> list = new TSqlSchema("CREATE TABLE [dbo].[tblTable](").getTables();
 
         assertEquals(1, list.size());
-        assertEquals("[dbo].[tblTable]", list.get(0).toString());
+        assertEquals("[dbo].[tblTable]", list.get(0).getString());
     }
 
     @Test
@@ -26,7 +26,7 @@ public class SchemaTest {
         List<Table> list = new TSqlSchema("CREATE TABLE [tblTable](").getTables();
 
         assertEquals(1, list.size());
-        assertEquals("[tblTable]", list.get(0).toString());
+        assertEquals("[tblTable]", list.get(0).getString());
     }
 
     @Test (expected = BadSqlException.class)
@@ -151,7 +151,7 @@ public class SchemaTest {
         assertEquals("iField", field.getName());
         assertEquals("int", field.getDataType());
         assertEquals(false, field.getNullable());
-        assertEquals("(1337)", field.getDefault().toString());
+        assertEquals("(1337)", field.getDefault().getString());
     }
 
     @Test
@@ -169,7 +169,7 @@ public class SchemaTest {
         assertEquals("uidId", field.getName());
         assertEquals("uniqueidentifier", field.getDataType());
         assertEquals(false, field.getNullable());
-        assertEquals("(newsequentialid())", field.getDefault().toString());
+        assertEquals("(newsequentialid())", field.getDefault().getString());
     }
 
     // PKey
@@ -188,7 +188,7 @@ public class SchemaTest {
 
         Table table = list.get(0);
 
-        assertEquals(table.getColumn("uidId").toString(), table.getPrimaryKey().get(0).toString());
+        assertEquals(table.getColumn("uidId").getString(), table.getPrimaryKey().get(0).getString());
     }
 
     @Test
@@ -208,8 +208,8 @@ public class SchemaTest {
         Table table = list.get(0);
 
         assertEquals(2, table.getPrimaryKey().size());
-        assertEquals(table.getColumn("uidId1").toString(), table.getPrimaryKey().get(0).toString());
-        assertEquals(table.getColumn("uidId2").toString(), table.getPrimaryKey().get(1).toString());
+        assertEquals(table.getColumn("uidId1").getString(), table.getPrimaryKey().get(0).getString());
+        assertEquals(table.getColumn("uidId2").getString(), table.getPrimaryKey().get(1).getString());
     }
 
     @Test (expected = ObjectNotFoundException.class)

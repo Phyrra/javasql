@@ -12,7 +12,7 @@ public class TSqlTable extends Table {
     }
 
     @Override
-    public String toString() {
+    public String getString() {
         StringBuilder builder = new StringBuilder();
 
         String schema = getSchema();

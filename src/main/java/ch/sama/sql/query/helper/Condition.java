@@ -39,7 +39,7 @@ public class Condition {
 		this.type = type;
 	}
 
-    public String toString(ConditionParser parser) {
+    public String getString(ConditionParser parser) {
         switch (type) {
             case EQ:
                 return parser.eq(lhs, rhs);

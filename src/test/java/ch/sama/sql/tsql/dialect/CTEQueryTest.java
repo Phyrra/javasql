@@ -1,33 +1,29 @@
 package ch.sama.sql.tsql.dialect;
 
-import static org.junit.Assert.*;
-
-import ch.sama.sql.query.base.QueryFactory;
-import ch.sama.sql.query.base.ValueFactory;
+import ch.sama.sql.query.base.IQueryRenderer;
+import ch.sama.sql.query.base.ISourceFactory;
+import ch.sama.sql.query.base.IValueFactory;
+import ch.sama.sql.query.base.Query;
 import org.junit.Test;
 
+import static org.junit.Assert.*;
+
 public class CTEQueryTest {
-    private static final QueryFactory fac = new TSqlQueryFactory();
-    private static final ValueFactory value = new TSqlValueFactory();
-	
-	@Test(expected = NullPointerException.class)
-	public void nullPointer() {
-		fac.create()
-                .with("CTE")
-        .toString();
-	}
+    private static final IValueFactory value = new TSqlValueFactory();
+    private static final ISourceFactory source = new TSqlSourceFactory();
+    private static final IQueryRenderer renderer = new TSqlQueryRenderer();
 	
 	@Test
 	public void cte() {
 		assertEquals(
 			"WITH CTE AS (\nSELECT [F]\nFROM [T]\n)",
-			fac.create()
+			new Query()
 				.with("CTE").as(
-					fac.create()
+                    new Query()
                             .select(value.field("F"))
-                            .from(fac.table("T"))
-				)
-			.toString()
+                            .from(source.table("T"))
+            )
+			.getSql(renderer)
 		);
 	}
 	
@@ -35,15 +31,15 @@ public class CTEQueryTest {
 	public void selectCte() {
 		assertEquals(
 			"WITH CTE AS (\nSELECT [F]\nFROM [T]\n)\nSELECT [F]\nFROM [CTE]",
-			fac.create()
+			new Query()
 				.with("CTE").as(
-					fac.create()
+					new Query()
                             .select(value.field("F"))
-                            .from(fac.table("T"))
+                            .from(source.table("T"))
 				)
 				.select(value.field("F"))
-                .from(fac.table("CTE"))
-            .toString()
+                .from(source.table("CTE"))
+            .getSql(renderer)
 		);
 	}
 
@@ -51,20 +47,20 @@ public class CTEQueryTest {
     public void multiCte() {
         assertEquals(
             "WITH CTE1 AS (\nSELECT [F]\nFROM [T]\n), CTE2 AS (\nSELECT [F]\nFROM [T]\n)\nSELECT [F]\nFROM [CTE1]",
-            fac.create()
+            new Query()
                 .with("CTE1").as(
-                    fac.create()
+                    new Query()
                             .select(value.field("F"))
-                            .from(fac.table("T"))
+                            .from(source.table("T"))
                 )
                 .with("CTE2").as(
-                    fac.create()
+                    new Query()
                             .select(value.field("F"))
-                            .from(fac.table("T"))
+                            .from(source.table("T"))
                 )
                 .select(value.field("F"))
-                .from(fac.table("CTE1"))
-            .toString()
+                .from(source.table("CTE1"))
+            .getSql(renderer)
         );
     }
 }

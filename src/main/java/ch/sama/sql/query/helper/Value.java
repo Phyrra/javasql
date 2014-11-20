@@ -22,7 +22,7 @@ public abstract class Value {
         source = o;
     }
 
-	public abstract String toString();
+	public abstract String getString();
 
     public String fromValue(Value.VALUE val) {
         switch (val) {

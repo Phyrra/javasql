@@ -35,7 +35,7 @@ public abstract class Table {
         this.table = table;
     }
 	
-	public abstract String toString();
+	public abstract String getString();
 
     public String getName() {
         return table;

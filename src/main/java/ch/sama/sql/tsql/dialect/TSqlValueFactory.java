@@ -4,12 +4,12 @@ import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Function;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.base.IQuery;
-import ch.sama.sql.query.base.ValueFactory;
+import ch.sama.sql.query.base.IValueFactory;
 import ch.sama.sql.query.helper.Value;
 
 import java.util.Date;
 
-public class TSqlValueFactory implements ValueFactory {
+public class TSqlValueFactory implements IValueFactory {
     @Override
     public Value table(String table) {
         return TSqlValue.plain("[" + table + "].*");
@@ -17,7 +17,7 @@ public class TSqlValueFactory implements ValueFactory {
 
     @Override
     public Value table(Table table) {
-        return TSqlValue.plain(table.toString() + ".*");
+        return TSqlValue.plain(table.getString() + ".*");
     }
 
     @Override

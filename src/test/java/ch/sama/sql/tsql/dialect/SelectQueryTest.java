@@ -1,22 +1,23 @@
 package ch.sama.sql.tsql.dialect;
 
-import static org.junit.Assert.*;
-
-import ch.sama.sql.query.base.QueryFactory;
-import ch.sama.sql.query.base.ValueFactory;
+import ch.sama.sql.query.base.IQueryRenderer;
+import ch.sama.sql.query.base.IValueFactory;
+import ch.sama.sql.query.base.Query;
 import org.junit.Test;
 
+import static org.junit.Assert.*;
+
 public class SelectQueryTest {
-    private static final QueryFactory fac = new TSqlQueryFactory();
-    private static final ValueFactory value = new TSqlValueFactory();
+    private static final IQueryRenderer renderer = new TSqlQueryRenderer();
+    private static final IValueFactory value = new TSqlValueFactory();
 	
 	@Test
 	public void single() {
 		assertEquals(
                 "SELECT [A]",
-                fac.create()
+                new Query()
                         .select(value.field("A"))
-                .toString()
+                .getSql(renderer)
         );
 	}
 	
@@ -24,9 +25,9 @@ public class SelectQueryTest {
 	public void multi() {
 		assertEquals(
                 "SELECT [A], [B]",
-                fac.create()
+                new Query()
                         .select(value.field("A"), value.field("B"))
-                .toString()
+                .getSql(renderer)
         );
 	}
 	
@@ -34,9 +35,9 @@ public class SelectQueryTest {
 	public void top() {
 		assertEquals(
                 "SELECT TOP 10 [A]",
-                fac.create()
+                new Query()
                         .select(value.field("A")).top(10)
-                .toString()
+                .getSql(renderer)
         );
 	}
 }

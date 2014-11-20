@@ -4,6 +4,8 @@ import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Schema;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dbo.connection.QueryExecutor;
+import ch.sama.sql.query.base.IQueryRenderer;
+import ch.sama.sql.query.base.Query;
 import ch.sama.sql.query.exception.BadSqlException;
 import ch.sama.sql.query.exception.ObjectNotFoundException;
 import ch.sama.sql.query.helper.Condition;
@@ -18,8 +20,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TSqlSchema implements Schema {
-    private static final TSqlQueryFactory factory = new TSqlQueryFactory();
     private static final TSqlValueFactory value = new TSqlValueFactory();
+    private static final TSqlSourceFactory source = new TSqlSourceFactory();
+    private static final IQueryRenderer renderer = new TSqlQueryRenderer();
 
     private Map<String, Table> tables;
 
@@ -29,24 +32,24 @@ public class TSqlSchema implements Schema {
         tables = new HashMap<String, Table>();
 
         List<Map<String, Object>> list = executor.query(
-                factory.create()
+                new Query()
                         .select(
                                 value.field("TABLE_SCHEMA"),
                                 value.field("TABLE_NAME")
                         )
-                        .from(factory.table("INFORMATION_SCHEMA", "TABLES"))
-                .toString()
+                        .from(source.table("INFORMATION_SCHEMA", "TABLES"))
+                .getSql(renderer)
         );
 
         for (Map<String, Object> row : list) {
-            String schema = row.get("TABLE_SCHEMA").toString();
-            String table = row.get("TABLE_NAME").toString();
+            String schema = (String)row.get("TABLE_SCHEMA");
+            String table = (String)row.get("TABLE_NAME");
 
             Table t = new TSqlTable(schema, table);
             tables.put(table, t);
 
             List<Map<String, Object>> columns = executor.query(
-                    factory.create()
+                    new Query()
                             .select(
                                     value.field("COLUMN_NAME"),
                                     value.field("DATA_TYPE"),
@@ -56,10 +59,10 @@ public class TSqlSchema implements Schema {
                                     value.function(
                                             fnc.coalesce(
                                                     value.query(
-                                                            factory.create()
+                                                            new Query()
                                                                     .select(value.numeric(1))
-                                                                    .from(factory.table("INFORMATION_SCHEMA", "TABLE_CONSTRAINTS").as("tc"))
-                                                                    .join(factory.table("INFORMATION_SCHEMA", "CONSTRAINT_COLUMN_USAGE").as("ccu")).on(Condition.eq(value.field("tc", "CONSTRAINT_NAME"), value.field("ccu", "CONSTRAINT_NAME")))
+                                                                    .from(source.table("INFORMATION_SCHEMA", "TABLE_CONSTRAINTS").as("tc"))
+                                                                    .join(source.table("INFORMATION_SCHEMA", "CONSTRAINT_COLUMN_USAGE").as("ccu")).on(Condition.eq(value.field("tc", "CONSTRAINT_NAME"), value.field("ccu", "CONSTRAINT_NAME")))
                                                                     .where(
                                                                             Condition.and(
                                                                                     Condition.eq(value.field("tc", "CONSTRAINT_TYPE"), value.string("PRIMARY KEY")),
@@ -72,9 +75,9 @@ public class TSqlSchema implements Schema {
                                             )
                                     ).as("IS_PKEY")
                             )
-                            .from(factory.table("INFORMATION_SCHEMA", "COLUMNS"))
+                            .from(source.table("INFORMATION_SCHEMA", "COLUMNS"))
                             .where(Condition.eq(value.field("TABLE_NAME"), value.string(table)))
-                    .toString()
+                    .getSql(renderer)
             );
 
             for (Map<String, Object> column : columns) {
@@ -103,7 +106,7 @@ public class TSqlSchema implements Schema {
                 Object defaultValue = column.get("COLUMN_DEFAULT");
                 if (defaultValue != null) {
                     // The data type is inconsequential here
-                    f.setDefault(value.plain(defaultValue.toString()));
+                    f.setDefault(value.plain((String)defaultValue));
                 }
 
                 t.addColumn(f);
@@ -183,7 +186,7 @@ public class TSqlSchema implements Schema {
         String prefix = "";
 
         builder.append("CREATE TABLE ");
-        builder.append(table.toString());
+        builder.append(table.getString());
         builder.append("(\n");
 
         for (Field field : table.getColumns()) {
@@ -241,7 +244,7 @@ public class TSqlSchema implements Schema {
 
         Value defaultValue = field.getDefault();
         if (defaultValue != null) {
-            String defaultString = defaultValue.toString();
+            String defaultString = defaultValue.getString();
 
             if (!defaultString.startsWith("(") && defaultString.endsWith(")")) {
                 defaultString = "(" + defaultString + ")";
@@ -439,7 +442,7 @@ public class TSqlSchema implements Schema {
                         if (!fr.compareTo(fl)) {
                             builder.append(prefix);
                             builder.append("ALTER TABLE ");
-                            builder.append(tr.toString());
+                            builder.append(tr.getString());
                             builder.append(" ALTER COLUMN ");
                             builder.append(getColumnSchema(fr));
 
@@ -448,7 +451,7 @@ public class TSqlSchema implements Schema {
                     } else {
                         builder.append(prefix);
                         builder.append("ALTER TABLE ");
-                        builder.append(tr.toString());
+                        builder.append(tr.getString());
                         builder.append(" ADD ");
                         builder.append(getColumnSchema(fr));
 

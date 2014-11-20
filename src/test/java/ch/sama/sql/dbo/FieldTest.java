@@ -9,16 +9,16 @@ import org.junit.Test;
 public class FieldTest {
 	@Test
 	public void nameOnly() {
-		assertEquals("[NAME]", new TSqlField("NAME").toString());
+		assertEquals("[NAME]", new TSqlField("NAME").getString());
 	}
 	
 	@Test
 	public void withTableName() {
-		assertEquals("[TABLE].[NAME]", new TSqlField("TABLE", "NAME").toString());
+		assertEquals("[TABLE].[NAME]", new TSqlField("TABLE", "NAME").getString());
 	}
 
     @Test
     public void withTable() {
-        assertEquals("[TABLE].[NAME]", new TSqlField(new TSqlTable("TABLE"), "NAME").toString());
+        assertEquals("[TABLE].[NAME]", new TSqlField(new TSqlTable("TABLE"), "NAME").getString());
     }
 }

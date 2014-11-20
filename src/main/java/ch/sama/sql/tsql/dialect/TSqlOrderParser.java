@@ -1,6 +1,5 @@
 package ch.sama.sql.tsql.dialect;
 
-import ch.sama.sql.query.helper.Order;
 import ch.sama.sql.query.helper.OrderParser;
 import ch.sama.sql.query.helper.Value;
 
@@ -13,7 +12,7 @@ public class TSqlOrderParser implements OrderParser {
 
         for (Value v : values) {
             builder.append(prefix);
-            builder.append(v.toString());
+            builder.append(v.getString());
 
             prefix = ", ";
         }

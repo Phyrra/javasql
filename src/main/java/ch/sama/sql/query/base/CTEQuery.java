@@ -6,63 +6,38 @@ import ch.sama.sql.query.exception.IllegalIdentifierException;
 import ch.sama.sql.query.base.checker.Identifier;
 import ch.sama.sql.query.helper.Value;
 
-public abstract class CTEQuery implements IQuery {
-	QueryFactory factory;
+public class CTEQuery implements IQuery {
 	private IQuery parent;
 	private String name;
-	private IQuery query;
-	
+
+    @Override
 	public IQuery getParent() {
 		return parent;
-	}
-	
-	public QueryFactory getFactory() {
-		return factory;
 	}
 	
 	public String getName() {
 		return name;
 	}
 	
-	public IQuery getQuery() {
-		return query;
-	}
-	
-	public CTEQuery(QueryFactory factory, IQuery parent, String name) {
+	public CTEQuery(IQuery parent, String name) {
         if (!Identifier.test(name)) {
             throw new IllegalIdentifierException(name);
         }
 
-		this.factory = factory;
 		this.parent = parent;
 		this.name = name;
-		this.query = null;		
 	}
 	
-	public CTEQuery as(IQuery query) {
+	public CTEQueryFinal as(IQuery query) {
         if (new QueryFinder().get(query, CTEQuery.class) != null) {
             throw new BadSqlException("CTE cannot be nested");
         }
 
-		this.query = query;
-		return this;
+		return new CTEQueryFinal(this, query);
 	}
 
-    private void assertQuery() {
-        if (query == null) {
-            throw new BadSqlException("Empty CTE");
-        }
+    @Override
+    public String getSql(IQueryRenderer renderer) {
+        return renderer.render(this);
     }
-
-    public CTEQuery with(String name) {
-        assertQuery();
-
-        return factory.cteQuery(factory, this, name);
-    }
-	
-	public SelectQuery select(Value... v) {
-		assertQuery();
-
-        return factory.selectQuery(factory, this, v);
-	}
 }

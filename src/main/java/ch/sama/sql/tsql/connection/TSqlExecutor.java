@@ -57,10 +57,6 @@ public class TSqlExecutor implements QueryExecutor {
         connection.close();
     }
 
-    public void execute(IQuery query) {
-        execute(query.toString());
-    }
-
     @Override
     public List<Map<String, Object>> query(String query) {
         List<Map<String, Object>> list = null;
@@ -89,10 +85,6 @@ public class TSqlExecutor implements QueryExecutor {
         connection.close();
 
         return list;
-    }
-
-    public List<Map<String, Object>> query(IQuery query) {
-        return query(query.toString());
     }
 
     @Override
@@ -127,9 +119,5 @@ public class TSqlExecutor implements QueryExecutor {
         }
 
         return list.get(0);
-    }
-
-    public Map<String, Object> get(IQuery query) {
-        return get(query.toString());
     }
 }

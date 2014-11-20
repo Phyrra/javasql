@@ -7,9 +7,11 @@ import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Function;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.base.IQuery;
+import ch.sama.sql.query.base.IQueryRenderer;
 import ch.sama.sql.query.helper.Value;
 
 public class TSqlValue extends Value {
+    private IQueryRenderer renderer = new TSqlQueryRenderer();
 	private String value;
 
     public String nullValue() {
@@ -20,7 +22,7 @@ public class TSqlValue extends Value {
         return "*";
     }
 	
-	public String toString() {
+	public String getString() {
 		StringBuilder builder = new StringBuilder();
 		
 		builder.append(value);
@@ -73,25 +75,25 @@ public class TSqlValue extends Value {
 	public TSqlValue(Field f) {
         super(f);
 
-		value = f.toString();
+		value = f.getString();
 	}
 
     public TSqlValue(Table t) {
         super(t);
 
-        value = t.toString() + ".*";
+        value = t.getString() + ".*";
     }
 	
 	public TSqlValue(IQuery query) {
 		super(query);
 
-        value = "(\n" + query.toString() + "\n)";
+        value = "(\n" + query.getSql(renderer) + "\n)";
 	}
 	
 	public TSqlValue(Function f) {
 		super(f);
 
-        value = f.toString();
+        value = f.getString();
 	}
 
     public TSqlValue(Value.VALUE v) {

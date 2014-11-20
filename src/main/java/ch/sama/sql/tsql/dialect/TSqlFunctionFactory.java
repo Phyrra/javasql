@@ -14,7 +14,7 @@ public class TSqlFunctionFactory {
     public TSqlFunctionFactory() { }
     
     public Function coalesce(Value lhs, Value rhs) {
-        return new Function("COALESCE((" + lhs.toString() + "), (" + rhs.toString() + "))", false);
+        return new Function("COALESCE((" + lhs.getString() + "), (" + rhs.getString() + "))", false);
     }
 
     public static class WhenThen {
@@ -30,11 +30,11 @@ public class TSqlFunctionFactory {
             return expression == null;
         }
 
-        public String toString() {
+        public String getString() {
             if (isElse()) {
-                return "ELSE " + value.toString();
+                return "ELSE " + value.getString();
             } else {
-                return "WHEN " + expression.toString() + " THEN " + value.toString();
+                return "WHEN " + expression.getString() + " THEN " + value.getString();
             }
         }
     }
@@ -45,7 +45,7 @@ public class TSqlFunctionFactory {
         StringBuilder builder = new StringBuilder();
 
         builder.append("(CASE ");
-        builder.append(expression.toString());
+        builder.append(expression.getString());
 
         for (int i = 0; i < wts.length; ++i) {
             WhenThen wt = wts[i];
@@ -55,7 +55,7 @@ public class TSqlFunctionFactory {
             }
 
             builder.append("\n");
-            builder.append(wt.toString());
+            builder.append(wt.getString());
         }
 
         builder.append("\nEND)");
