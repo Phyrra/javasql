@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import ch.sama.sql.query.base.IValueFactory;
 import ch.sama.sql.query.base.Query;
+import ch.sama.sql.tsql.dialect.TSqlQueryRenderer;
 import ch.sama.sql.tsql.dialect.TSqlValueFactory;
 import org.junit.Test;
 
@@ -11,7 +12,7 @@ import ch.sama.sql.tsql.dialect.TSqlConditionParser;
 
 public class ConditionTest {
     private static final IValueFactory value = new TSqlValueFactory();
-	private static final ConditionParser parser = new TSqlConditionParser();
+	private static final ConditionParser parser = new TSqlConditionParser(new TSqlQueryRenderer());
 	
 	@Test
 	public void eq() {
