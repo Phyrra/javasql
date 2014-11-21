@@ -1,5 +1,7 @@
 package ch.sama.sql.tsql.dialect;
 
+import ch.sama.sql.dbo.Field;
+import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.base.*;
 import ch.sama.sql.query.helper.ConditionParser;
 import ch.sama.sql.query.helper.OrderParser;
@@ -82,7 +84,7 @@ public class TSqlQueryRenderer implements IQueryRenderer {
 
         for (Value v : query.getValues()) {
             builder.append(prefix);
-            builder.append(v.getString());
+            builder.append(render(v));
 
             prefix = ", ";
         }
@@ -102,7 +104,7 @@ public class TSqlQueryRenderer implements IQueryRenderer {
 
         for (Source s : query.getSources()) {
             builder.append(prefix);
-            builder.append(s.getString());
+            builder.append(render(s));
 
             prefix = ", ";
         }
@@ -125,7 +127,7 @@ public class TSqlQueryRenderer implements IQueryRenderer {
         }
         builder.append("JOIN ");
 
-        builder.append(query.getSource().getString());
+        builder.append(render(query.getSource()));
 
         return builder.toString();
     }
@@ -168,6 +170,79 @@ public class TSqlQueryRenderer implements IQueryRenderer {
         }
 
         builder.append(query.getOrder().getString(orderParser));
+
+        return builder.toString();
+    }
+
+    @Override
+    public String render(Field f) {
+        StringBuilder builder = new StringBuilder();
+
+        Table table = f.getTable();
+        String tableName = f.getTableName();
+
+        if (table != null) {
+            builder.append(table.getString(this));
+            builder.append(".");
+        } else if (tableName != null) {
+            builder.append("[");
+            builder.append(tableName);
+            builder.append("].");
+        }
+
+        builder.append("[");
+        builder.append(f.getName());
+        builder.append("]");
+
+        return builder.toString();
+    }
+
+    @Override
+    public String render(Table t) {
+        StringBuilder builder = new StringBuilder();
+
+        String schema = t.getSchema();
+        if (schema != null) {
+            builder.append("[");
+            builder.append(schema);
+            builder.append("].");
+        }
+
+        builder.append("[");
+        builder.append(t.getName());
+        builder.append("]");
+
+        return builder.toString();
+    }
+
+    @Override
+    public String render(Value v) {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(v.getValue());
+
+        String alias = v.getAlias();
+        if (alias != null) {
+            builder.append(" AS [");
+            builder.append(alias);
+            builder.append("]");
+        }
+
+        return builder.toString();
+    }
+
+    @Override
+    public String render(Source s) {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(s.getValue());
+
+        String alias = s.getAlias();
+        if (alias != null) {
+            builder.append(" AS [");
+            builder.append(alias);
+            builder.append("]");
+        }
 
         return builder.toString();
     }

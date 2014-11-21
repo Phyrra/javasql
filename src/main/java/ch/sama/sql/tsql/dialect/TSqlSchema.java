@@ -1,7 +1,7 @@
 package ch.sama.sql.tsql.dialect;
 
 import ch.sama.sql.dbo.Field;
-import ch.sama.sql.dbo.Schema;
+import ch.sama.sql.dbo.ISchema;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dbo.connection.QueryExecutor;
 import ch.sama.sql.query.base.IQueryRenderer;
@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class TSqlSchema implements Schema {
+public class TSqlSchema implements ISchema {
     private static final TSqlValueFactory value = new TSqlValueFactory();
     private static final TSqlSourceFactory source = new TSqlSourceFactory();
     private static final IQueryRenderer renderer = new TSqlQueryRenderer();
@@ -45,7 +45,7 @@ public class TSqlSchema implements Schema {
             String schema = (String)row.get("TABLE_SCHEMA");
             String table = (String)row.get("TABLE_NAME");
 
-            Table t = new TSqlTable(schema, table);
+            Table t = new Table(schema, table);
             tables.put(table, t);
 
             List<Map<String, Object>> columns = executor.query(
@@ -81,7 +81,7 @@ public class TSqlSchema implements Schema {
             );
 
             for (Map<String, Object> column : columns) {
-                TSqlField f = new TSqlField(t, (String)column.get("COLUMN_NAME"));
+                Field f = new Field(t, (String)column.get("COLUMN_NAME"));
 
                 String dataType = (String)column.get("DATA_TYPE");
                 Object maxLength = column.get("CHARACTER_MAXIMUM_LENGTH");
@@ -186,7 +186,7 @@ public class TSqlSchema implements Schema {
         String prefix = "";
 
         builder.append("CREATE TABLE ");
-        builder.append(table.getString());
+        builder.append(table.getString(renderer));
         builder.append("(\n");
 
         for (Field field : table.getColumns()) {
@@ -244,7 +244,7 @@ public class TSqlSchema implements Schema {
 
         Value defaultValue = field.getDefault();
         if (defaultValue != null) {
-            String defaultString = defaultValue.getString();
+            String defaultString = defaultValue.getValue();
 
             if (!defaultString.startsWith("(") && defaultString.endsWith(")")) {
                 defaultString = "(" + defaultString + ")";
@@ -278,7 +278,7 @@ public class TSqlSchema implements Schema {
 
         tables = new HashMap<String, Table>();
         int currentBlock = NONE;
-        TSqlTable table = null;
+        Table table = null;
 
         Pattern pattern = Pattern.compile("\\[(\\w+)\\](\\((\\d+|[m|M][a|A][x|X])\\))?");
 
@@ -310,9 +310,9 @@ public class TSqlSchema implements Schema {
                     throw new BadSqlException("Schema error: " + line);
                 } else if (i == 1) {
                     tableName = tableSchema;
-                    table = new TSqlTable(tableName);
+                    table = new Table(tableName);
                 } else {
-                    table = new TSqlTable(tableSchema, tableName);
+                    table = new Table(tableSchema, tableName);
                 }
 
                 tables.put(tableName, table);
@@ -364,7 +364,7 @@ public class TSqlSchema implements Schema {
                             throw new BadSqlException("Schema error, no field name: " + line);
                         }
 
-                        TSqlField field = new TSqlField(table, fieldName);
+                        Field field = new Field(table, fieldName);
 
                         if (line.contains("NOT NULL")) {
                             field.setNullable(false);
@@ -382,7 +382,7 @@ public class TSqlSchema implements Schema {
                             int idx2 = line.lastIndexOf(")");
 
                             String defaultValue = line.substring(idx1, idx2 + 1);
-                            field.setDefault(TSqlValue.plain(defaultValue));
+                            field.setDefault(new Value(null, defaultValue));
                         }
 
                         table.addColumn(field); // if this does invoke NPE something went wrong
@@ -442,7 +442,7 @@ public class TSqlSchema implements Schema {
                         if (!fr.compareTo(fl)) {
                             builder.append(prefix);
                             builder.append("ALTER TABLE ");
-                            builder.append(tr.getString());
+                            builder.append(tr.getString(renderer));
                             builder.append(" ALTER COLUMN ");
                             builder.append(getColumnSchema(fr));
 
@@ -451,7 +451,7 @@ public class TSqlSchema implements Schema {
                     } else {
                         builder.append(prefix);
                         builder.append("ALTER TABLE ");
-                        builder.append(tr.getString());
+                        builder.append(tr.getString(renderer));
                         builder.append(" ADD ");
                         builder.append(getColumnSchema(fr));
 

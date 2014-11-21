@@ -1,16 +1,19 @@
 package ch.sama.sql.query.helper;
 
+import ch.sama.sql.query.base.IQueryRenderer;
 import ch.sama.sql.query.base.checker.Identifier;
 import ch.sama.sql.query.exception.IllegalIdentifierException;
 
-public abstract class Source {
+public class Source {
     private Object source;
+    private String value;
     private String alias;
 
     public Source() { }
 
-    public Source(Object o) {
+    public Source(Object o, String value) {
         this.source = o;
+        this.value = value;
     }
 
     public String getAlias() {
@@ -30,5 +33,11 @@ public abstract class Source {
         return this;
     }
 
-    public abstract String getString();
+    public String getValue() {
+        return value;
+    }
+
+    public String getString(IQueryRenderer renderer) {
+        return renderer.render(this);
+    }
 }

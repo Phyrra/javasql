@@ -2,6 +2,7 @@ package ch.sama.sql.query.base;
 
 import java.util.*;
 
+import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.Source;
 import ch.sama.sql.query.helper.Value;
 
@@ -44,6 +45,10 @@ public class SelectQuery implements IQuery {
 
     public Query union() {
         return new Query(this);
+    }
+
+    public WhereQuery where(Condition c) {
+        return new WhereQuery(this, c);
     }
 
     @Override

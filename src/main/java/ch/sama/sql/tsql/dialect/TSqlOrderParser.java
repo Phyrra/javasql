@@ -12,7 +12,7 @@ public class TSqlOrderParser implements OrderParser {
 
         for (Value v : values) {
             builder.append(prefix);
-            builder.append(v.getString());
+            builder.append(v.getValue());
 
             prefix = ", ";
         }

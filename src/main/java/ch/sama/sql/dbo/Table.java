@@ -1,5 +1,6 @@
 package ch.sama.sql.dbo;
 
+import ch.sama.sql.query.base.IQueryRenderer;
 import ch.sama.sql.query.exception.IllegalIdentifierException;
 import ch.sama.sql.query.exception.ObjectNotFoundException;
 import ch.sama.sql.query.base.checker.Identifier;
@@ -9,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class Table {
+public class Table {
     private String schema;
 	private String table;
 
@@ -35,7 +36,9 @@ public abstract class Table {
         this.table = table;
     }
 	
-	public abstract String getString();
+	public String getString(IQueryRenderer renderer) {
+        return renderer.render(this);
+    }
 
     public String getName() {
         return table;

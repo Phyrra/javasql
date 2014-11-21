@@ -1,10 +1,11 @@
 package ch.sama.sql.query.helper;
 
+import ch.sama.sql.query.base.IQueryRenderer;
 import ch.sama.sql.query.base.checker.Identifier;
 import ch.sama.sql.query.exception.IllegalIdentifierException;
 import ch.sama.sql.query.exception.UnknownValueException;
 
-public abstract class Value {
+public class Value {
     public enum VALUE {
         ALL,
         NULL
@@ -14,29 +15,23 @@ public abstract class Value {
     public static final VALUE NULL = VALUE.NULL;
 
     private Object source;
+    private String value;
     private String alias;
 
     public Value() { }
 
-    public Value(Object o) {
+    public Value(Object o, String value) {
         source = o;
+        this.value = value;
     }
 
-	public abstract String getString();
-
-    public String fromValue(Value.VALUE val) {
-        switch (val) {
-            case ALL:
-                return allValue();
-            case NULL:
-                return nullValue();
-            default:
-                throw new UnknownValueException("Caused by: " + val);
-        }
+	public String getValue() {
+        return value;
     }
 
-    public abstract String allValue();
-    public abstract String nullValue();
+    public String getString(IQueryRenderer renderer) {
+        return renderer.render(this);
+    }
 
     public String getAlias() {
         return alias;

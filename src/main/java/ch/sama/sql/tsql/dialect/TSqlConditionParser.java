@@ -17,17 +17,17 @@ public class TSqlConditionParser implements ConditionParser {
 
     @Override
     public String eq(Value lhs, Value rhs) {
-        return lhs.getString() + " = " + rhs.getString();
+        return lhs.getValue() + " = " + rhs.getValue();
     }
 
     @Override
     public String neq(Value lhs, Value rhs) {
-        return lhs.getString() + " <> " + rhs.getString();
+        return lhs.getValue() + " <> " + rhs.getValue();
     }
 
     @Override
     public String like(Value lhs, Value rhs) {
-        return lhs.getString() + " LIKE " + rhs.getString();
+        return lhs.getValue() + " LIKE " + rhs.getValue();
     }
 
     private String join(List<Condition> conditions, String join) {
@@ -65,22 +65,22 @@ public class TSqlConditionParser implements ConditionParser {
 
     @Override
     public String gt(Value lhs, Value rhs) {
-        return lhs.getString() + " > " + rhs.getString();
+        return lhs.getValue() + " > " + rhs.getValue();
     }
 
     @Override
     public String ge(Value lhs, Value rhs) {
-        return lhs.getString() + " >= " + rhs.getString();
+        return lhs.getValue() + " >= " + rhs.getValue();
     }
 
     @Override
     public String lt(Value lhs, Value rhs) {
-        return lhs.getString() + " < " + rhs.getString();
+        return lhs.getValue() + " < " + rhs.getValue();
     }
 
     @Override
     public String le(Value lhs, Value rhs) {
-        return lhs.getString() +" <= " + rhs.getString();
+        return lhs.getValue() +" <= " + rhs.getValue();
     }
 
     @Override
@@ -90,11 +90,11 @@ public class TSqlConditionParser implements ConditionParser {
 
     @Override
     public String isNull(Value v) {
-        return v.getString() + " IS NULL";
+        return v.getValue() + " IS NULL";
     }
 
     @Override
     public String in(Value v, IQuery query) {
-        return v.getString() + " IN (\n" + query.getSql(renderer) + "\n)";
+        return v.getValue() + " IN (\n" + query.getSql(renderer) + "\n)";
     }
 }

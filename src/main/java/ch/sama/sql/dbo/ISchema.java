@@ -2,7 +2,7 @@ package ch.sama.sql.dbo;
 
 import java.util.List;
 
-public interface Schema {
+public interface ISchema {
     public List<Table> getTables();
 
     public Table getTable(String name);

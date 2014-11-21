@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
+import ch.sama.sql.query.base.IQueryRenderer;
 import ch.sama.sql.query.exception.BadSqlException;
 import ch.sama.sql.query.exception.ObjectNotFoundException;
 import org.junit.Test;
@@ -11,6 +12,8 @@ import org.junit.Test;
 import java.util.List;
 
 public class SchemaTest {
+    private final static IQueryRenderer renderer = new TSqlQueryRenderer();
+
     // Table
 
     @Test
@@ -18,7 +21,7 @@ public class SchemaTest {
         List<Table> list = new TSqlSchema("CREATE TABLE [dbo].[tblTable](").getTables();
 
         assertEquals(1, list.size());
-        assertEquals("[dbo].[tblTable]", list.get(0).getString());
+        assertEquals("[dbo].[tblTable]", list.get(0).getString(renderer));
     }
 
     @Test
@@ -26,7 +29,7 @@ public class SchemaTest {
         List<Table> list = new TSqlSchema("CREATE TABLE [tblTable](").getTables();
 
         assertEquals(1, list.size());
-        assertEquals("[tblTable]", list.get(0).getString());
+        assertEquals("[tblTable]", list.get(0).getString(renderer));
     }
 
     @Test (expected = BadSqlException.class)
@@ -151,7 +154,7 @@ public class SchemaTest {
         assertEquals("iField", field.getName());
         assertEquals("int", field.getDataType());
         assertEquals(false, field.getNullable());
-        assertEquals("(1337)", field.getDefault().getString());
+        assertEquals("(1337)", field.getDefault().getValue());
     }
 
     @Test
@@ -169,7 +172,7 @@ public class SchemaTest {
         assertEquals("uidId", field.getName());
         assertEquals("uniqueidentifier", field.getDataType());
         assertEquals(false, field.getNullable());
-        assertEquals("(newsequentialid())", field.getDefault().getString());
+        assertEquals("(newsequentialid())", field.getDefault().getValue());
     }
 
     // PKey
@@ -188,7 +191,7 @@ public class SchemaTest {
 
         Table table = list.get(0);
 
-        assertEquals(table.getColumn("uidId").getString(), table.getPrimaryKey().get(0).getString());
+        assertEquals(table.getColumn("uidId").getString(renderer), table.getPrimaryKey().get(0).getString(renderer));
     }
 
     @Test
@@ -208,8 +211,8 @@ public class SchemaTest {
         Table table = list.get(0);
 
         assertEquals(2, table.getPrimaryKey().size());
-        assertEquals(table.getColumn("uidId1").getString(), table.getPrimaryKey().get(0).getString());
-        assertEquals(table.getColumn("uidId2").getString(), table.getPrimaryKey().get(1).getString());
+        assertEquals(table.getColumn("uidId1").getString(renderer), table.getPrimaryKey().get(0).getString(renderer));
+        assertEquals(table.getColumn("uidId2").getString(renderer), table.getPrimaryKey().get(1).getString(renderer));
     }
 
     @Test (expected = ObjectNotFoundException.class)

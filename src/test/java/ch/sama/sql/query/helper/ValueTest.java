@@ -21,55 +21,55 @@ public class ValueTest {
 
 	@Test
 	public void string() {
-		assertEquals("'hello'", value.string("hello").getString());
+		assertEquals("'hello'", value.string("hello").getString(renderer));
 	}
 	
 	@Test
 	public void stringEscape() {
-		assertEquals("'hello ''john'''", value.string("hello 'john'").getString());
+		assertEquals("'hello ''john'''", value.string("hello 'john'").getString(renderer));
 	}
 	
 	@Test
 	public void integer() {
-		assertEquals("1", value.numeric(1).getString());
+		assertEquals("1", value.numeric(1).getString(renderer));
 	}
 	
 	@Test
 	public void numeric() {
-		assertEquals("1.1", value.numeric(1.1f).getString());
-		assertEquals("1.1", value.numeric(1.1d).getString());
+		assertEquals("1.1", value.numeric(1.1f).getString(renderer));
+		assertEquals("1.1", value.numeric(1.1d).getString(renderer));
 	}
 	
 	@Test
 	public void date() throws Exception {
 		SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 		Date d = format.parse("15.08.2014");
-		assertEquals("CONVERT(datetime, '2014-08-15 00:00:00', 21)", value.date(d).getString());
+		assertEquals("CONVERT(datetime, '2014-08-15 00:00:00', 21)", value.date(d).getString(renderer));
 	}
 	
 	@Test
 	public void field() {
-		assertEquals("[TABLE].[FIELD]", value.field("TABLE", "FIELD").getString());
+		assertEquals("[TABLE].[FIELD]", value.field("TABLE", "FIELD").getString(renderer));
 	}
 
     @Test
     public void table() {
-        assertEquals("[TABLE].*", value.table("TABLE").getString());
+        assertEquals("[TABLE].*", value.table("TABLE").getString(renderer));
     }
 	
 	@Test
 	public void nameAlias() {
-		assertEquals("[NAME] AS [ALIAS]", value.field("NAME").as("ALIAS").getString());
+		assertEquals("[NAME] AS [ALIAS]", value.field("NAME").as("ALIAS").getString(renderer));
 	}
 	
 	@Test
 	public void subQuery() {
-		assertEquals("(\nSELECT 1\n) AS [ALIAS]", source.query(new Query().select(value.numeric(1))).as("ALIAS").getString());
+		assertEquals("(\nSELECT 1\n) AS [ALIAS]", source.query(new Query().select(value.numeric(1))).as("ALIAS").getString(renderer));
 	}
 	
 	@Test
 	public void function() {
-		assertEquals("COUNT(*)", value.function("COUNT(*)").getString());
+		assertEquals("COUNT(*)", value.function("COUNT(*)").getString(renderer));
 	}
 	
 	@Test

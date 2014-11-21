@@ -1,10 +1,11 @@
 package ch.sama.sql.dbo;
 
+import ch.sama.sql.query.base.IQueryRenderer;
 import ch.sama.sql.query.exception.IllegalIdentifierException;
 import ch.sama.sql.query.base.checker.Identifier;
 import ch.sama.sql.query.helper.Value;
 
-public abstract class Field {
+public class Field {
     private Table table;
     private String tableName;
 	private String field;
@@ -48,7 +49,9 @@ public abstract class Field {
         return field;
     }
 	
-	public abstract String getString();
+	public String getString(IQueryRenderer renderer){
+        return renderer.render(this);
+    }
 
     public void setDataType(String dataType) {
         this.dataType = dataType;
