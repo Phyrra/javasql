@@ -3,14 +3,15 @@ package ch.sama.sql.tsql.dialect;
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.base.*;
-import ch.sama.sql.query.helper.ConditionParser;
-import ch.sama.sql.query.helper.OrderParser;
+import ch.sama.sql.query.exception.UnknownValueException;
+import ch.sama.sql.query.helper.IConditionParser;
+import ch.sama.sql.query.helper.IOrderParser;
 import ch.sama.sql.query.helper.Source;
 import ch.sama.sql.query.helper.Value;
 
-public class TSqlQueryRenderer implements IQueryRenderer {
-    private ConditionParser conditionParser;
-    private OrderParser orderParser;
+class TSqlQueryRenderer implements IQueryRenderer {
+    private IConditionParser conditionParser;
+    private IOrderParser orderParser;
 
     public TSqlQueryRenderer() {
         conditionParser = new TSqlConditionParser(this);
@@ -21,7 +22,7 @@ public class TSqlQueryRenderer implements IQueryRenderer {
     public String render(Query query) {
         IQuery parent = query.getParent();
         if (parent != null) {
-            return parent.getSql(this) + " UNION ALL";
+            return parent.getSql() + " UNION ALL";
         }
 
         return null;
@@ -33,7 +34,7 @@ public class TSqlQueryRenderer implements IQueryRenderer {
 
         IQuery parent = query.getParent();
         if (parent instanceof CTEQueryFinal) {
-            builder.append(parent.getSql(this));
+            builder.append(parent.getSql());
             builder.append(", ");
         } else {
             builder.append("WITH ");
@@ -49,10 +50,10 @@ public class TSqlQueryRenderer implements IQueryRenderer {
         StringBuilder builder = new StringBuilder();
 
         IQuery parent = query.getParent();
-        builder.append(parent.getSql(this));
+        builder.append(parent.getSql());
 
         builder.append(" AS (\n");
-        builder.append(query.getQuery().getSql(this));
+        builder.append(query.getQuery().getSql());
         builder.append("\n)");
 
         return builder.toString();
@@ -64,7 +65,7 @@ public class TSqlQueryRenderer implements IQueryRenderer {
 
         IQuery parent = query.getParent();
         if (parent != null) {
-            String parentQuery = parent.getSql(this);
+            String parentQuery = parent.getSql();
             if (parentQuery != null) {
                 builder.append(parentQuery);
                 builder.append("\n");
@@ -96,7 +97,7 @@ public class TSqlQueryRenderer implements IQueryRenderer {
     public String render(FromQuery query) {
         StringBuilder builder = new StringBuilder();
 
-        builder.append(query.getParent().getSql(this));
+        builder.append(query.getParent().getSql());
 
         String prefix = "";
 
@@ -116,13 +117,23 @@ public class TSqlQueryRenderer implements IQueryRenderer {
     public String render(JoinQuery query) {
         StringBuilder builder = new StringBuilder();
 
-        builder.append(query.getParent().getSql(this));
+        builder.append(query.getParent().getSql());
 
         builder.append("\n");
 
-        String type = query.getType();
+        JoinQuery.TYPE type = query.getType();
         if (type != null) {
-            builder.append(type);
+            switch (type) {
+                case LEFT:
+                    builder.append("LEFT");
+                    break;
+                case RIGHT:
+                    builder.append("RIGHT");
+                    break;
+                default:
+                    throw new UnknownValueException("Unknown join type: " + type);
+            }
+
             builder.append(" ");
         }
         builder.append("JOIN ");
@@ -136,7 +147,7 @@ public class TSqlQueryRenderer implements IQueryRenderer {
     public String render(JoinQueryFinal query) {
         StringBuilder builder = new StringBuilder();
 
-        builder.append(query.getParent().getSql(this));
+        builder.append(query.getParent().getSql());
 
         builder.append(" ON ");
         builder.append(query.getCondition().getString(conditionParser));
@@ -148,7 +159,7 @@ public class TSqlQueryRenderer implements IQueryRenderer {
     public String render(WhereQuery query) {
         StringBuilder builder = new StringBuilder();
 
-        builder.append(query.getParent().getSql(this));
+        builder.append(query.getParent().getSql());
         builder.append("\nWHERE ");
         builder.append(query.getCondition().getString(conditionParser));
 
@@ -160,7 +171,7 @@ public class TSqlQueryRenderer implements IQueryRenderer {
         StringBuilder builder = new StringBuilder();
 
         IQuery parent = query.getParent();
-        builder.append(parent.getSql(this));
+        builder.append(parent.getSql());
 
         if (parent instanceof OrderQuery) {
             builder.append(", ");

@@ -7,6 +7,7 @@ import ch.sama.sql.query.helper.Source;
 import ch.sama.sql.query.helper.Value;
 
 public class SelectQuery implements IQuery {
+    IQueryRenderer renderer;
 	private IQuery parent;
 	private List<Value> values;	
 	private int n;
@@ -24,7 +25,8 @@ public class SelectQuery implements IQuery {
 		return n;
 	}
 	
-	public SelectQuery(IQuery parent, Value... v) {
+	public SelectQuery(IQueryRenderer renderer, IQuery parent, Value... v) {
+        this.renderer = renderer;
 		this.parent = parent;
 		this.values = new ArrayList<Value>();
 		this.n = -1;
@@ -40,19 +42,19 @@ public class SelectQuery implements IQuery {
 	}
 	
 	public FromQuery from(Source... s) {
-		return new FromQuery(this, s);
+		return new FromQuery(renderer, this, s);
 	}
 
     public Query union() {
-        return new Query(this);
+        return new Query(renderer, this);
     }
 
     public WhereQuery where(Condition c) {
-        return new WhereQuery(this, c);
+        return new WhereQuery(renderer, this, c);
     }
 
     @Override
-    public String getSql(IQueryRenderer renderer) {
+    public String getSql() {
         return renderer.render(this);
     }
 }

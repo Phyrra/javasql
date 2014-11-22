@@ -3,12 +3,12 @@ package ch.sama.sql.tsql.dialect;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.base.IQueryRenderer;
 import ch.sama.sql.query.helper.Condition;
-import ch.sama.sql.query.helper.ConditionParser;
+import ch.sama.sql.query.helper.IConditionParser;
 import ch.sama.sql.query.helper.Value;
 
 import java.util.List;
 
-public class TSqlConditionParser implements ConditionParser {
+class TSqlConditionParser implements IConditionParser {
     private IQueryRenderer renderer;
 
     public TSqlConditionParser(IQueryRenderer renderer) {
@@ -85,7 +85,7 @@ public class TSqlConditionParser implements ConditionParser {
 
     @Override
     public String exists(IQuery query) {
-        return "EXISTS (\n" + query.getSql(renderer) + "\n)";
+        return "EXISTS (\n" + query.getSql() + "\n)";
     }
 
     @Override
@@ -95,6 +95,6 @@ public class TSqlConditionParser implements ConditionParser {
 
     @Override
     public String in(Value v, IQuery query) {
-        return v.getValue() + " IN (\n" + query.getSql(renderer) + "\n)";
+        return v.getValue() + " IN (\n" + query.getSql() + "\n)";
     }
 }

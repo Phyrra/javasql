@@ -2,27 +2,30 @@ package ch.sama.sql.tsql.dialect;
 
 import static org.junit.Assert.*;
 
-import ch.sama.sql.query.base.*;
+import ch.sama.sql.query.base.FromQuery;
+import ch.sama.sql.query.base.IQueryFactory;
+import ch.sama.sql.query.base.ISourceFactory;
+import ch.sama.sql.query.base.IValueFactory;
 import org.junit.Test;
 
 import ch.sama.sql.query.helper.Condition;
 
 public class JoinQueryTest {
-    private static final IQueryRenderer renderer = new TSqlQueryRenderer();
-    private static final IValueFactory value = new TSqlValueFactory();
-    private static final ISourceFactory source = new TSqlSourceFactory();
-	private static final FromQuery query = new Query().select(value.field("F")).from(source.table("T"));
+    private static final IQueryFactory fac = new TSqlQueryFactory();
+    private static final IValueFactory value = fac.value();
+    private static final ISourceFactory source = fac.source();
+	private static final FromQuery query = fac.query().select(value.field("F")).from(source.table("T"));
 	
 	@Test
 	public void single() {
 		Condition c = Condition.eq(value.numeric(1), value.numeric(1));
-		assertEquals("SELECT [F]\nFROM [T]\nJOIN [J] ON 1 = 1", query.join(source.table("J")).on(c).getSql(renderer));
+		assertEquals("SELECT [F]\nFROM [T]\nJOIN [J] ON 1 = 1", query.join(source.table("J")).on(c).getSql());
 	}
 
     @Test
     public void alias() {
         Condition c = Condition.eq(value.numeric(1), value.numeric(1));
-        assertEquals("SELECT [F]\nFROM [T]\nJOIN [J] AS [A] ON 1 = 1", query.join(source.table("J").as("A")).on(c).getSql(renderer));
+        assertEquals("SELECT [F]\nFROM [T]\nJOIN [J] AS [A] ON 1 = 1", query.join(source.table("J").as("A")).on(c).getSql());
     }
 	
 	@Test
@@ -35,7 +38,7 @@ public class JoinQueryTest {
                 query
                         .join(source.table("J1")).on(c1)
                         .join(source.table("J2")).on(c2)
-                .getSql(renderer)
+                .getSql()
 		);
 	}
 
@@ -49,7 +52,7 @@ public class JoinQueryTest {
                         .join(
                                 source.query(query).as("T")
                         ).on(c1)
-                .getSql(renderer)
+                .getSql()
         );
     }
 }

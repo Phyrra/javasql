@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
+import ch.sama.sql.query.base.IQueryFactory;
 import ch.sama.sql.query.base.IQueryRenderer;
 import ch.sama.sql.query.exception.BadSqlException;
 import ch.sama.sql.query.exception.ObjectNotFoundException;
@@ -12,7 +13,8 @@ import org.junit.Test;
 import java.util.List;
 
 public class SchemaTest {
-    private final static IQueryRenderer renderer = new TSqlQueryRenderer();
+    private static final IQueryFactory fac = new TSqlQueryFactory();
+    private static final IQueryRenderer renderer = fac.renderer();
 
     // Table
 

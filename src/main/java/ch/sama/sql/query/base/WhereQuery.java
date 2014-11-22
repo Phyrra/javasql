@@ -4,6 +4,7 @@ import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.Order;
 
 public class WhereQuery implements IQuery {
+    IQueryRenderer renderer;
 	private IQuery parent;
 	private Condition condition;
 
@@ -16,21 +17,22 @@ public class WhereQuery implements IQuery {
 		return condition;
 	}
 	
-	public WhereQuery(IQuery parent, Condition condition) {
+	public WhereQuery(IQueryRenderer renderer, IQuery parent, Condition condition) {
+        this.renderer = renderer;
 		this.parent = parent;
 		this.condition = condition;
 	}
 	
 	public OrderQuery order(Order order) {
-		return new OrderQuery(this, order);
+		return new OrderQuery(renderer, this, order);
 	}
 
     public Query union() {
-        return new Query(this);
+        return new Query(renderer, this);
     }
 
     @Override
-    public String getSql(IQueryRenderer renderer) {
+    public String getSql() {
         return renderer.render(this);
     }
 }

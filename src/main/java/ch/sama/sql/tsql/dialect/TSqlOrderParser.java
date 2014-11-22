@@ -1,11 +1,11 @@
 package ch.sama.sql.tsql.dialect;
 
-import ch.sama.sql.query.helper.OrderParser;
+import ch.sama.sql.query.helper.IOrderParser;
 import ch.sama.sql.query.helper.Value;
 
 import java.util.List;
 
-public class TSqlOrderParser implements OrderParser {
+class TSqlOrderParser implements IOrderParser {
     private String getBase(List<Value> values) {
         StringBuilder builder = new StringBuilder();
         String prefix = "";

@@ -5,19 +5,15 @@ import static org.junit.Assert.*;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
-import ch.sama.sql.query.base.IQueryRenderer;
-import ch.sama.sql.query.base.ISourceFactory;
-import ch.sama.sql.query.base.IValueFactory;
-import ch.sama.sql.query.base.Query;
-import ch.sama.sql.tsql.dialect.TSqlQueryRenderer;
-import ch.sama.sql.tsql.dialect.TSqlSourceFactory;
-import ch.sama.sql.tsql.dialect.TSqlValueFactory;
+import ch.sama.sql.query.base.*;
+import ch.sama.sql.tsql.dialect.TSqlQueryFactory;
 import org.junit.Test;
 
 public class ValueTest {
-    private static final IQueryRenderer renderer = new TSqlQueryRenderer();
-    private static final IValueFactory value = new TSqlValueFactory();
-    private static final ISourceFactory source = new TSqlSourceFactory();
+    private static final IQueryFactory fac = new TSqlQueryFactory();
+    private static final IQueryRenderer renderer = fac.renderer();
+    private static final IValueFactory value = fac.value();
+    private static final ISourceFactory source = fac.source();
 
 	@Test
 	public void string() {
@@ -64,7 +60,7 @@ public class ValueTest {
 	
 	@Test
 	public void subQuery() {
-		assertEquals("(\nSELECT 1\n) AS [ALIAS]", source.query(new Query().select(value.numeric(1))).as("ALIAS").getString(renderer));
+		assertEquals("(\nSELECT 1\n) AS [ALIAS]", source.query(fac.query().select(value.numeric(1))).as("ALIAS").getString(renderer));
 	}
 	
 	@Test
@@ -75,37 +71,37 @@ public class ValueTest {
 	@Test
 	public void selectFunction() {
 		assertEquals(
-			"SELECT COUNT(*) AS [_COUNT]\nFROM [TABLE]",
-			new Query()
-				    .select(
-                            value.function("COUNT(*)").as("_COUNT")
-				    )
-				    .from(source.table("TABLE"))
-			.getSql(renderer)
+                "SELECT COUNT(*) AS [_COUNT]\nFROM [TABLE]",
+                fac.query()
+                        .select(
+                                value.function("COUNT(*)").as("_COUNT")
+                        )
+                        .from(source.table("TABLE"))
+                .getSql()
 		);
 	}
 
     @Test
     public void nullValue() {
         assertEquals(
-            "SELECT NULL",
-            new Query()
-                    .select(
-                            value.value(Value.NULL)
-                    )
-            .getSql(renderer)
+                "SELECT NULL",
+                fac.query()
+                        .select(
+                                value.value(Value.NULL)
+                        )
+                .getSql()
         );
     }
 
     @Test
     public void allValue() {
         assertEquals(
-            "SELECT *",
-            new Query()
-                    .select(
-                            value.value(Value.ALL)
-                    )
-            .getSql(renderer)
+                "SELECT *",
+                fac.query()
+                        .select(
+                                value.value(Value.ALL)
+                        )
+                .getSql()
         );
     }
 }

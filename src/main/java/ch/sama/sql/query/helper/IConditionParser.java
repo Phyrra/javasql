@@ -5,7 +5,7 @@ import ch.sama.sql.query.base.IQueryRenderer;
 
 import java.util.List;
 
-public interface ConditionParser {
+public interface IConditionParser {
     public String eq(Value lhs, Value rhs);
     public String neq(Value lhs, Value rhs);
     public String like(Value lhs, Value rhs);

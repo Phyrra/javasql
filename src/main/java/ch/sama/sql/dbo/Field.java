@@ -48,10 +48,6 @@ public class Field {
     public String getName() {
         return field;
     }
-	
-	public String getString(IQueryRenderer renderer){
-        return renderer.render(this);
-    }
 
     public void setDataType(String dataType) {
         this.dataType = dataType;
@@ -123,5 +119,9 @@ public class Field {
         }
 
         return true;
+    }
+
+    public String getString(IQueryRenderer renderer){
+        return renderer.render(this);
     }
 }

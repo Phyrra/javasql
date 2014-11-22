@@ -3,6 +3,7 @@ package ch.sama.sql.query.base;
 import ch.sama.sql.query.helper.Order;
 
 public class OrderQuery implements IQuery {
+    IQueryRenderer renderer;
 	private IQuery parent;
 	private Order order;
 
@@ -15,17 +16,18 @@ public class OrderQuery implements IQuery {
 		return order;
 	}
 	
-	public OrderQuery(IQuery parent, Order order) {
+	public OrderQuery(IQueryRenderer renderer, IQuery parent, Order order) {
+        this.renderer = renderer;
 		this.parent = parent;
 		this.order = order;
 	}
 
     public OrderQuery order(Order order) {
-        return new OrderQuery(this, order);
+        return new OrderQuery(renderer, this, order);
     }
 
     @Override
-    public String getSql(IQueryRenderer renderer) {
+    public String getSql() {
         return renderer.render(this);
     }
 }

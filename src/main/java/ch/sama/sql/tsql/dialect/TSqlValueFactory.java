@@ -88,7 +88,7 @@ public class TSqlValueFactory implements IValueFactory {
 
     @Override
     public Value query(IQuery query) {
-        return new Value(query, "(\n" + query.getSql(renderer) + "\n)");
+        return new Value(query, "(\n" + query.getSql() + "\n)");
     }
 
     @Override

@@ -6,9 +6,15 @@ import ch.sama.sql.query.helper.Order;
 import ch.sama.sql.query.helper.Source;
 
 public class JoinQuery implements IQuery {
+    public enum TYPE {
+        LEFT,
+        RIGHT
+    }
+
+    IQueryRenderer renderer;
 	private IQuery parent;
 	private Source source;
-	private String type;
+	private TYPE type;
 
     @Override
 	public IQuery getParent() {
@@ -19,23 +25,24 @@ public class JoinQuery implements IQuery {
 		return source;
 	}
 	
-	public String getType() {
+	public TYPE getType() {
 		return type;
 	}
 	
-	public JoinQuery(IQuery parent, Source source) {
+	public JoinQuery(IQueryRenderer renderer, IQuery parent, Source source) {
+        this.renderer = renderer;
 		this.parent = parent;
 		this.source = source;
 		this.type = null;
 	}
 	
 	public JoinQuery left() {
-		this.type = "LEFT";
+		this.type = TYPE.LEFT;
 		return this;
 	}
 	
 	public JoinQuery right() {
-		this.type = "RIGHT";
+		this.type = TYPE.RIGHT;
 		return this;
 	}
 	
@@ -43,11 +50,11 @@ public class JoinQuery implements IQuery {
 	//	Since I never use them, I didn't :>
 	
 	public JoinQueryFinal on(Condition condition) {
-		return new JoinQueryFinal(this, condition);
+		return new JoinQueryFinal(renderer, this, condition);
 	}
 
     @Override
-    public String getSql(IQueryRenderer renderer) {
+    public String getSql() {
         return renderer.render(this);
     }
 }

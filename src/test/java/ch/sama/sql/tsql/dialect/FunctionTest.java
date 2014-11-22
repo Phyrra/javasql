@@ -1,5 +1,6 @@
 package ch.sama.sql.tsql.dialect;
 
+import ch.sama.sql.query.base.IQueryFactory;
 import ch.sama.sql.query.base.IQueryRenderer;
 import ch.sama.sql.query.base.IValueFactory;
 import ch.sama.sql.query.exception.BadParameterException;
@@ -9,8 +10,9 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class FunctionTest {
-    private static final IQueryRenderer renderer = new TSqlQueryRenderer();
-    private static final IValueFactory value = new TSqlValueFactory();
+    private static final IQueryFactory fac = new TSqlQueryFactory();
+    private static final IValueFactory value = fac.value();
+    private static final IQueryRenderer renderer = fac.renderer();
 	private static final TSqlFunctionFactory function = new TSqlFunctionFactory();
 
     @Test

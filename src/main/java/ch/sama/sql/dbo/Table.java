@@ -35,10 +35,6 @@ public class Table {
         this.schema = schema;
         this.table = table;
     }
-	
-	public String getString(IQueryRenderer renderer) {
-        return renderer.render(this);
-    }
 
     public String getName() {
         return table;
@@ -78,5 +74,9 @@ public class Table {
         }
 
         return key;
+    }
+
+    public String getString(IQueryRenderer renderer) {
+        return renderer.render(this);
     }
 }

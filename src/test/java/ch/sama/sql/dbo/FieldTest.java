@@ -2,14 +2,15 @@ package ch.sama.sql.dbo;
 
 import static org.junit.Assert.*;
 
+import ch.sama.sql.query.base.IQueryFactory;
 import ch.sama.sql.query.base.IQueryRenderer;
-import ch.sama.sql.tsql.dialect.TSqlQueryRenderer;
+import ch.sama.sql.tsql.dialect.TSqlQueryFactory;
 import org.junit.Test;
 
 public class FieldTest {
-    private static final IQueryRenderer renderer = new TSqlQueryRenderer();
+    private static final IQueryFactory fac = new TSqlQueryFactory();
+    private static final IQueryRenderer renderer = fac.renderer();
 
-	@Test
 	public void nameOnly() {
 		assertEquals("[NAME]", new Field("NAME").getString(renderer));
 	}

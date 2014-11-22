@@ -4,6 +4,7 @@ import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.ISchema;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dbo.connection.QueryExecutor;
+import ch.sama.sql.query.base.IQueryFactory;
 import ch.sama.sql.query.base.IQueryRenderer;
 import ch.sama.sql.query.base.Query;
 import ch.sama.sql.query.exception.BadSqlException;
@@ -20,9 +21,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TSqlSchema implements ISchema {
-    private static final TSqlValueFactory value = new TSqlValueFactory();
-    private static final TSqlSourceFactory source = new TSqlSourceFactory();
-    private static final IQueryRenderer renderer = new TSqlQueryRenderer();
+    private static final IQueryFactory fac = new TSqlQueryFactory();
 
     private Map<String, Table> tables;
 
@@ -32,13 +31,13 @@ public class TSqlSchema implements ISchema {
         tables = new HashMap<String, Table>();
 
         List<Map<String, Object>> list = executor.query(
-                new Query()
+                fac.query()
                         .select(
-                                value.field("TABLE_SCHEMA"),
-                                value.field("TABLE_NAME")
+                                fac.value().field("TABLE_SCHEMA"),
+                                fac.value().field("TABLE_NAME")
                         )
-                        .from(source.table("INFORMATION_SCHEMA", "TABLES"))
-                .getSql(renderer)
+                        .from(fac.source().table("INFORMATION_SCHEMA", "TABLES"))
+                .getSql()
         );
 
         for (Map<String, Object> row : list) {
@@ -49,35 +48,35 @@ public class TSqlSchema implements ISchema {
             tables.put(table, t);
 
             List<Map<String, Object>> columns = executor.query(
-                    new Query()
+                    fac.query()
                             .select(
-                                    value.field("COLUMN_NAME"),
-                                    value.field("DATA_TYPE"),
-                                    value.field("CHARACTER_MAXIMUM_LENGTH"),
-                                    value.field("IS_NULLABLE"),
-                                    value.field("COLUMN_DEFAULT"),
-                                    value.function(
+                                    fac.value().field("COLUMN_NAME"),
+                                    fac.value().field("DATA_TYPE"),
+                                    fac.value().field("CHARACTER_MAXIMUM_LENGTH"),
+                                    fac.value().field("IS_NULLABLE"),
+                                    fac.value().field("COLUMN_DEFAULT"),
+                                    fac.value().function(
                                             fnc.coalesce(
-                                                    value.query(
-                                                            new Query()
-                                                                    .select(value.numeric(1))
-                                                                    .from(source.table("INFORMATION_SCHEMA", "TABLE_CONSTRAINTS").as("tc"))
-                                                                    .join(source.table("INFORMATION_SCHEMA", "CONSTRAINT_COLUMN_USAGE").as("ccu")).on(Condition.eq(value.field("tc", "CONSTRAINT_NAME"), value.field("ccu", "CONSTRAINT_NAME")))
+                                                    fac.value().query(
+                                                            fac.query()
+                                                                    .select(fac.value().numeric(1))
+                                                                    .from(fac.source().table("INFORMATION_SCHEMA", "TABLE_CONSTRAINTS").as("tc"))
+                                                                    .join(fac.source().table("INFORMATION_SCHEMA", "CONSTRAINT_COLUMN_USAGE").as("ccu")).on(Condition.eq(fac.value().field("tc", "CONSTRAINT_NAME"), fac.value().field("ccu", "CONSTRAINT_NAME")))
                                                                     .where(
                                                                             Condition.and(
-                                                                                    Condition.eq(value.field("tc", "CONSTRAINT_TYPE"), value.string("PRIMARY KEY")),
-                                                                                    Condition.eq(value.field("tc", "TABLE_NAME"), value.string(table)),
-                                                                                    Condition.eq(value.field("ccu", "COLUMN_NAME"), value.field("COLUMNS", "COLUMN_NAME"))
+                                                                                    Condition.eq(fac.value().field("tc", "CONSTRAINT_TYPE"), fac.value().string("PRIMARY KEY")),
+                                                                                    Condition.eq(fac.value().field("tc", "TABLE_NAME"), fac.value().string(table)),
+                                                                                    Condition.eq(fac.value().field("ccu", "COLUMN_NAME"), fac.value().field("COLUMNS", "COLUMN_NAME"))
                                                                             )
                                                                     )
                                                     ),
-                                                    value.numeric(0)
+                                                    fac.value().numeric(0)
                                             )
                                     ).as("IS_PKEY")
                             )
-                            .from(source.table("INFORMATION_SCHEMA", "COLUMNS"))
-                            .where(Condition.eq(value.field("TABLE_NAME"), value.string(table)))
-                    .getSql(renderer)
+                            .from(fac.source().table("INFORMATION_SCHEMA", "COLUMNS"))
+                            .where(Condition.eq(fac.value().field("TABLE_NAME"), fac.value().string(table)))
+                    .getSql()
             );
 
             for (Map<String, Object> column : columns) {
@@ -106,7 +105,7 @@ public class TSqlSchema implements ISchema {
                 Object defaultValue = column.get("COLUMN_DEFAULT");
                 if (defaultValue != null) {
                     // The data type is inconsequential here
-                    f.setDefault(value.plain((String)defaultValue));
+                    f.setDefault(fac.value().plain((String)defaultValue));
                 }
 
                 t.addColumn(f);
@@ -186,7 +185,7 @@ public class TSqlSchema implements ISchema {
         String prefix = "";
 
         builder.append("CREATE TABLE ");
-        builder.append(table.getString(renderer));
+        builder.append(table.getString(fac.renderer()));
         builder.append("(\n");
 
         for (Field field : table.getColumns()) {
@@ -442,7 +441,7 @@ public class TSqlSchema implements ISchema {
                         if (!fr.compareTo(fl)) {
                             builder.append(prefix);
                             builder.append("ALTER TABLE ");
-                            builder.append(tr.getString(renderer));
+                            builder.append(tr.getString(fac.renderer()));
                             builder.append(" ALTER COLUMN ");
                             builder.append(getColumnSchema(fr));
 
@@ -451,7 +450,7 @@ public class TSqlSchema implements ISchema {
                     } else {
                         builder.append(prefix);
                         builder.append("ALTER TABLE ");
-                        builder.append(tr.getString(renderer));
+                        builder.append(tr.getString(fac.renderer()));
                         builder.append(" ADD ");
                         builder.append(getColumnSchema(fr));
 

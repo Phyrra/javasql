@@ -2,17 +2,15 @@ package ch.sama.sql.query.helper;
 
 import static org.junit.Assert.*;
 
+import ch.sama.sql.query.base.IQueryFactory;
 import ch.sama.sql.query.base.IValueFactory;
-import ch.sama.sql.query.base.Query;
-import ch.sama.sql.tsql.dialect.TSqlQueryRenderer;
-import ch.sama.sql.tsql.dialect.TSqlValueFactory;
+import ch.sama.sql.tsql.dialect.TSqlQueryFactory;
 import org.junit.Test;
 
-import ch.sama.sql.tsql.dialect.TSqlConditionParser;
-
 public class ConditionTest {
-    private static final IValueFactory value = new TSqlValueFactory();
-	private static final ConditionParser parser = new TSqlConditionParser(new TSqlQueryRenderer());
+    private static final IQueryFactory fac = new TSqlQueryFactory();
+    private static final IValueFactory value = fac.value();
+    private static final IConditionParser parser = fac.condition();
 	
 	@Test
 	public void eq() {
@@ -106,13 +104,13 @@ public class ConditionTest {
 
     @Test
     public void exists() {
-        Condition c = Condition.exists(new Query().select(value.numeric(1)));
+        Condition c = Condition.exists(fac.query().select(value.numeric(1)));
         assertEquals("EXISTS (\nSELECT 1\n)", c.getString(parser));
     }
 
     @Test
     public void in() {
-        Condition c = Condition.in(value.numeric(1), new Query().select(value.numeric(1)));
+        Condition c = Condition.in(value.numeric(1), fac.query().select(value.numeric(1)));
         assertEquals("1 IN (\nSELECT 1\n)", c.getString(parser));
     }
 }

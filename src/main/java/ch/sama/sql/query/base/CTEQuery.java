@@ -7,6 +7,7 @@ import ch.sama.sql.query.base.checker.Identifier;
 import ch.sama.sql.query.helper.Value;
 
 public class CTEQuery implements IQuery {
+    private IQueryRenderer renderer;
 	private IQuery parent;
 	private String name;
 
@@ -19,11 +20,12 @@ public class CTEQuery implements IQuery {
 		return name;
 	}
 	
-	public CTEQuery(IQuery parent, String name) {
+	public CTEQuery(IQueryRenderer renderer, IQuery parent, String name) {
         if (!Identifier.test(name)) {
             throw new IllegalIdentifierException(name);
         }
 
+        this.renderer = renderer;
 		this.parent = parent;
 		this.name = name;
 	}
@@ -33,11 +35,11 @@ public class CTEQuery implements IQuery {
             throw new BadSqlException("CTE cannot be nested");
         }
 
-		return new CTEQueryFinal(this, query);
+		return new CTEQueryFinal(renderer, this, query);
 	}
 
     @Override
-    public String getSql(IQueryRenderer renderer) {
+    public String getSql() {
         return renderer.render(this);
     }
 }

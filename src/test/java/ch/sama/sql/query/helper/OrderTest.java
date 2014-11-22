@@ -2,16 +2,16 @@ package ch.sama.sql.query.helper;
 
 import static org.junit.Assert.*;
 
+import ch.sama.sql.query.base.IQueryFactory;
 import ch.sama.sql.query.base.IValueFactory;
 import ch.sama.sql.query.exception.BadSqlException;
-import ch.sama.sql.tsql.dialect.TSqlValueFactory;
+import ch.sama.sql.tsql.dialect.TSqlQueryFactory;
 import org.junit.Test;
 
-import ch.sama.sql.tsql.dialect.TSqlOrderParser;
-
 public class OrderTest {
-    private static final IValueFactory value = new TSqlValueFactory();
-	private static final OrderParser parser = new TSqlOrderParser();
+    private static final IQueryFactory fac = new TSqlQueryFactory();
+    private static final IValueFactory value = fac.value();
+    private static final IOrderParser parser = fac.order();
 	
 	@Test
 	public void ascSingle() {
