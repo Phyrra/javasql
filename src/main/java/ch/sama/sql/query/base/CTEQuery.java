@@ -1,10 +1,9 @@
 package ch.sama.sql.query.base;
 
-import ch.sama.sql.query.base.checker.QueryFinder;
+import ch.sama.sql.query.base.check.QueryFinder;
 import ch.sama.sql.query.exception.BadSqlException;
 import ch.sama.sql.query.exception.IllegalIdentifierException;
-import ch.sama.sql.query.base.checker.Identifier;
-import ch.sama.sql.query.helper.Value;
+import ch.sama.sql.query.base.check.Identifier;
 
 public class CTEQuery implements IQuery {
     private IQueryRenderer renderer;

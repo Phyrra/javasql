@@ -1,7 +1,7 @@
 package ch.sama.sql.query.helper;
 
 import ch.sama.sql.query.base.IQueryRenderer;
-import ch.sama.sql.query.base.checker.Identifier;
+import ch.sama.sql.query.base.check.Identifier;
 import ch.sama.sql.query.exception.IllegalIdentifierException;
 
 public class Source {

@@ -1,4 +1,4 @@
-package ch.sama.sql.query.base.checker;
+package ch.sama.sql.query.base.check;
 
 import static org.junit.Assert.*;
 

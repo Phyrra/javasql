@@ -1,4 +1,4 @@
-package ch.sama.sql.query.base.checker;
+package ch.sama.sql.query.base.check;
 
 import ch.sama.sql.query.base.FromQuery;
 import ch.sama.sql.query.base.IQuery;

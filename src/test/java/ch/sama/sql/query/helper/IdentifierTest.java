@@ -1,6 +1,6 @@
 package ch.sama.sql.query.helper;
 
-import ch.sama.sql.query.base.checker.Identifier;
+import ch.sama.sql.query.base.check.Identifier;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
