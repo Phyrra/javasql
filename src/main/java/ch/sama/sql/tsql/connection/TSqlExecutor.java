@@ -1,9 +1,8 @@
 package ch.sama.sql.tsql.connection;
 
 import ch.sama.sql.dbo.connection.DBConnection;
-import ch.sama.sql.dbo.connection.QueryExecutor;
+import ch.sama.sql.dbo.connection.IQueryExecutor;
 import ch.sama.sql.dbo.connection.ResultSetTransformer;
-import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.exception.BadSqlException;
 import ch.sama.sql.query.exception.ConnectionException;
 
@@ -11,11 +10,10 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class TSqlExecutor implements QueryExecutor {
+public class TSqlExecutor implements IQueryExecutor {
     private DBConnection connection;
     private ResultSetTransformer transformer;
 

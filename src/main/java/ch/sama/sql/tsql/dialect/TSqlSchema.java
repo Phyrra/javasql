@@ -3,10 +3,8 @@ package ch.sama.sql.tsql.dialect;
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.ISchema;
 import ch.sama.sql.dbo.Table;
-import ch.sama.sql.dbo.connection.QueryExecutor;
+import ch.sama.sql.dbo.connection.IQueryExecutor;
 import ch.sama.sql.query.base.IQueryFactory;
-import ch.sama.sql.query.base.IQueryRenderer;
-import ch.sama.sql.query.base.Query;
 import ch.sama.sql.query.exception.BadSqlException;
 import ch.sama.sql.query.exception.ObjectNotFoundException;
 import ch.sama.sql.query.helper.Condition;
@@ -25,7 +23,7 @@ public class TSqlSchema implements ISchema {
 
     private Map<String, Table> tables;
 
-    public TSqlSchema(QueryExecutor executor) {
+    public TSqlSchema(IQueryExecutor executor) {
         TSqlFunctionFactory fnc = new TSqlFunctionFactory();
 
         tables = new HashMap<String, Table>();
@@ -472,50 +470,88 @@ public class TSqlSchema implements ISchema {
         public boolean filter(String table);
     }
 
-    public void createClasses(String srcFolder, String pkg, TableFilter filter) {
-        for (Table table : tables.values()) {
-            if (filter.filter(table.getName())) {
-                try {
-                    createClass(table, srcFolder, pkg);
-                } catch (IOException e) {
-                    // hmm.. something should be done about that :D
-                }
-            }
-        }
-    }
-
-    private void createClass(Table table, String srcFolder, String pkg) throws IOException {
+    private BufferedWriter createClassFile(String srcFolder, String pkg, String className) throws IOException {
         String separator = System.getProperty("file.separator");
         String path = pkg.replace(".", separator);
 
-        File file = new File(srcFolder + separator + path + separator + table.getName() + ".java");
+        File file = new File(srcFolder + separator + path + separator + className + ".java");
 
         if (!file.exists()) {
+            file.getParentFile().mkdirs();
             file.createNewFile();
         }
 
         FileWriter fileWriter = new FileWriter(file.getAbsoluteFile(), true);
         BufferedWriter writer = new BufferedWriter(fileWriter);
 
-        String selfName = "self";
+        return writer;
+    }
+
+    private String getTableClassName(Table table) {
         String tableName = table.getName();
+        return tableName.substring(0, 1).toUpperCase() + tableName.substring(1);
+    }
+
+    private String getTableVariableName(Table table) {
+        String tableName = table.getName();
+        return tableName.substring(0, 1).toLowerCase() + tableName.substring(1);
+    }
+
+    public void createClasses(String srcFolder, String pkg, TableFilter filter) throws IOException {
+        BufferedWriter writer = createClassFile(srcFolder, pkg, "Tables");
 
         writer.write("package " + pkg + ";\n\n");
         writer.write("import ch.sama.sql.dbo.Table;\n");
-        writer.write("import ch.sama.sql.dbo.Field;\n");
-        writer.write("import ch.sama.sql.tsql.dialect.TSqlTable;\n");
-        writer.write("import ch.sama.sql.tsql.dialect.TSqlField;\n\n");
-        writer.write("public class " + tableName + " {\n");
-        writer.write("\tpublic static Table " + selfName + " = new TSqlTable(\"" + tableName + "\");\n\n");
+        writer.write("import " + pkg + ".tables.*;\n\n");
+        writer.write("public class Tables {\n");
+
+        for (Table table : tables.values()) {
+            String tableName = table.getName();
+
+            if (filter.filter(tableName)) {
+                String tableClassName = getTableClassName(table);
+                String tableVarName = getTableVariableName(table);
+
+                String schemaInit;
+                String schema = table.getSchema();
+                if (schema == null) {
+                    schemaInit = "";
+                } else {
+                    schemaInit = "\"" + schema + "\", ";
+                }
+
+                writer.write("\tpublic static final " + tableClassName + " " + tableVarName + " = new " + tableClassName + "(" + schemaInit + "\"" + tableName + "\");\n");
+                createClass(table, srcFolder, pkg + ".tables");
+            }
+        }
+
+        writer.write("}");
+        writer.close();
+    }
+
+    private void createClass(Table table, String srcFolder, String pkg) throws IOException {
+        String tableName = table.getName();
+        String tableClassName = tableName.substring(0, 1).toUpperCase() + tableName.substring(1);
+
+        BufferedWriter writer = createClassFile(srcFolder, pkg, tableClassName);
+
+        writer.write("package " + pkg + ";\n\n");
+        writer.write("import ch.sama.sql.dbo.Table;\n");
+        writer.write("import ch.sama.sql.dbo.Field;\n\n");
+        writer.write("public class " + tableClassName + " extends Table {\n");
+        writer.write("\tpublic " + tableClassName + "(String schema, String table) {\n");
+        writer.write("\t\tsuper(schema, table);\n");
+        writer.write("\t}\n\n");
+        writer.write("\tpublic " + tableClassName + "(String table) {\n");
+        writer.write("\t\tsuper(table);\n");
+        writer.write("\t}\n\n");
 
         for (Field field : table.getColumns()) {
             String fieldName = field.getName();
-
-            writer.write("\tpublic static Field " + fieldName + " = new TSqlField(" + selfName + ", \"" + fieldName + "\");\n");
+            writer.write("\tpublic Field " + fieldName + " = new Field(this, \"" + fieldName + "\");\n");
         }
 
-        writer.write("\n}");
-
+        writer.write("}");
         writer.close();
     }
 }

@@ -12,7 +12,7 @@ import ch.sama.sql.query.helper.Value;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class TSqlValueFactory implements IValueFactory {
+class TSqlValueFactory implements IValueFactory {
     private static final IQueryRenderer renderer = new TSqlQueryRenderer();
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
