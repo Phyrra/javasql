@@ -1,11 +1,15 @@
-package ch.sama.sql.query.helper;
+package ch.sama.sql.query.base.check;
 
-import ch.sama.sql.query.base.check.Identifier;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class IdentifierTest {
+    @Test
+    public void empty() {
+        assertEquals(false, Identifier.test(""));
+    }
+
     @Test
     public void singleChar() {
         assertEquals(true, Identifier.test("A"));
