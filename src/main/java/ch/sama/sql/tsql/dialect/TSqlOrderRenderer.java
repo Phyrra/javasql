@@ -1,11 +1,13 @@
 package ch.sama.sql.tsql.dialect;
 
-import ch.sama.sql.query.helper.IOrderParser;
 import ch.sama.sql.query.helper.Value;
+import ch.sama.sql.query.helper.order.AscOrder;
+import ch.sama.sql.query.helper.order.DescOrder;
+import ch.sama.sql.query.helper.order.IOrderRenderer;
 
 import java.util.List;
 
-class TSqlOrderParser implements IOrderParser {
+class TSqlOrderRenderer implements IOrderRenderer {
     private String getBase(List<Value> values) {
         StringBuilder builder = new StringBuilder();
         String prefix = "";
@@ -21,12 +23,12 @@ class TSqlOrderParser implements IOrderParser {
     }
 
     @Override
-    public String asc(List<Value> values) {
-        return getBase(values) + " ASC";
+    public String render(AscOrder o) {
+        return getBase(o.getValues()) + " ASC";
     }
 
     @Override
-    public String desc(List<Value> values) {
-        return getBase(values) + " DESC";
+    public String render(DescOrder o) {
+        return getBase(o.getValues()) + " DESC";
     }
 }

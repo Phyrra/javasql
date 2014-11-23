@@ -1,15 +1,15 @@
 package ch.sama.sql.tsql.dialect;
 
 import ch.sama.sql.query.base.*;
-import ch.sama.sql.query.helper.IConditionParser;
-import ch.sama.sql.query.helper.IOrderParser;
+import ch.sama.sql.query.helper.condition.IConditionRenderer;
+import ch.sama.sql.query.helper.order.IOrderRenderer;
 
 public class TSqlQueryFactory implements IQueryFactory {
     private IValueFactory value = new TSqlValueFactory();
     private ISourceFactory source = new TSqlSourceFactory();
     private IQueryRenderer renderer = new TSqlQueryRenderer();
-    private IConditionParser condition = new TSqlConditionParser(renderer);
-    private IOrderParser order = new TSqlOrderParser();
+    private IConditionRenderer condition = new TSqlConditionRenderer(renderer);
+    private IOrderRenderer order = new TSqlOrderRenderer();
 
     @Override
     public IValueFactory value() {
@@ -27,12 +27,12 @@ public class TSqlQueryFactory implements IQueryFactory {
     }
 
     @Override
-    public IConditionParser condition() {
+    public IConditionRenderer condition() {
         return condition;
     }
 
     @Override
-    public IOrderParser order() {
+    public IOrderRenderer order() {
         return order;
     }
 

@@ -1,9 +1,7 @@
 package ch.sama.sql.query.base;
 
-import ch.sama.sql.query.exception.BadSqlException;
-import ch.sama.sql.query.helper.Condition;
-import ch.sama.sql.query.helper.Order;
 import ch.sama.sql.query.helper.Source;
+import ch.sama.sql.query.helper.condition.ICondition;
 
 public class JoinQuery implements IQuery {
     public enum TYPE {
@@ -11,7 +9,7 @@ public class JoinQuery implements IQuery {
         RIGHT
     }
 
-    IQueryRenderer renderer;
+    private IQueryRenderer renderer;
 	private IQuery parent;
 	private Source source;
 	private TYPE type;
@@ -49,7 +47,7 @@ public class JoinQuery implements IQuery {
 	// Could also add inner/outer/cross and so on..
 	//	Since I never use them, I didn't :>
 	
-	public JoinQueryFinal on(Condition condition) {
+	public JoinQueryFinal on(ICondition condition) {
 		return new JoinQueryFinal(renderer, this, condition);
 	}
 

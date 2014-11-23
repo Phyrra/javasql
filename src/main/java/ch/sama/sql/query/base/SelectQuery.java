@@ -2,12 +2,12 @@ package ch.sama.sql.query.base;
 
 import java.util.*;
 
-import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.Source;
 import ch.sama.sql.query.helper.Value;
+import ch.sama.sql.query.helper.condition.ICondition;
 
 public class SelectQuery implements IQuery {
-    IQueryRenderer renderer;
+    private IQueryRenderer renderer;
 	private IQuery parent;
 	private List<Value> values;	
 	private int n;
@@ -49,7 +49,7 @@ public class SelectQuery implements IQuery {
         return new Query(renderer, this);
     }
 
-    public WhereQuery where(Condition c) {
+    public WhereQuery where(ICondition c) {
         return new WhereQuery(renderer, this, c);
     }
 

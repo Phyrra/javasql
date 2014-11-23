@@ -4,18 +4,18 @@ import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.base.*;
 import ch.sama.sql.query.exception.UnknownValueException;
-import ch.sama.sql.query.helper.IConditionParser;
-import ch.sama.sql.query.helper.IOrderParser;
+import ch.sama.sql.query.helper.condition.IConditionRenderer;
+import ch.sama.sql.query.helper.order.IOrderRenderer;
 import ch.sama.sql.query.helper.Source;
 import ch.sama.sql.query.helper.Value;
 
 class TSqlQueryRenderer implements IQueryRenderer {
-    private IConditionParser conditionParser;
-    private IOrderParser orderParser;
+    private IConditionRenderer conditionParser;
+    private IOrderRenderer orderParser;
 
     public TSqlQueryRenderer() {
-        conditionParser = new TSqlConditionParser(this);
-        orderParser = new TSqlOrderParser();
+        conditionParser = new TSqlConditionRenderer(this);
+        orderParser = new TSqlOrderRenderer();
     }
 
     @Override
@@ -150,7 +150,7 @@ class TSqlQueryRenderer implements IQueryRenderer {
         builder.append(query.getParent().getSql());
 
         builder.append(" ON ");
-        builder.append(query.getCondition().getString(conditionParser));
+        builder.append(query.getCondition().render(conditionParser));
 
         return builder.toString();
     }
@@ -161,7 +161,7 @@ class TSqlQueryRenderer implements IQueryRenderer {
 
         builder.append(query.getParent().getSql());
         builder.append("\nWHERE ");
-        builder.append(query.getCondition().getString(conditionParser));
+        builder.append(query.getCondition().render(conditionParser));
 
         return builder.toString();
     }
@@ -180,7 +180,7 @@ class TSqlQueryRenderer implements IQueryRenderer {
             builder.append("ORDER BY ");
         }
 
-        builder.append(query.getOrder().getString(orderParser));
+        builder.append(query.getOrder().render(orderParser));
 
         return builder.toString();
     }

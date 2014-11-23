@@ -6,6 +6,7 @@ import ch.sama.sql.query.base.FromQuery;
 import ch.sama.sql.query.base.IQueryFactory;
 import ch.sama.sql.query.base.ISourceFactory;
 import ch.sama.sql.query.base.IValueFactory;
+import ch.sama.sql.query.helper.order.IOrder;
 import org.junit.Test;
 
 import ch.sama.sql.query.helper.Condition;
@@ -16,7 +17,7 @@ public class OrderQueryTest {
     private static final IValueFactory value = fac.value();
     private static final ISourceFactory source = fac.source();
 	private static final FromQuery query = fac.query().select(value.field("F")).from(source.table("T"));
-	private static final Order order = Order.asc(value.field("F"));
+	private static final IOrder order = Order.asc(value.field("F"));
 	
 	@Test
 	public void afterFrom() {

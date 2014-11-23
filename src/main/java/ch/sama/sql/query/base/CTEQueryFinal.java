@@ -3,7 +3,7 @@ package ch.sama.sql.query.base;
 import ch.sama.sql.query.helper.Value;
 
 public class CTEQueryFinal implements IQuery {
-    IQueryRenderer renderer;
+    private IQueryRenderer renderer;
     private IQuery parent;
     private IQuery query;
 

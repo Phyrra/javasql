@@ -3,198 +3,62 @@ package ch.sama.sql.query.helper;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.exception.BadParameterException;
 import ch.sama.sql.query.exception.UnknownConditionException;
+import ch.sama.sql.query.helper.Value;
+import ch.sama.sql.query.helper.condition.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Condition {
-	private enum TYPE {
-		AND,
-		OR,
-		EQ,
-		NEQ,
-		NOT,
-		LIKE,
-        GT,
-        GE,
-        LT,
-        LE,
-        NULL,
-        EXISTS,
-        IN
+	public static EqCondition eq(Value lhs, Value rhs) {
+        return new EqCondition(lhs, rhs);
 	}
 	
-	private TYPE type;
-
-	private Value lhs;
-	private Value rhs;
-    private Value val;
-
-    private Condition condition;
-    private List<Condition> conditions;
-
-    private IQuery query;
-	
-	private Condition(TYPE type) {
-		this.type = type;
-	}
-
-    public String getString(IConditionParser parser) {
-        switch (type) {
-            case EQ:
-                return parser.eq(lhs, rhs);
-            case NEQ:
-                return parser.neq(lhs, rhs);
-            case LIKE:
-                return parser.like(lhs, rhs);
-            case AND:
-                return parser.and(conditions);
-            case OR:
-                return parser.or(conditions);
-            case NOT:
-                return parser.not(condition);
-            case GT:
-                return parser.gt(lhs, rhs);
-            case GE:
-                return parser.ge(lhs, rhs);
-            case LT:
-                return parser.lt(lhs, rhs);
-            case LE:
-                return parser.le(lhs, rhs);
-            case EXISTS:
-                return parser.exists(query);
-            case NULL:
-                return parser.isNull(val);
-            case IN:
-                return parser.in(val, query);
-            default:
-                throw new UnknownConditionException("Caused by: " + type);
-        }
-    }
-	
-	public static Condition eq(Value lhs, Value rhs) {
-		Condition c = new Condition(TYPE.EQ);
-	
-		c.lhs = lhs;
-		c.rhs = rhs;
-		
-		return c;
+	public static NeqCondition neq(Value lhs, Value rhs) {
+		return new NeqCondition(lhs, rhs);
 	}
 	
-	public static Condition neq(Value lhs, Value rhs) {
-		Condition c = new Condition(TYPE.NEQ);
-	
-		c.lhs = lhs;
-		c.rhs = rhs;
-		
-		return c;
+	public static LikeCondition like(Value lhs, Value rhs) {
+		return new LikeCondition(lhs, rhs);
 	}
 	
-	public static Condition like(Value lhs, Value rhs) {
-		Condition c = new Condition(TYPE.LIKE);
-	
-		c.lhs = lhs;
-		c.rhs = rhs;
-		
-		return c;
+	public static NotCondition not(ICondition condition) {
+		return new NotCondition(condition);
 	}
 	
-	public static Condition not(Condition condition) {
-		Condition c = new Condition(TYPE.NOT);
-	
-		c.condition = condition;
-		
-		return c;
+	public static AndCondition and(ICondition... conditions) {
+        return new AndCondition(conditions);
 	}
 	
-	public static Condition and(Condition... conditions) {
-        if (conditions.length <= 1) {
-            throw new BadParameterException("Condition List too short");
-        }
-
-		Condition c = new Condition(TYPE.AND);
-
-        c.conditions = new ArrayList<Condition>();
-        for (int i = 0; i < conditions.length; ++i) {
-            c.conditions.add(conditions[i]);
-        }
-		
-		return c;	
-	}
-	
-	public static Condition or(Condition... conditions) {
-        if (conditions.length <= 1) {
-            throw new BadParameterException("Condition List too short");
-        }
-
-        Condition c = new Condition(TYPE.OR);
-
-        c.conditions = new ArrayList<Condition>();
-        for (int i = 0; i < conditions.length; ++i) {
-            c.conditions.add(conditions[i]);
-        }
-		
-		return c;	
+	public static OrCondition or(ICondition... conditions) {
+        return new OrCondition(conditions);
 	}
 
-    public static Condition gt(Value lhs, Value rhs) {
-        Condition c = new Condition(TYPE.GT);
-
-        c.lhs = lhs;
-        c.rhs = rhs;
-
-        return c;
+    public static GtCondition gt(Value lhs, Value rhs) {
+        return new GtCondition(lhs, rhs);
     }
 
-    public static Condition ge(Value lhs, Value rhs) {
-        Condition c = new Condition(TYPE.GE);
-
-        c.lhs = lhs;
-        c.rhs = rhs;
-
-        return c;
+    public static GeCondition ge(Value lhs, Value rhs) {
+        return new GeCondition(lhs, rhs);
     }
 
-    public static Condition lt(Value lhs, Value rhs) {
-        Condition c = new Condition(TYPE.LT);
-
-        c.lhs = lhs;
-        c.rhs = rhs;
-
-        return c;
+    public static LtCondition lt(Value lhs, Value rhs) {
+        return new LtCondition(lhs, rhs);
     }
 
-    public static Condition le(Value lhs, Value rhs) {
-        Condition c = new Condition(TYPE.LE);
-
-        c.lhs = lhs;
-        c.rhs = rhs;
-
-        return c;
+    public static LeCondition le(Value lhs, Value rhs) {
+        return new LeCondition(lhs, rhs);
     }
 
-    public static Condition exists(IQuery query) {
-        Condition c = new Condition(TYPE.EXISTS);
-
-        c.query = query;
-
-        return c;
+    public static ExistsCondition exists(IQuery query) {
+        return new ExistsCondition(query);
     }
 
-    public static Condition isNull(Value val) {
-        Condition c = new Condition(TYPE.NULL);
-
-        c.val = val;
-
-        return c;
+    public static IsNullCondition isNull(Value value) {
+        return new IsNullCondition(value);
     }
 
-    public static Condition in(Value val, IQuery query) {
-        Condition c = new Condition(TYPE.IN);
-
-        c.val = val;
-        c.query = query;
-
-        return c;
+    public static InCondition in(Value value, IQuery query) {
+        return new InCondition(value, query);
     }
 }

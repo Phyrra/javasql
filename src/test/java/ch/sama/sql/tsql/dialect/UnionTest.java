@@ -3,6 +3,7 @@ package ch.sama.sql.tsql.dialect;
 import ch.sama.sql.query.base.*;
 import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.Value;
+import ch.sama.sql.query.helper.condition.ICondition;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -37,7 +38,7 @@ public class UnionTest {
 
     @Test
     public void where() {
-        Condition c = Condition.eq(value.field("FIELD"), value.numeric(1));
+        ICondition c = Condition.eq(value.field("FIELD"), value.numeric(1));
 
         assertEquals(
                 "SELECT *\nFROM [TABLE1]\nWHERE [FIELD] = 1 UNION ALL\nSELECT *\nFROM [TABLE2]\nWHERE [FIELD] = 1",
@@ -50,7 +51,7 @@ public class UnionTest {
 
     @Test
     public void join() throws Exception {
-        Condition c = Condition.eq(value.numeric(1), value.numeric(1));
+        ICondition c = Condition.eq(value.numeric(1), value.numeric(1));
 
         assertEquals(
                 "SELECT *\nFROM [TABLE1]\nJOIN [TABLE2] ON 1 = 1 UNION ALL\nSELECT *\nFROM [TABLE3]",

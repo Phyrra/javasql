@@ -6,6 +6,7 @@ import ch.sama.sql.query.base.FromQuery;
 import ch.sama.sql.query.base.IQueryFactory;
 import ch.sama.sql.query.base.ISourceFactory;
 import ch.sama.sql.query.base.IValueFactory;
+import ch.sama.sql.query.helper.condition.ICondition;
 import org.junit.Test;
 
 import ch.sama.sql.query.helper.Condition;
@@ -18,20 +19,20 @@ public class JoinQueryTest {
 	
 	@Test
 	public void single() {
-		Condition c = Condition.eq(value.numeric(1), value.numeric(1));
+		ICondition c = Condition.eq(value.numeric(1), value.numeric(1));
 		assertEquals("SELECT [F]\nFROM [T]\nJOIN [J] ON 1 = 1", query.join(source.table("J")).on(c).getSql());
 	}
 
     @Test
     public void alias() {
-        Condition c = Condition.eq(value.numeric(1), value.numeric(1));
+        ICondition c = Condition.eq(value.numeric(1), value.numeric(1));
         assertEquals("SELECT [F]\nFROM [T]\nJOIN [J] AS [A] ON 1 = 1", query.join(source.table("J").as("A")).on(c).getSql());
     }
 	
 	@Test
 	public void multiple() {
-		Condition c1 = Condition.eq(value.numeric(1), value.numeric(1));
-		Condition c2 = Condition.eq(value.numeric(2), value.numeric(2));
+		ICondition c1 = Condition.eq(value.numeric(1), value.numeric(1));
+		ICondition c2 = Condition.eq(value.numeric(2), value.numeric(2));
 		
 		assertEquals(
                 "SELECT [F]\nFROM [T]\nJOIN [J1] ON 1 = 1\nJOIN [J2] ON 2 = 2",
@@ -44,7 +45,7 @@ public class JoinQueryTest {
 
     @Test
     public void query() {
-        Condition c1 = Condition.eq(value.numeric(1), value.numeric(1));
+        ICondition c1 = Condition.eq(value.numeric(1), value.numeric(1));
 
         assertEquals(
                 "SELECT [F]\nFROM [T]\nJOIN (\nSELECT [F]\nFROM [T]\n) AS [T] ON 1 = 1",
