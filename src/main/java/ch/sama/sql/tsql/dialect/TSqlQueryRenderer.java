@@ -4,6 +4,7 @@ import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.base.*;
 import ch.sama.sql.query.exception.UnknownValueException;
+import ch.sama.sql.query.helper.Function;
 import ch.sama.sql.query.helper.condition.IConditionRenderer;
 import ch.sama.sql.query.helper.order.IOrderRenderer;
 import ch.sama.sql.query.helper.Source;
@@ -256,5 +257,10 @@ class TSqlQueryRenderer implements IQueryRenderer {
         }
 
         return builder.toString();
+    }
+
+    @Override
+    public String render(Function f) {
+        return f.getDefaultString();
     }
 }

@@ -3,7 +3,7 @@ package ch.sama.sql.query.base.check;
 import static org.junit.Assert.*;
 
 import ch.sama.sql.dbo.Field;
-import ch.sama.sql.dbo.Function;
+import ch.sama.sql.query.helper.Function;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.Source;
@@ -52,7 +52,7 @@ public class QueryFinderTest {
     @Test
     public void getFields() {
         IQuery query = fac.query()
-                .select(value.field("FIELD1"), value.function("A(FIELD1)"), value.field("FIELD2"), value.function("B(FIELD2)"))
+                .select(value.field("FIELD1"), value.plain("A(FIELD1)"), value.field("FIELD2"), value.plain("B(FIELD2)"))
                 .from(source.table("TABLE"));
 
         List<Field> fields = finder.getSelected(query, Field.class);
@@ -63,7 +63,7 @@ public class QueryFinderTest {
     @Test
     public void getFunctions() {
         IQuery query = fac.query()
-                .select(value.field("FIELD1"), value.function("A(FIELD1)"), value.field("FIELD2"), value.function("B(FIELD2)"), value.function("C(FIELD3)"))
+                .select(value.field("FIELD1"), value.function("A", value.field("FIELD1")), value.field("FIELD2"), value.function("B", value.field("FIELD2")), value.function("C", value.field("FIELD3")))
                 .from(source.table("TABLE"));
 
         List<Function> functions = finder.getSelected(query, Function.class);

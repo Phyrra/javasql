@@ -65,7 +65,7 @@ public class ValueTest {
 	
 	@Test
 	public void function() {
-		assertEquals("COUNT(*)", value.function("COUNT(*)").getString(renderer));
+		assertEquals("COUNT(*)", value.function("COUNT", value.value(Value.ALL)).getString(renderer));
 	}
 	
 	@Test
@@ -74,7 +74,7 @@ public class ValueTest {
                 "SELECT COUNT(*) AS [_COUNT]\nFROM [TABLE]",
                 fac.query()
                         .select(
-                                value.function("COUNT(*)").as("_COUNT")
+                                value.function("COUNT", value.value(Value.ALL)).as("_COUNT")
                         )
                         .from(source.table("TABLE"))
                 .getSql()

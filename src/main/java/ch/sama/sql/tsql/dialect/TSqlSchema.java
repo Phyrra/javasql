@@ -53,23 +53,21 @@ public class TSqlSchema implements ISchema {
                                     fac.value().field("CHARACTER_MAXIMUM_LENGTH"),
                                     fac.value().field("IS_NULLABLE"),
                                     fac.value().field("COLUMN_DEFAULT"),
-                                    fac.value().function(
-                                            fnc.coalesce(
-                                                    fac.value().query(
-                                                            fac.query()
-                                                                    .select(fac.value().numeric(1))
-                                                                    .from(fac.source().table("INFORMATION_SCHEMA", "TABLE_CONSTRAINTS").as("tc"))
-                                                                    .join(fac.source().table("INFORMATION_SCHEMA", "CONSTRAINT_COLUMN_USAGE").as("ccu")).on(Condition.eq(fac.value().field("tc", "CONSTRAINT_NAME"), fac.value().field("ccu", "CONSTRAINT_NAME")))
-                                                                    .where(
-                                                                            Condition.and(
-                                                                                    Condition.eq(fac.value().field("tc", "CONSTRAINT_TYPE"), fac.value().string("PRIMARY KEY")),
-                                                                                    Condition.eq(fac.value().field("tc", "TABLE_NAME"), fac.value().string(table)),
-                                                                                    Condition.eq(fac.value().field("ccu", "COLUMN_NAME"), fac.value().field("COLUMNS", "COLUMN_NAME"))
-                                                                            )
+                                    fnc.coalesce(
+                                            fac.value().query(
+                                                    fac.query()
+                                                            .select(fac.value().numeric(1))
+                                                            .from(fac.source().table("INFORMATION_SCHEMA", "TABLE_CONSTRAINTS").as("tc"))
+                                                            .join(fac.source().table("INFORMATION_SCHEMA", "CONSTRAINT_COLUMN_USAGE").as("ccu")).on(Condition.eq(fac.value().field("tc", "CONSTRAINT_NAME"), fac.value().field("ccu", "CONSTRAINT_NAME")))
+                                                            .where(
+                                                                    Condition.and(
+                                                                            Condition.eq(fac.value().field("tc", "CONSTRAINT_TYPE"), fac.value().string("PRIMARY KEY")),
+                                                                            Condition.eq(fac.value().field("tc", "TABLE_NAME"), fac.value().string(table)),
+                                                                            Condition.eq(fac.value().field("ccu", "COLUMN_NAME"), fac.value().field("COLUMNS", "COLUMN_NAME"))
                                                                     )
-                                                    ),
-                                                    fac.value().numeric(0)
-                                            )
+                                                            )
+                                            ),
+                                            fac.value().numeric(0)
                                     ).as("IS_PKEY")
                             )
                             .from(fac.source().table("INFORMATION_SCHEMA", "COLUMNS"))

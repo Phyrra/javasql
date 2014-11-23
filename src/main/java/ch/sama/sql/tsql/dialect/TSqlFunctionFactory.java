@@ -1,6 +1,6 @@
 package ch.sama.sql.tsql.dialect;
 
-import ch.sama.sql.dbo.Function;
+import ch.sama.sql.query.helper.Function;
 import ch.sama.sql.query.exception.BadParameterException;
 import ch.sama.sql.query.helper.Value;
 
@@ -13,8 +13,10 @@ import ch.sama.sql.query.helper.Value;
 public class TSqlFunctionFactory {
     public TSqlFunctionFactory() { }
     
-    public Function coalesce(Value lhs, Value rhs) {
-        return new Function("COALESCE((" + lhs.getValue() + "), (" + rhs.getValue() + "))", false);
+    public Value coalesce(Value lhs, Value rhs) {
+        Function f = new  Function("COALESCE", lhs, rhs);
+
+        return new Value(f, f.getDefaultString());
     }
 
     public static class WhenThen {
@@ -41,7 +43,7 @@ public class TSqlFunctionFactory {
     public WhenThen whenThen(Value expression, Value value) {
         return new WhenThen(expression, value);
     }
-    public Function caseWhen(Value expression, WhenThen... wts) {
+    public Value caseWhen(Value expression, WhenThen... wts) {
         StringBuilder builder = new StringBuilder();
 
         builder.append("(CASE ");
@@ -60,7 +62,7 @@ public class TSqlFunctionFactory {
 
         builder.append("\nEND)");
 
-        return new Function(builder.toString(), false);
+        return new Value(null, builder.toString());
     }
 
     // extend at leisure

@@ -1,7 +1,7 @@
 package ch.sama.sql.tsql.dialect;
 
 import ch.sama.sql.dbo.Field;
-import ch.sama.sql.dbo.Function;
+import ch.sama.sql.query.helper.Function;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.base.IQueryRenderer;
@@ -77,13 +77,13 @@ class TSqlValueFactory implements IValueFactory {
     }
 
     @Override
-    public Value function(String fnc) {
-        return function(new Function(fnc));
+    public Value function(String fnc, Value... parameters) {
+        return function(new Function(fnc, parameters));
     }
 
     @Override
     public Value function(Function fnc) {
-        return new Value(fnc, fnc.getString());
+        return new Value(fnc, fnc.getString(renderer));
     }
 
     @Override
