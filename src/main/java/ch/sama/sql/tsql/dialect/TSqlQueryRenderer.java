@@ -6,9 +6,12 @@ import ch.sama.sql.query.base.*;
 import ch.sama.sql.query.exception.UnknownValueException;
 import ch.sama.sql.query.helper.Function;
 import ch.sama.sql.query.helper.condition.IConditionRenderer;
+import ch.sama.sql.query.helper.order.IOrder;
 import ch.sama.sql.query.helper.order.IOrderRenderer;
 import ch.sama.sql.query.helper.Source;
 import ch.sama.sql.query.helper.Value;
+
+import java.util.List;
 
 class TSqlQueryRenderer implements IQueryRenderer {
     private IConditionRenderer conditionParser;
@@ -174,14 +177,16 @@ class TSqlQueryRenderer implements IQueryRenderer {
         IQuery parent = query.getParent();
         builder.append(parent.getSql());
 
-        if (parent instanceof OrderQuery) {
-            builder.append(", ");
-        } else {
-            builder.append("\n");
-            builder.append("ORDER BY ");
-        }
+        builder.append("\nORDER BY ");
 
-        builder.append(query.getOrder().render(orderParser));
+        String prefix = "";
+        List<IOrder> orders = query.getOrders();
+        for (IOrder o : orders) {
+            builder.append(prefix);
+            builder.append(o.render(orderParser));
+
+            prefix = ", ";
+        }
 
         return builder.toString();
     }

@@ -3,25 +3,24 @@ package ch.sama.sql.generator;
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.ISchema;
 import ch.sama.sql.dbo.Table;
+import ch.sama.sql.query.base.IQueryFactory;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class ClassGenerator {
-    public static interface TableFilter {
-        public boolean filter(String table);
-    }
-
+public class ClassGenerator<T extends IQueryFactory> {
     private ISchema schema;
+    private Class<T> type;
 
-    public ClassGenerator(ISchema schema) {
+    public ClassGenerator(ISchema schema, Class<T> type) {
         this.schema = schema;
+        this.type = type;
     }
 
     public void generate(String srcFolder, String pkg) throws IOException {
-        generate(srcFolder, pkg, new TableFilter() {
+        generate(srcFolder, pkg, new ITableFilter() {
             @Override
             public boolean filter(String name) {
                 return true;
@@ -29,12 +28,21 @@ public class ClassGenerator {
         });
     }
 
-    public void generate(String srcFolder, String pkg, TableFilter filter) throws IOException {
-        BufferedWriter writer = createClassFile(srcFolder, pkg, "Tables");
+    public void generate(String srcFolder, String pkg, ITableFilter filter) throws IOException {
+        System.out.println(type.getName());
+        System.out.println(type.getSimpleName());
 
-        writer.write("package " + pkg + ";\n\n");
-        writer.write("import " + pkg + ".tables.*;\n\n");
-        writer.write("public class Tables {\n");
+        BufferedWriter tables = createClassFile(srcFolder, pkg, "Tables");
+
+        tables.write("package " + pkg + ";\n\n");
+        tables.write("import " + pkg + ".tables.*;\n\n");
+        tables.write("public class Tables {\n");
+
+        BufferedWriter sources = createClassFile(srcFolder, pkg, "Sources");
+
+        sources.write("package " + pkg + ";\n\n");
+        sources.write("import " + pkg + ".sources.*;\n\n");
+        sources.write("public class Sources {\n");
 
         for (Table table : schema.getTables()) {
             String tableName = table.getName();
@@ -51,22 +59,31 @@ public class ClassGenerator {
                     schemaInit = "\"" + tableSchema + "\", ";
                 }
 
-                writer.write("\tpublic static final " + tableClassName + " " + tableVarName + " = new " + tableClassName + "(" + schemaInit + "\"" + tableName + "\");\n");
-                generateTableClass(table, srcFolder, pkg + ".tables");
+                tables.write("\tpublic static final " + tableClassName + " " + tableVarName + " = new " + tableClassName + "(" + schemaInit + "\"" + tableName + "\");\n");
+                generateTableClass(table, srcFolder, pkg);
+
+                sources.write("\tpublic static final " + tableClassName + " " + tableVarName + " = new " + tableClassName + "(Tables." + tableVarName + ");\n");
+                generateSourceClass(table, srcFolder, pkg);
+
+                System.out.println("Generated: " + tableName);
             }
         }
 
-        writer.write("}");
-        writer.close();
+        tables.write("}");
+        tables.close();
+
+        sources.write("}");
+        sources.close();
     }
 
     private void generateTableClass(Table table, String srcFolder, String pkg) throws IOException {
         String tableName = table.getName();
         String tableClassName = tableName.substring(0, 1).toUpperCase() + tableName.substring(1);
 
-        BufferedWriter writer = createClassFile(srcFolder, pkg, tableClassName);
+        String tPkg = pkg + ".tables";
+        BufferedWriter writer = createClassFile(srcFolder, tPkg, tableClassName);
 
-        writer.write("package " + pkg + ";\n\n");
+        writer.write("package " + tPkg + ";\n\n");
         writer.write("import ch.sama.sql.dbo.Table;\n");
         writer.write("import ch.sama.sql.dbo.Field;\n\n");
         writer.write("public class " + tableClassName + " extends Table {\n");
@@ -80,6 +97,42 @@ public class ClassGenerator {
         for (Field field : table.getColumns()) {
             String fieldName = field.getName();
             writer.write("\tpublic Field " + fieldName + " = new Field(this, \"" + fieldName + "\");\n");
+        }
+
+        writer.write("}");
+        writer.close();
+    }
+
+    private void generateSourceClass(Table table, String srcFolder, String pkg) throws IOException {
+        String tableName = table.getName();
+        String tableClassName = tableName.substring(0, 1).toUpperCase() + tableName.substring(1);
+        String tableVarName = tableName.substring(0, 1).toLowerCase() + tableName.substring(1);
+
+        String sPkg = pkg + ".sources";
+        BufferedWriter writer = createClassFile(srcFolder, sPkg, tableClassName);
+
+        writer.write("package " + sPkg + ";\n\n");
+        writer.write("import " + pkg + ".Tables;\n");
+        writer.write("import ch.sama.sql.dbo.Table;\n");
+        writer.write("import ch.sama.sql.query.base.IQueryFactory;\n");
+        writer.write("import ch.sama.sql.query.base.IQueryRenderer;\n");
+        writer.write("import ch.sama.sql.query.base.IValueFactory;\n");
+        writer.write("import ch.sama.sql.query.helper.Source;\n");
+        writer.write("import ch.sama.sql.query.helper.Value;\n");
+        writer.write("import " + type.getName() + ";\n\n");
+
+        writer.write("public class " + tableClassName + " extends Source {\n");
+        writer.write("\tprivate static final IQueryFactory fac = new " + type.getSimpleName() + "();\n");
+        writer.write("\tprivate static final IValueFactory value = fac.value();\n");
+        writer.write("\tprivate static final IQueryRenderer renderer = fac.renderer();\n\n");
+
+        writer.write("\tpublic " + tableClassName + "(Table table) {\n");
+        writer.write("\t\tsuper(table, table.getString(renderer));\n");
+        writer.write("\t}\n\n");
+
+        for (Field field : table.getColumns()) {
+            String fieldName = field.getName();
+            writer.write("\tpublic Value " + fieldName + " = value.field(Tables." + tableVarName + "." + fieldName + ");\n");
         }
 
         writer.write("}");

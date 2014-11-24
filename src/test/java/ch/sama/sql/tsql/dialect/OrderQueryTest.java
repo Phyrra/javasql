@@ -41,8 +41,10 @@ public class OrderQueryTest {
         assertEquals(
                 "SELECT [F]\nFROM [T]\nORDER BY [A] ASC, [B] DESC",
                 query
-                        .order(Order.asc(value.field("A")))
-                        .order(Order.desc(value.field("B")))
+                        .order(
+                                Order.asc(value.field("A")),
+                                Order.desc(value.field("B"))
+                        )
                 .getSql()
         );
     }

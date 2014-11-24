@@ -4,6 +4,7 @@ import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.ISchema;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dbo.connection.IQueryExecutor;
+import ch.sama.sql.generator.ITableFilter;
 import ch.sama.sql.query.base.IQueryFactory;
 import ch.sama.sql.query.exception.BadSqlException;
 import ch.sama.sql.query.exception.ObjectNotFoundException;
@@ -24,6 +25,19 @@ public class TSqlSchema implements ISchema {
     private Map<String, Table> tables;
 
     public TSqlSchema(IQueryExecutor executor) {
+        loadSchema(executor, new ITableFilter() {
+            @Override
+            public boolean filter(String table) {
+                return true;
+            }
+        });
+    }
+
+    public TSqlSchema(IQueryExecutor executor, ITableFilter filter) {
+        loadSchema(executor, filter);
+    }
+
+    private void loadSchema(IQueryExecutor executor, ITableFilter filter) {
         TSqlFunctionFactory fnc = new TSqlFunctionFactory();
 
         tables = new HashMap<String, Table>();
@@ -35,12 +49,18 @@ public class TSqlSchema implements ISchema {
                                 fac.value().field("TABLE_NAME")
                         )
                         .from(fac.source().table("INFORMATION_SCHEMA", "TABLES"))
-                .getSql()
+                        .getSql()
         );
 
         for (Map<String, Object> row : list) {
             String schema = (String)row.get("TABLE_SCHEMA");
             String table = (String)row.get("TABLE_NAME");
+
+            if (!filter.filter(table)) {
+                continue;
+            }
+
+            System.out.println("Creating table: " + table);
 
             Table t = new Table(schema, table);
             tables.put(table, t);

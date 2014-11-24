@@ -20,13 +20,13 @@ public class FromQuery implements IQuery {
 		return sources;
 	}
 	
-	public FromQuery(IQueryRenderer renderer, IQuery parent, Source... s) {
+	public FromQuery(IQueryRenderer renderer, IQuery parent, Source... sources) {
         this.renderer = renderer;
 		this.parent = parent;
-		sources = new ArrayList<Source>();
-		
-		for (int i = 0; i < s.length; ++i) {
-			sources.add(s[i]);
+
+		this.sources = new ArrayList<Source>();
+		for (Source s : sources) {
+			this.sources.add(s);
 		}
 	}
 	
@@ -34,8 +34,8 @@ public class FromQuery implements IQuery {
 		return new JoinQuery(renderer, this, source);
 	}
 	
-	public OrderQuery order(IOrder order) {
-		return new OrderQuery(renderer, this, order);
+	public OrderQuery order(IOrder... orders) {
+		return new OrderQuery(renderer, this, orders);
 	}
 	
 	public WhereQuery where(ICondition condition) {

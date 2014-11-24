@@ -5,6 +5,7 @@ import ch.sama.sql.query.base.IQueryRenderer;
 import ch.sama.sql.query.base.IValueFactory;
 import ch.sama.sql.query.exception.BadParameterException;
 import ch.sama.sql.query.exception.IllegalIdentifierException;
+import ch.sama.sql.query.helper.Condition;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -46,14 +47,14 @@ public class FunctionTest {
     }
 
     @Test
-    public void caseWhen() {
+    public void valueCaseWhen() {
         assertEquals(
                 "(CASE [FIELD]\nWHEN 1 THEN 'ONE'\nWHEN 2 THEN 'TWO'\nELSE 'UNKNOWN'\nEND)",
                 function.caseWhen(
                         value.field("FIELD"),
                         function.whenThen(value.numeric(1), value.string("ONE")),
                         function.whenThen(value.numeric(2), value.string("TWO")),
-                        function.whenThen(null, value.string("UNKNOWN"))
+                        function.otherwise(value.string("UNKNOWN"))
                 )
                 .getString(renderer)
         );
@@ -64,8 +65,21 @@ public class FunctionTest {
         function.caseWhen(
                 value.field("FIELD"),
                 function.whenThen(value.numeric(1), value.string("ONE")),
-                function.whenThen(null, value.string("UNKNOWN")),
+                function.otherwise(value.string("UNKNOWN")),
                 function.whenThen(value.numeric(2), value.string("TWO"))
+        );
+    }
+
+    @Test
+    public void conditionCaseWhen() {
+        assertEquals(
+                "(CASE\nWHEN [FIELD] = 1 THEN 'ONE'\nWHEN [FIELD] = 2 THEN 'TWO'\nELSE 'UNKNOWN'\nEND)",
+                function.caseWhen(
+                        function.whenThen(Condition.eq(value.field("FIELD"), value.numeric(1)), value.string("ONE")),
+                        function.whenThen(Condition.eq(value.field("FIELD"), value.numeric(2)), value.string("TWO")),
+                        function.otherwise(value.string("UNKNOWN"))
+                )
+                .getString(renderer)
         );
     }
 }

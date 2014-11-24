@@ -28,7 +28,7 @@ public class JoinQueryFinal implements IQuery {
         return new JoinQuery(renderer, this, source);
 	}
 	
-	public OrderQuery order(IOrder order) {
+	public OrderQuery order(IOrder... order) {
         return new OrderQuery(renderer, this, order);
 	}
 	

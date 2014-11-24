@@ -2,29 +2,32 @@ package ch.sama.sql.query.base;
 
 import ch.sama.sql.query.helper.order.IOrder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class OrderQuery implements IQuery {
     private IQueryRenderer renderer;
 	private IQuery parent;
-	private IOrder order;
+	private List<IOrder> orders;
 
     @Override
 	public IQuery getParent() {
 		return parent;
 	}
 	
-	public IOrder getOrder() {
-		return order;
+	public List<IOrder> getOrders() {
+		return orders;
 	}
 	
-	public OrderQuery(IQueryRenderer renderer, IQuery parent, IOrder order) {
+	public OrderQuery(IQueryRenderer renderer, IQuery parent, IOrder... orders) {
         this.renderer = renderer;
 		this.parent = parent;
-		this.order = order;
-	}
 
-    public OrderQuery order(IOrder order) {
-        return new OrderQuery(renderer, this, order);
-    }
+        this.orders = new ArrayList<IOrder>();
+        for (IOrder o : orders) {
+            this.orders.add(o);
+        }
+	}
 
     @Override
     public String getSql() {

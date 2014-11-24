@@ -23,7 +23,7 @@ public class WhereQuery implements IQuery {
 		this.condition = condition;
 	}
 	
-	public OrderQuery order(IOrder order) {
+	public OrderQuery order(IOrder... order) {
 		return new OrderQuery(renderer, this, order);
 	}
 
