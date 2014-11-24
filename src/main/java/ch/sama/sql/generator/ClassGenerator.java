@@ -29,9 +29,6 @@ public class ClassGenerator<T extends IQueryFactory> {
     }
 
     public void generate(String srcFolder, String pkg, ITableFilter filter) throws IOException {
-        System.out.println(type.getName());
-        System.out.println(type.getSimpleName());
-
         BufferedWriter tables = createClassFile(srcFolder, pkg, "Tables");
 
         tables.write("package " + pkg + ";\n\n");
@@ -49,6 +46,7 @@ public class ClassGenerator<T extends IQueryFactory> {
 
             if (filter.filter(tableName)) {
                 String tableClassName = getTableClassName(table);
+                String sourceClassName = getSourceClassName(table);
                 String tableVarName = getTableVariableName(table);
 
                 String schemaInit;
@@ -62,7 +60,7 @@ public class ClassGenerator<T extends IQueryFactory> {
                 tables.write("\tpublic static final " + tableClassName + " " + tableVarName + " = new " + tableClassName + "(" + schemaInit + "\"" + tableName + "\");\n");
                 generateTableClass(table, srcFolder, pkg);
 
-                sources.write("\tpublic static final " + tableClassName + " " + tableVarName + " = new " + tableClassName + "(Tables." + tableVarName + ");\n");
+                sources.write("\tpublic static final " + sourceClassName + " " + tableVarName + " = new " + sourceClassName + "(Tables." + tableVarName + ");\n");
                 generateSourceClass(table, srcFolder, pkg);
 
                 System.out.println("Generated: " + tableName);
@@ -77,8 +75,7 @@ public class ClassGenerator<T extends IQueryFactory> {
     }
 
     private void generateTableClass(Table table, String srcFolder, String pkg) throws IOException {
-        String tableName = table.getName();
-        String tableClassName = tableName.substring(0, 1).toUpperCase() + tableName.substring(1);
+        String tableClassName = getTableClassName(table);
 
         String tPkg = pkg + ".tables";
         BufferedWriter writer = createClassFile(srcFolder, tPkg, tableClassName);
@@ -104,12 +101,11 @@ public class ClassGenerator<T extends IQueryFactory> {
     }
 
     private void generateSourceClass(Table table, String srcFolder, String pkg) throws IOException {
-        String tableName = table.getName();
-        String tableClassName = tableName.substring(0, 1).toUpperCase() + tableName.substring(1);
-        String tableVarName = tableName.substring(0, 1).toLowerCase() + tableName.substring(1);
+        String sourceClassName = getSourceClassName(table);
+        String tableVarName = getTableVariableName(table);
 
         String sPkg = pkg + ".sources";
-        BufferedWriter writer = createClassFile(srcFolder, sPkg, tableClassName);
+        BufferedWriter writer = createClassFile(srcFolder, sPkg, sourceClassName);
 
         writer.write("package " + sPkg + ";\n\n");
         writer.write("import " + pkg + ".Tables;\n");
@@ -121,12 +117,12 @@ public class ClassGenerator<T extends IQueryFactory> {
         writer.write("import ch.sama.sql.query.helper.Value;\n");
         writer.write("import " + type.getName() + ";\n\n");
 
-        writer.write("public class " + tableClassName + " extends Source {\n");
+        writer.write("public class " + sourceClassName + " extends Source {\n");
         writer.write("\tprivate static final IQueryFactory fac = new " + type.getSimpleName() + "();\n");
         writer.write("\tprivate static final IValueFactory value = fac.value();\n");
         writer.write("\tprivate static final IQueryRenderer renderer = fac.renderer();\n\n");
 
-        writer.write("\tpublic " + tableClassName + "(Table table) {\n");
+        writer.write("\tpublic " + sourceClassName + "(Table table) {\n");
         writer.write("\t\tsuper(table, table.getString(renderer));\n");
         writer.write("\t}\n\n");
 
@@ -157,12 +153,14 @@ public class ClassGenerator<T extends IQueryFactory> {
     }
 
     private String getTableClassName(Table table) {
-        String tableName = table.getName();
-        return tableName.substring(0, 1).toUpperCase() + tableName.substring(1);
+        return "Tbl_" + table.getName();
+    }
+
+    private String getSourceClassName(Table table) {
+        return "Src_" + table.getName();
     }
 
     private String getTableVariableName(Table table) {
-        String tableName = table.getName();
-        return tableName.substring(0, 1).toLowerCase() + tableName.substring(1);
+        return table.getName();
     }
 }
