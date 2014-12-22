@@ -1,0 +1,8 @@
+statement
+	select
+		value
+			all
+	from
+		source
+			primary
+				t

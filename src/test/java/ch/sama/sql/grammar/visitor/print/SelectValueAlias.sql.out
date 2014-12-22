@@ -1,0 +1,28 @@
+statement
+	select
+		value
+			aliased
+				primary
+					field
+						f1
+				field
+		value
+			aliased
+				primary
+					string: string
+				s
+		value
+			aliased
+				primary
+					numeric: 1
+				i
+		value
+			aliased
+				primary
+					numeric: 1.1
+				f
+		value
+			aliased
+				primary
+					function
+				fnc

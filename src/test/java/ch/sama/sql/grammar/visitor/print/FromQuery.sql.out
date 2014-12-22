@@ -1,0 +1,13 @@
+statement
+	select
+		value
+			all
+	from
+		source
+			aliased
+				statement
+					select
+						value
+							primary
+								numeric: 1
+				t

@@ -1,0 +1,5 @@
+statement
+	select
+		value
+			primary
+				function

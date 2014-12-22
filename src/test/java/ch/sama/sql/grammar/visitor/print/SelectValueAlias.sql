@@ -1,0 +1,1 @@
+select f1 as field, 'string' as s, 1 as i, 1.1 as f, fnc() as fnc

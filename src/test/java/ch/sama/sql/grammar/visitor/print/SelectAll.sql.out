@@ -1,0 +1,4 @@
+statement
+	select
+		value
+			all

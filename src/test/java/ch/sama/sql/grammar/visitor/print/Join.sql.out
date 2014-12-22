@@ -1,0 +1,18 @@
+statement
+	select
+		value
+			all
+	from
+		source
+			primary
+				t1
+	join
+		source
+			primary
+				t2
+		a
+		condition
+			primary
+				numeric: 1
+			primary
+				numeric: 1

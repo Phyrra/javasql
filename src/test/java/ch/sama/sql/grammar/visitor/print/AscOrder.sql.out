@@ -1,0 +1,14 @@
+statement
+	select
+		value
+			all
+	from
+		source
+			primary
+				t
+	order
+		order
+			asc
+				primary
+					field
+						f
