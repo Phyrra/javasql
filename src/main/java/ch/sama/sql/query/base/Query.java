@@ -32,4 +32,10 @@ public class Query implements IQuery {
     public String getSql() {
         return renderer.render(this);
     }
+
+    @Override
+    public IQuery chainTo(IQuery query) {
+        this.parent = query;
+        return query;
+    }
 }

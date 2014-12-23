@@ -4,6 +4,7 @@ import ch.sama.sql.grammar.runner.AntlrQueryGenerator;
 import ch.sama.sql.grammar.runner.AntlrSqlPrinter;
 import ch.sama.sql.grammar.visitor.QueryVisitor;
 import ch.sama.sql.grammar.visitor.TestBase;
+import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.tsql.dialect.TSqlQueryFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -64,9 +65,20 @@ public class TestRunner extends TestBase {
         try {
             AntlrQueryGenerator generator = new AntlrQueryGenerator(new TSqlQueryFactory());
 
+            /*
+            IQuery test = generator.generate(readFile(in));
+            while (true) {
+                System.out.println(test);
+                test = test.getParent();
+                if (test == null) {
+                    break;
+                }
+            }
+            */
+
             result = generator.generate(readFile(in)).getSql();
         }  catch (Exception e) {
-            result = e.getMessage();
+            result = e.getClass().getName() + ": " + e.getMessage();
         }
 
         try {

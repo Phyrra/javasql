@@ -24,9 +24,7 @@ public class AntlrQueryGenerator extends SqlParserHelper {
         QueryVisitor visitor = new QueryVisitor(factory);
 
         try {
-            visitor.visit(parser.fullStatement());
-
-            return visitor.joinQueryList();
+            return visitor.visit(parser.fullStatement());
         } catch (ParseCancellationException e) {
             Throwable cause = e.getCause();
             if (cause instanceof RecognitionException) {

@@ -48,4 +48,9 @@ public class JoinQueryFinal implements IQuery {
     public String getSql() {
         return renderer.render(this);
     }
+
+	@Override
+	public IQuery chainTo(IQuery query) {
+		return this.parent.chainTo(query);
+	}
 }

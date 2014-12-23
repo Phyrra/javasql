@@ -116,8 +116,9 @@ fullStatement
     | unionStatement
     ;
 
+// TODO: Cannot do "select order union select"
 unionStatement
-    : statement Union All unionStatement
+    : unionStatement Union All statement
     | statement
     ;
 
@@ -126,7 +127,7 @@ cteStatementHead
     ;
 
 cteStatementBlock
-    : cteStatement ',' cteStatementBlock
+    : cteStatementBlock ',' cteStatement
     | cteStatement
     ;
 

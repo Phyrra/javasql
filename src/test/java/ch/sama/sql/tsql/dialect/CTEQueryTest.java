@@ -15,7 +15,7 @@ public class CTEQueryTest {
 	@Test
 	public void cte() {
 		assertEquals(
-                "WITH CTE AS (\nSELECT [F]\nFROM [T]\n)",
+                "WITH [CTE] AS (\nSELECT [F]\nFROM [T]\n)",
                 fac.query()
                         .with("CTE").as(
                                 fac.query()
@@ -29,7 +29,7 @@ public class CTEQueryTest {
 	@Test
 	public void selectCte() {
 		assertEquals(
-                "WITH CTE AS (\nSELECT [F]\nFROM [T]\n)\nSELECT [F]\nFROM [CTE]",
+                "WITH [CTE] AS (\nSELECT [F]\nFROM [T]\n)\nSELECT [F]\nFROM [CTE]",
                 fac.query()
                         .with("CTE").as(
                                 fac.query()
@@ -45,7 +45,7 @@ public class CTEQueryTest {
     @Test
     public void multiCte() {
         assertEquals(
-                "WITH CTE1 AS (\nSELECT [F]\nFROM [T]\n), CTE2 AS (\nSELECT [F]\nFROM [T]\n)\nSELECT [F]\nFROM [CTE1]",
+                "WITH [CTE1] AS (\nSELECT [F]\nFROM [T]\n), [CTE2] AS (\nSELECT [F]\nFROM [T]\n)\nSELECT [F]\nFROM [CTE1]",
                 fac.query()
                         .with("CTE1").as(
                                 fac.query()

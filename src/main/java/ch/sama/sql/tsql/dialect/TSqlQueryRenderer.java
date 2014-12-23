@@ -44,7 +44,9 @@ class TSqlQueryRenderer implements IQueryRenderer {
             builder.append("WITH ");
         }
 
+        builder.append("[");
         builder.append(query.getName());
+        builder.append("]");
 
         return builder.toString();
     }

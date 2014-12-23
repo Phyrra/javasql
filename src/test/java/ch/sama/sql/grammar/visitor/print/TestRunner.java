@@ -63,7 +63,7 @@ public class TestRunner extends TestBase {
 
             result = printer.run(readFile(in));
         }  catch (Exception e) {
-            result = e.getMessage();
+            result = e.getClass().getName() + ": " + e.getMessage();
         }
 
         try {
