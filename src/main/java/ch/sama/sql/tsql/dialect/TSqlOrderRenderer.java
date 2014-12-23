@@ -2,6 +2,7 @@ package ch.sama.sql.tsql.dialect;
 
 import ch.sama.sql.query.helper.Value;
 import ch.sama.sql.query.helper.order.AscOrder;
+import ch.sama.sql.query.helper.order.DefOrder;
 import ch.sama.sql.query.helper.order.DescOrder;
 import ch.sama.sql.query.helper.order.IOrderRenderer;
 
@@ -20,6 +21,11 @@ class TSqlOrderRenderer implements IOrderRenderer {
         }
 
         return builder.toString();
+    }
+
+    @Override
+    public String render(DefOrder o) {
+        return getBase(o.getValues());
     }
 
     @Override

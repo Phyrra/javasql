@@ -41,7 +41,7 @@ class OrderListVisitor extends SqlBaseVisitor<List<IOrder>> {
     public List<IOrder> visitDefaultOrderValue(SqlParser.DefaultOrderValueContext ctx) {
         List<IOrder> orders = new ArrayList<IOrder>();
 
-        orders.add(Order.asc(visitor.visit(ctx.expression())));
+        orders.add(Order.def(visitor.visit(ctx.expression())));
 
         return orders;
     }

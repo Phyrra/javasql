@@ -213,8 +213,10 @@ public class SchemaTest {
         Table table = list.get(0);
 
         assertEquals(2, table.getPrimaryKey().size());
-        assertEquals(table.getColumn("uidId1").getString(renderer), table.getPrimaryKey().get(0).getString(renderer));
-        assertEquals(table.getColumn("uidId2").getString(renderer), table.getPrimaryKey().get(1).getString(renderer));
+
+        // Order of keys is not kept
+        assertEquals(true, table.getColumn("uidId1").isPrivateKey());
+        assertEquals(true, table.getColumn("uidId2").isPrivateKey());
     }
 
     @Test (expected = ObjectNotFoundException.class)

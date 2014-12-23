@@ -41,6 +41,10 @@ public class Value {
     }
 
     public Value as(String alias) {
+        if (alias == null) {
+            return this;
+        }
+
         if (!Identifier.test(alias)) {
             throw new IllegalIdentifierException(alias);
         }

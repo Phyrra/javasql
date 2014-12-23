@@ -1,0 +1,2 @@
+SELECT 1
+WHERE getdate() > '2014-12-23'

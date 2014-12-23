@@ -1,0 +1,3 @@
+SELECT [field]
+FROM [table]
+WHERE [field] > 1

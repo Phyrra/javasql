@@ -4,10 +4,10 @@ import ch.sama.sql.query.helper.Value;
 
 public class CTEQueryFinal implements IQuery {
     private IQueryRenderer renderer;
-    private IQuery parent;
+    private CTEQuery parent;
     private IQuery query;
 
-    public CTEQueryFinal(IQueryRenderer renderer, IQuery parent, IQuery query) {
+    public CTEQueryFinal(IQueryRenderer renderer, CTEQuery parent, IQuery query) {
         this.renderer = renderer;
         this.parent = parent;
         this.query = query;
@@ -16,6 +16,10 @@ public class CTEQueryFinal implements IQuery {
     @Override
     public IQuery getParent() {
         return parent;
+    }
+
+    public String getCteName() {
+        return parent.getName();
     }
 
     public IQuery getQuery() {

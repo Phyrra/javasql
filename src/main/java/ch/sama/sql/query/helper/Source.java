@@ -25,6 +25,10 @@ public class Source {
     }
 
     public Source as(String alias) {
+        if (alias == null) {
+            return this;
+        }
+
         if (!Identifier.test(alias)) {
             throw new IllegalIdentifierException(alias);
         }
