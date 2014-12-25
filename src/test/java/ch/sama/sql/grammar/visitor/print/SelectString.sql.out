@@ -1,5 +1,6 @@
-statement
-	select
-		value
-			primary
-				string: hello
+sql
+	statement
+		select
+			value
+				primary
+					string: hello

@@ -1,4 +1,5 @@
-statement
-	select
-		value
-			all
+sql
+	statement
+		select
+			value
+				all

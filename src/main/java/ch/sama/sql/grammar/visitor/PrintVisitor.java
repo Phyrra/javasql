@@ -65,6 +65,63 @@ public class PrintVisitor extends SqlBaseVisitor<Void> {
     }
 
     @Override
+    public Void visitFullStatement(SqlParser.FullStatementContext ctx) {
+        appendIndented("sql");
+        indent();
+
+        visitChildren(ctx);
+
+        unindent();
+
+        return null;
+    }
+
+    @Override
+    public Void visitDataStatement(SqlParser.DataStatementContext ctx) {
+        visitChildren(ctx);
+
+        return null;
+    }
+
+    @Override
+    public Void visitUnionStatement(SqlParser.UnionStatementContext ctx) {
+        if (ctx.unionStatement() != null) {
+            visit(ctx.unionStatement());
+            appendIndented("union");
+        }
+
+        visit(ctx.statement());
+
+        return null;
+    }
+
+    @Override
+    public Void visitCteStatementHead(SqlParser.CteStatementHeadContext ctx) {
+        visitChildren(ctx);
+
+        return null;
+    }
+
+    @Override
+    public Void visitCteStatementBlock(SqlParser.CteStatementBlockContext ctx) {
+        visitChildren(ctx);
+
+        return null;
+    }
+
+    @Override
+    public Void visitCteStatement(SqlParser.CteStatementContext ctx) {
+        appendIndented("cte");
+        indent();
+
+        visitChildren(ctx);
+
+        unindent();
+
+        return null;
+    }
+
+    @Override
     public Void visitStatement(SqlParser.StatementContext ctx) {
         appendIndented("statement");
         indent();
@@ -420,7 +477,7 @@ public class PrintVisitor extends SqlBaseVisitor<Void> {
 
     @Override
     public Void visitOrderValue(SqlParser.OrderValueContext ctx) {
-        appendIndented("order");
+        appendIndented("by");
         indent();
 
         visitChildren(ctx);

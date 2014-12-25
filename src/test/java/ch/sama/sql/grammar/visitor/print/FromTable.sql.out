@@ -1,8 +1,9 @@
-statement
-	select
-		value
-			all
-	from
-		source
-			primary
-				t
+sql
+	statement
+		select
+			value
+				all
+		from
+			source
+				primary
+					t

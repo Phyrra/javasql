@@ -85,6 +85,17 @@ public class QueryVisitor extends SqlBaseVisitor<IQuery> {
 
     @Override
     public IQuery visitFullStatement(SqlParser.FullStatementContext ctx) {
+        IQuery stmt = visit(ctx.dataStatement());
+
+        if (ctx.orderStatement() != null) {
+            stmt = chain(visit(ctx.orderStatement()), stmt);
+        }
+
+        return stmt;
+    }
+
+    @Override
+    public IQuery visitDataStatement(SqlParser.DataStatementContext ctx) {
         IQuery base = factory.query();
 
         IQuery union = visit(ctx.unionStatement());
@@ -155,10 +166,6 @@ public class QueryVisitor extends SqlBaseVisitor<IQuery> {
 
         if (ctx.whereStatement() != null) {
             iter = chain(visit(ctx.whereStatement()), iter);
-        }
-
-        if (ctx.orderStatement() != null) {
-            iter = chain(visit(ctx.orderStatement()), iter);
         }
 
         return iter;

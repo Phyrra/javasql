@@ -1,8 +1,9 @@
-statement
-	select
-		value
-			primary
-				numeric: 1
-			+
-			primary
-				numeric: 2
+sql
+	statement
+		select
+			value
+				primary
+					numeric: 1
+				+
+				primary
+					numeric: 2

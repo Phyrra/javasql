@@ -1,14 +1,15 @@
-statement
-	select
-		value
-			all
-	from
-		source
-			primary
-				t
-	where
-		condition
-			primary
-				numeric: 1
-			primary
-				numeric: 1
+sql
+	statement
+		select
+			value
+				all
+		from
+			source
+				primary
+					t
+		where
+			condition
+				primary
+					numeric: 1
+				primary
+					numeric: 1

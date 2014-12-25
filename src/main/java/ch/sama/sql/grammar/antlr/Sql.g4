@@ -112,11 +112,15 @@ sqlIdentifier
     ;
 
 fullStatement
+    : dataStatement orderStatement
+    | dataStatement 
+    ;
+
+dataStatement
     : cteStatementHead unionStatement
     | unionStatement
     ;
 
-// TODO: Cannot do "select order union select"
 unionStatement
     : unionStatement Union All statement
     | statement
@@ -135,10 +139,8 @@ cteStatement
     : sqlIdentifier As '(' statement ')'
     ;
 
-// TODO: This should be split up to prevent "select order"
-// this would -however- result in about 50 lines -.- (which, conicidentally is, why I'm not doing it)
 statement
-    : selectStatement (fromStatement joinStatement*)? whereStatement? orderStatement?
+    : selectStatement (fromStatement joinStatement*)? whereStatement?
     ;
 
 selectStatement
