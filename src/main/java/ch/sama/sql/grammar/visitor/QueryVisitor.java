@@ -8,7 +8,6 @@ import ch.sama.sql.query.helper.Value;
 import ch.sama.sql.query.helper.condition.ICondition;
 import ch.sama.sql.query.helper.order.IOrder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class QueryVisitor extends SqlBaseVisitor<IQuery> {
@@ -27,9 +26,9 @@ public class QueryVisitor extends SqlBaseVisitor<IQuery> {
         this.factory = factory;
         this.renderer = factory.renderer();
 
-        this.valueVisitor = new ValueVisitor(factory.value());
+        this.valueVisitor = new ValueVisitor(factory);
         this.valueListVisitor = new ValueListVisitor(valueVisitor);
-        this.sourceVisitor = new SourceVisitor(factory.source());
+        this.sourceVisitor = new SourceVisitor(factory, this);
         this.sourceListVisitor = new SourceListVisitor(sourceVisitor);
 
         this.conditionVisitor = new ConditionVisitor(valueVisitor);

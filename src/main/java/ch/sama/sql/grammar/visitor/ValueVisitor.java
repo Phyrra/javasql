@@ -4,6 +4,7 @@ import ch.sama.sql.grammar.antlr.SqlBaseVisitor;
 import ch.sama.sql.grammar.antlr.SqlParser;
 import ch.sama.sql.grammar.exception.SqlGrammarException;
 import ch.sama.sql.grammar.helper.StringGetter;
+import ch.sama.sql.query.base.IQueryFactory;
 import ch.sama.sql.query.base.IValueFactory;
 import ch.sama.sql.query.helper.Value;
 
@@ -11,12 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 class ValueVisitor extends SqlBaseVisitor<Value> {
-    private IValueFactory fac;
+    private IValueFactory value;
     private ValueListVisitor listVisitor;
 
-    public ValueVisitor(IValueFactory fac) {
-        this.fac = fac;
-        this.listVisitor = new ValueListVisitor(this);
+    public ValueVisitor(IQueryFactory fac) {
+        value = fac.value();
+        listVisitor = new ValueListVisitor(this);
     }
 
     @Override
@@ -26,13 +27,13 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
 
     @Override
     public Value visitAllFields(SqlParser.AllFieldsContext ctx) {
-        return fac.value(Value.VALUE.ALL);
+        return value.value(Value.VALUE.ALL);
     }
 
     @Override
     public Value visitAllTableFields(SqlParser.AllTableFieldsContext ctx) {
         String table = ctx.sqlIdentifier().Identifier().getText();
-        return fac.table(table);
+        return value.table(table);
     }
 
     @Override
@@ -50,9 +51,9 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
 
             switch (op) {
                 case "+":
-                    return fac.plain(lhs.getValue() + " + " + rhs.getValue());
+                    return value.plain(lhs.getValue() + " + " + rhs.getValue());
                 case "-":
-                    return fac.plain(lhs.getValue() + " - " + rhs.getValue());
+                    return value.plain(lhs.getValue() + " - " + rhs.getValue());
                 default:
                     throw new SqlGrammarException("Unknown operator: " + op, ctx);
             }
@@ -71,9 +72,9 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
 
             switch (op) {
                 case "*":
-                    return fac.plain(lhs.getValue() + " * " + rhs.getValue());
+                    return value.plain(lhs.getValue() + " * " + rhs.getValue());
                 case "/":
-                    return fac.plain(lhs.getValue() + " / " + rhs.getValue());
+                    return value.plain(lhs.getValue() + " / " + rhs.getValue());
                 default:
                     throw new SqlGrammarException("Unknown operator: " + op, ctx);
             }
@@ -91,7 +92,7 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
 
             switch (op) {
                 case "-":
-                    return fac.plain("-" + val.getValue());
+                    return value.plain("-" + val.getValue());
                 default:
                     throw new SqlGrammarException("Unknown operator: " + op, ctx);
             }
@@ -128,20 +129,20 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
     @Override
     public Value visitField(SqlParser.FieldContext ctx) {
         String field = ctx.sqlIdentifier().Identifier().getText();
-        return fac.field(field);
+        return value.field(field);
     }
 
     @Override
     public Value visitTableField(SqlParser.TableFieldContext ctx) {
         String table = ctx.sqlIdentifier(0).Identifier().getText();
         String field = ctx.sqlIdentifier(1).Identifier().getText();
-        return fac.field(table, field);
+        return value.field(table, field);
     }
 
     @Override
     public Value visitStringValue(SqlParser.StringValueContext ctx) {
         String s = StringGetter.get(ctx.StringLiteral());
-        return fac.string(s);
+        return value.string(s);
     }
 
     @Override
@@ -149,10 +150,10 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
         String s = ctx.getText();
         if (ctx.IntegerConstant() != null) {
             int i = Integer.parseInt(s);
-            return fac.numeric(i);
+            return value.numeric(i);
         } else if (ctx.FloatingConstant() != null) {
             double d = Double.parseDouble(s);
-            return fac.numeric(d);
+            return value.numeric(d);
         } else {
             // This should never happen, unless someone defined a bad grammar :)
             throw new SqlGrammarException("Unknown Numeric Value", ctx);
@@ -170,6 +171,6 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
             params = listVisitor.visit(ctx.argumentList());
         }
 
-        return fac.function(fnc, params.toArray(new Value[params.size()]));
+        return value.function(fnc, params.toArray(new Value[params.size()]));
     }
 }

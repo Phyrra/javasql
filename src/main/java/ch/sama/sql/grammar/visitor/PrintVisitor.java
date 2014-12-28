@@ -408,8 +408,8 @@ public class PrintVisitor extends SqlBaseVisitor<Void> {
     }
 
     @Override
-    public Void visitPrimarySource(SqlParser.PrimarySourceContext ctx) {
-        appendIndented("primary");
+    public Void visitTableSource(SqlParser.TableSourceContext ctx) {
+        appendIndented("table");
         indent();
 
         visitChildren(ctx);
@@ -427,6 +427,20 @@ public class PrintVisitor extends SqlBaseVisitor<Void> {
         visitChildren(ctx);
 
         unindent();
+
+        return null;
+    }
+
+    @Override
+    public Void visitAliasedTable(SqlParser.AliasedTableContext ctx) {
+        visitChildren(ctx);
+
+        return null;
+    }
+
+    @Override
+    public Void visitAliasedStatement(SqlParser.AliasedStatementContext ctx) {
+        visitChildren(ctx);
 
         return null;
     }

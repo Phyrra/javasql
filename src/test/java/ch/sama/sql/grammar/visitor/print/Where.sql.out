@@ -5,7 +5,7 @@ sql
 				all
 		from
 			source
-				primary
+				table
 					t
 		where
 			condition

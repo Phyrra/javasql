@@ -5,11 +5,11 @@ sql
 				all
 		from
 			source
-				primary
+				table
 					t1
 		join
 			source
-				primary
+				table
 					t2
 			a
 			condition

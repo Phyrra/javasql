@@ -232,17 +232,25 @@ valueList
     ;
 
 source
-    : primarySource
+    : tableSource
     | aliasedSource
     ;
 
-primarySource
+tableSource
     : sqlIdentifier
     ;
 
+aliasedTable
+    : tableSource As sqlIdentifier
+    ;
+
+aliasedStatement
+    : '(' statement ')' As sqlIdentifier
+    ;
+
 aliasedSource
-    : primarySource As sqlIdentifier
-    | '(' statement ')' As sqlIdentifier
+    : aliasedTable
+    | aliasedStatement
     ;
 
 sourceList

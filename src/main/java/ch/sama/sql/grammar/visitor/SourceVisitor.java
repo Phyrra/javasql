@@ -3,14 +3,18 @@ package ch.sama.sql.grammar.visitor;
 import ch.sama.sql.grammar.antlr.SqlBaseVisitor;
 import ch.sama.sql.grammar.antlr.SqlParser;
 import ch.sama.sql.grammar.exception.NotImplementedException;
+import ch.sama.sql.query.base.IQuery;
+import ch.sama.sql.query.base.IQueryFactory;
 import ch.sama.sql.query.base.ISourceFactory;
 import ch.sama.sql.query.helper.Source;
 
 class SourceVisitor extends SqlBaseVisitor<Source> {
-    ISourceFactory fac;
+    ISourceFactory source;
+    QueryVisitor visitor;
 
-    public SourceVisitor(ISourceFactory fac) {
-        this.fac = fac;
+    public SourceVisitor(IQueryFactory fac, QueryVisitor visitor) {
+        this.source = fac.source();
+        this.visitor = visitor;
     }
 
     @Override
@@ -20,24 +24,30 @@ class SourceVisitor extends SqlBaseVisitor<Source> {
 
     @Override
     public Source visitAliasedSource(SqlParser.AliasedSourceContext ctx) {
-        Source source;
-        if (ctx.primarySource() != null) {
-            source = visit(ctx.primarySource());
-        } else if (ctx.statement() != null) {
-            throw new NotImplementedException("Query selection not implemented", ctx);
-        } else {
-            throw new NotImplementedException("Unknown source", ctx);
-        }
-
-        String alias = ctx.sqlIdentifier().Identifier().getText();
-        source.as(alias);
-
-        return source;
+        return visitChildren(ctx);
     }
 
     @Override
-    public Source visitPrimarySource(SqlParser.PrimarySourceContext ctx) {
+    public Source visitAliasedTable(SqlParser.AliasedTableContext ctx) {
+        Source table = visit(ctx.tableSource());
+
+        String alias = ctx.sqlIdentifier().Identifier().getText();
+        table.as(alias);
+
+        return table;
+    }
+
+    @Override
+    public Source visitTableSource(SqlParser.TableSourceContext ctx) {
         String table = ctx.sqlIdentifier().Identifier().getText();
-        return fac.table(table);
+        return source.table(table);
+    }
+
+    @Override
+    public Source visitAliasedStatement(SqlParser.AliasedStatementContext ctx) {
+        IQuery query = visitor.visit(ctx.statement());
+        String alias = ctx.sqlIdentifier().Identifier().getText();
+
+        return source.query(query).as(alias);
     }
 }
