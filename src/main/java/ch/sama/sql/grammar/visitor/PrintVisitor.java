@@ -2,7 +2,6 @@ package ch.sama.sql.grammar.visitor;
 
 import ch.sama.sql.grammar.antlr.SqlBaseVisitor;
 import ch.sama.sql.grammar.antlr.SqlParser;
-import ch.sama.sql.grammar.exception.SqlGrammarException;
 import ch.sama.sql.grammar.helper.StringGetter;
 import org.antlr.v4.runtime.ParserRuleContext;
 

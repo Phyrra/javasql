@@ -1,18 +1,10 @@
 package ch.sama.sql.tsql.dialect;
 
-import ch.sama.sql.query.base.IQueryRenderer;
-import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.condition.*;
 
 import java.util.List;
 
 class TSqlConditionRenderer implements IConditionRenderer {
-    private IQueryRenderer renderer;
-
-    public TSqlConditionRenderer(IQueryRenderer renderer) {
-        this.renderer = renderer;
-    }
-
     @Override
     public String render(EqCondition c) {
         return c.getLhs().getValue() + " = " + c.getRhs().getValue();

@@ -53,7 +53,7 @@ public class TSqlFunctionFactory {
     }
 
     private static class ConditionWhenThen implements WhenThen {
-        private static final IConditionRenderer renderer = new TSqlConditionRenderer(new TSqlQueryRenderer());
+        private static final IConditionRenderer renderer = new TSqlConditionRenderer();
 
         private ICondition condition;
         private Value value;

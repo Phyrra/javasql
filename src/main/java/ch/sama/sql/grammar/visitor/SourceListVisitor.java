@@ -2,8 +2,6 @@ package ch.sama.sql.grammar.visitor;
 
 import ch.sama.sql.grammar.antlr.SqlBaseVisitor;
 import ch.sama.sql.grammar.antlr.SqlParser;
-import ch.sama.sql.query.base.ISourceFactory;
-import ch.sama.sql.query.base.IValueFactory;
 import ch.sama.sql.query.helper.Source;
 
 import java.util.ArrayList;

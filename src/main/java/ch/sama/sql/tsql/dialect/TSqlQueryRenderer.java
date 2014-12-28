@@ -18,7 +18,7 @@ class TSqlQueryRenderer implements IQueryRenderer {
     private IOrderRenderer orderParser;
 
     public TSqlQueryRenderer() {
-        conditionParser = new TSqlConditionRenderer(this);
+        conditionParser = new TSqlConditionRenderer();
         orderParser = new TSqlOrderRenderer();
     }
 

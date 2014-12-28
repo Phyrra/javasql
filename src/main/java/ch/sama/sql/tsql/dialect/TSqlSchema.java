@@ -25,12 +25,7 @@ public class TSqlSchema implements ISchema {
     private Map<String, Table> tables;
 
     public TSqlSchema(IQueryExecutor executor) {
-        loadSchema(executor, new ITableFilter() {
-            @Override
-            public boolean filter(String table) {
-                return true;
-            }
-        });
+        loadSchema(executor, table -> true);
     }
 
     public TSqlSchema(IQueryExecutor executor, ITableFilter filter) {
@@ -138,7 +133,7 @@ public class TSqlSchema implements ISchema {
     }
 
     public TSqlSchema(File file) {
-        InputStream stream = null;
+        InputStream stream;
         try {
             stream = new FileInputStream(file);
         } catch(FileNotFoundException e) {

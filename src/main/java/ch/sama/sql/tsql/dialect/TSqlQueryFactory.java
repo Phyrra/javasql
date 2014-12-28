@@ -8,7 +8,7 @@ public class TSqlQueryFactory implements IQueryFactory {
     private IValueFactory value = new TSqlValueFactory();
     private ISourceFactory source = new TSqlSourceFactory();
     private IQueryRenderer renderer = new TSqlQueryRenderer();
-    private IConditionRenderer condition = new TSqlConditionRenderer(renderer);
+    private IConditionRenderer condition = new TSqlConditionRenderer();
     private IOrderRenderer order = new TSqlOrderRenderer();
 
     @Override

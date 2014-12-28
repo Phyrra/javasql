@@ -32,7 +32,7 @@ public class TSqlExecutor implements IQueryExecutor {
 
     @Override
     public void execute(String query) {
-        Statement statement = null;
+        Statement statement;
         try {
             Connection con = connection.open();
             statement = con.createStatement();
@@ -57,9 +57,9 @@ public class TSqlExecutor implements IQueryExecutor {
 
     @Override
     public List<Map<String, Object>> query(String query) {
-        List<Map<String, Object>> list = null;
+        List<Map<String, Object>> list;
 
-        Statement statement = null;
+        Statement statement;
         try {
             Connection con = connection.open();
             statement = con.createStatement();
@@ -87,9 +87,9 @@ public class TSqlExecutor implements IQueryExecutor {
 
     @Override
     public Map<String, Object> get(String query) {
-        List<Map<String, Object>> list = null;
+        List<Map<String, Object>> list;
 
-        Statement statement = null;
+        Statement statement;
         try {
             Connection con = connection.open();
             statement = con.createStatement();

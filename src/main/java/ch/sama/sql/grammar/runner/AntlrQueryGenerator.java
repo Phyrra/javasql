@@ -3,7 +3,6 @@ package ch.sama.sql.grammar.runner;
 import ch.sama.sql.grammar.antlr.SqlParser;
 import ch.sama.sql.grammar.exception.SqlGrammarException;
 import ch.sama.sql.grammar.helper.SqlParserHelper;
-import ch.sama.sql.grammar.visitor.PrintVisitor;
 import ch.sama.sql.grammar.visitor.QueryVisitor;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.base.IQueryFactory;

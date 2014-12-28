@@ -221,7 +221,7 @@ public class SchemaTest {
 
     @Test (expected = ObjectNotFoundException.class)
     public void unknownPrimary() {
-        List<Table> list = new TSqlSchema(
+        new TSqlSchema(
                 "CREATE TABLE [tblTable](\n" +
                 "   [uidId] [uniqueidentifier] NOT NULL CONSTRAINT [DF_tblTable_uidId] DEFAULT (newsequentialid()),\n" +
                 "   [iField] [int] NULL,\n" +

@@ -1,10 +1,7 @@
 package ch.sama.sql.grammar.visitor.query;
 
 import ch.sama.sql.grammar.runner.AntlrQueryGenerator;
-import ch.sama.sql.grammar.runner.AntlrSqlPrinter;
-import ch.sama.sql.grammar.visitor.QueryVisitor;
 import ch.sama.sql.grammar.visitor.TestBase;
-import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.tsql.dialect.TSqlQueryFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;

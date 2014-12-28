@@ -2,14 +2,10 @@ package ch.sama.sql.query.helper;
 
 import ch.sama.sql.query.base.IQueryRenderer;
 import ch.sama.sql.query.base.check.Identifier;
-import ch.sama.sql.query.exception.BadParameterException;
 import ch.sama.sql.query.exception.IllegalIdentifierException;
-import ch.sama.sql.query.helper.Value;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Function {
 	private String name;

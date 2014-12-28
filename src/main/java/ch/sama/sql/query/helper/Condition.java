@@ -1,13 +1,7 @@
 package ch.sama.sql.query.helper;
 
 import ch.sama.sql.query.base.IQuery;
-import ch.sama.sql.query.exception.BadParameterException;
-import ch.sama.sql.query.exception.UnknownConditionException;
-import ch.sama.sql.query.helper.Value;
 import ch.sama.sql.query.helper.condition.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Condition {
 	public static EqCondition eq(Value lhs, Value rhs) {

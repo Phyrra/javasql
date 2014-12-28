@@ -30,9 +30,9 @@ public class SelectQuery implements IQuery {
 		this.parent = parent;
 		this.values = new ArrayList<Value>();
 		this.n = -1;
-		
-		for (int i = 0; i < v.length; ++i) {
-			values.add(v[i]);
+
+		for (Value aV : v) {
+			values.add(aV);
 		}
 	}
 	

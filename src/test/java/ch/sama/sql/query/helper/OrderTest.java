@@ -2,7 +2,6 @@ package ch.sama.sql.query.helper;
 
 import ch.sama.sql.query.base.IQueryFactory;
 import ch.sama.sql.query.base.IValueFactory;
-import ch.sama.sql.query.exception.BadSqlException;
 import ch.sama.sql.query.helper.order.IOrder;
 import ch.sama.sql.query.helper.order.IOrderRenderer;
 import ch.sama.sql.tsql.dialect.TSqlQueryFactory;

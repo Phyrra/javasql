@@ -2,15 +2,14 @@ package ch.sama.sql.grammar.visitor;
 
 import ch.sama.sql.grammar.antlr.SqlBaseVisitor;
 import ch.sama.sql.grammar.antlr.SqlParser;
-import ch.sama.sql.grammar.exception.NotImplementedException;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.base.IQueryFactory;
 import ch.sama.sql.query.base.ISourceFactory;
 import ch.sama.sql.query.helper.Source;
 
 class SourceVisitor extends SqlBaseVisitor<Source> {
-    ISourceFactory source;
-    QueryVisitor visitor;
+    private ISourceFactory source;
+    private QueryVisitor visitor;
 
     public SourceVisitor(IQueryFactory fac, QueryVisitor visitor) {
         this.source = fac.source();

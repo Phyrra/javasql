@@ -20,12 +20,7 @@ public class ClassGenerator<T extends IQueryFactory> {
     }
 
     public void generate(String srcFolder, String pkg) throws IOException {
-        generate(srcFolder, pkg, new ITableFilter() {
-            @Override
-            public boolean filter(String name) {
-                return true;
-            }
-        });
+        generate(srcFolder, pkg, name -> true);
     }
 
     public void generate(String srcFolder, String pkg, ITableFilter filter) throws IOException {

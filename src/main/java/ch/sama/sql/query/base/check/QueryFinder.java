@@ -19,7 +19,7 @@ public class QueryFinder {
         }
 
         if (dst.isAssignableFrom(src.getClass())) {
-            return (T)src;
+            return dst.cast(src);
         }
 
         return get(src.getParent(), dst);
@@ -52,7 +52,7 @@ public class QueryFinder {
 
             if (o != null) {
                 if (dst.isAssignableFrom(o.getClass())) {
-                    fields.add((T) o);
+                    fields.add(dst.cast(o));
                 }
             }
         }
@@ -90,7 +90,7 @@ public class QueryFinder {
 
             if (o != null) {
                 if (dst.isAssignableFrom(o.getClass())) {
-                    sources.add((T) o);
+                    sources.add(dst.cast(o));
                 }
             }
         }
@@ -101,7 +101,7 @@ public class QueryFinder {
 
             if (o != null) {
                 if (dst.isAssignableFrom(o.getClass())) {
-                    sources.add((T) o);
+                    sources.add(dst.cast(o));
                 }
             }
         }
