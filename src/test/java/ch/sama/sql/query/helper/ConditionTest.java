@@ -115,4 +115,10 @@ public class ConditionTest {
         ICondition c = Condition.in(value.numeric(1), fac.query().select(value.numeric(1)));
         assertEquals("1 IN (\nSELECT 1\n)", c.render(parser));
     }
+    
+    @Test
+    public void isNull() {
+        ICondition c = Condition.isNull(value.field("FIELD"));
+        assertEquals("[FIELD] IS NULL", c.render(parser));
+    }
 }

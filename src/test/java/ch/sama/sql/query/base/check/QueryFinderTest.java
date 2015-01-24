@@ -116,4 +116,17 @@ public class QueryFinderTest {
 
         assertEquals(2, sources.size());
     }
+    
+    @Test
+    public void getAllJoinSources() {
+        IQuery query = fac.query()
+                .select(value.field("FIELD"))
+                .from(source.table("TABLE1"))
+                .join(source.table("TABLE2")).on(Condition.eq(value.numeric(1), value.numeric(1)))
+                .join(source.query(fac.query().select(value.numeric(1)))).on(Condition.eq(value.numeric(1), value.numeric(1)));
+        
+        List<Source> sources = finder.getSources(query);
+        
+        assertEquals(3, sources.size());
+    }
 }

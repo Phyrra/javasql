@@ -6,6 +6,7 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 
 import ch.sama.sql.query.base.*;
+import ch.sama.sql.query.exception.IllegalIdentifierException;
 import ch.sama.sql.tsql.dialect.TSqlQueryFactory;
 import org.junit.Test;
 
@@ -45,63 +46,46 @@ public class ValueTest {
 	
 	@Test
 	public void field() {
-		assertEquals("[TABLE].[FIELD]", value.field("TABLE", "FIELD").getString(renderer));
+		assertEquals("[FIELD]", value.field("FIELD").getString(renderer));
 	}
 
     @Test
-    public void table() {
-        assertEquals("[TABLE].*", value.table("TABLE").getString(renderer));
+    public void tableField() {
+        assertEquals("[TABLE].[FIELD]", value.field("TABLE", "FIELD").getString(renderer));
     }
 	
 	@Test
-	public void nameAlias() {
-		assertEquals("[NAME] AS [ALIAS]", value.field("NAME").as("ALIAS").getString(renderer));
+	public void withAlias() {
+		assertEquals("[FIELD] AS [ALIAS]", value.field("FIELD").as("ALIAS").getString(renderer));
+	}
+	
+	@Test (expected = IllegalIdentifierException.class)
+	public void withBadAlias() {
+		value.field("FIELD").as("'");
 	}
 	
 	@Test
 	public void subQuery() {
-		assertEquals("(\nSELECT 1\n) AS [ALIAS]", source.query(fac.query().select(value.numeric(1))).as("ALIAS").getString(renderer));
+		assertEquals("(\nSELECT 1\n) AS [QUERY]", value.query(fac.query().select(value.numeric(1))).as("QUERY").getString(renderer));
 	}
 	
 	@Test
 	public void function() {
-		assertEquals("COUNT(*)", value.function("COUNT", value.value(Value.ALL)).getString(renderer));
+		assertEquals("COUNT(*) AS [_COUNT]", value.function("COUNT", value.value(Value.ALL)).as("_COUNT").getString(renderer));
+	}
+
+	@Test
+	public void nullValue() {
+		assertEquals("NULL", value.value(Value.NULL).getString(renderer));
+	}
+
+	@Test
+	public void allValue() {
+		assertEquals("*", value.value(Value.ALL).getString(renderer));
 	}
 	
 	@Test
-	public void selectFunction() {
-		assertEquals(
-                "SELECT COUNT(*) AS [_COUNT]\nFROM [TABLE]",
-                fac.query()
-                        .select(
-                                value.function("COUNT", value.value(Value.ALL)).as("_COUNT")
-                        )
-                        .from(source.table("TABLE"))
-                .getSql()
-		);
+	public void allTable() {
+		assertEquals("[TABLE].*", value.table("TABLE").getString(renderer));
 	}
-
-    @Test
-    public void nullValue() {
-        assertEquals(
-                "SELECT NULL",
-                fac.query()
-                        .select(
-                                value.value(Value.NULL)
-                        )
-                .getSql()
-        );
-    }
-
-    @Test
-    public void allValue() {
-        assertEquals(
-                "SELECT *",
-                fac.query()
-                        .select(
-                                value.value(Value.ALL)
-                        )
-                .getSql()
-        );
-    }
 }

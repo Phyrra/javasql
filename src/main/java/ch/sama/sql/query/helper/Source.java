@@ -9,8 +9,6 @@ public class Source {
     private String value;
     private String alias;
 
-    public Source() { }
-
     public Source(Object o, String value) {
         this.source = o;
         this.value = value;
