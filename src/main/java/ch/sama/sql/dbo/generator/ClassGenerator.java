@@ -1,4 +1,4 @@
-package ch.sama.sql.generator;
+package ch.sama.sql.dbo.generator;
 
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.ISchema;

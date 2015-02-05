@@ -4,7 +4,7 @@ import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.ISchema;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dbo.connection.IQueryExecutor;
-import ch.sama.sql.generator.ITableFilter;
+import ch.sama.sql.dbo.generator.ITableFilter;
 import ch.sama.sql.query.base.IQueryFactory;
 import ch.sama.sql.query.exception.BadSqlException;
 import ch.sama.sql.query.exception.ObjectNotFoundException;

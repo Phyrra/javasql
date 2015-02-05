@@ -1,4 +1,4 @@
-package ch.sama.sql.generator;
+package ch.sama.sql.dbo.generator;
 
 public interface ITableFilter {
     public boolean filter(String table);
