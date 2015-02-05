@@ -12,7 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ResultSetTransformer {
+public class DefaultTransformer implements IResultSetTransformer {
     public List<Map<String, Object>> transform(ResultSet resultSet) throws SQLException {
         ResultSetMetaData meta = resultSet.getMetaData();
 

@@ -2,7 +2,7 @@ package ch.sama.sql.tsql.connection;
 
 import ch.sama.sql.dbo.connection.DBConnection;
 import ch.sama.sql.dbo.connection.IQueryExecutor;
-import ch.sama.sql.dbo.connection.ResultSetTransformer;
+import ch.sama.sql.dbo.connection.IResultSetTransformer;
 import ch.sama.sql.query.exception.BadSqlException;
 import ch.sama.sql.query.exception.ConnectionException;
 
@@ -15,9 +15,9 @@ import java.util.Map;
 
 public class TSqlExecutor implements IQueryExecutor {
     private DBConnection connection;
-    private ResultSetTransformer transformer;
+    private IResultSetTransformer transformer;
 
-    public TSqlExecutor(DBConnection connection, ResultSetTransformer transformer) {
+    public TSqlExecutor(DBConnection connection, IResultSetTransformer transformer) {
         this.connection = connection;
         this.transformer = transformer;
     }
