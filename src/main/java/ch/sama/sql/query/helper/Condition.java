@@ -3,6 +3,8 @@ package ch.sama.sql.query.helper;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.helper.condition.*;
 
+import java.util.List;
+
 public class Condition {
 	public static EqCondition eq(Value lhs, Value rhs) {
         return new EqCondition(lhs, rhs);
@@ -52,7 +54,11 @@ public class Condition {
         return new IsNullCondition(value);
     }
 
-    public static InCondition in(Value value, IQuery query) {
-        return new InCondition(value, query);
+    public static InQueryCondition in(Value value, IQuery query) {
+        return new InQueryCondition(value, query);
+    }
+    
+    public static InListCondition in(Value value, List<Value> list) {
+        return new InListCondition(value, list);
     }
 }

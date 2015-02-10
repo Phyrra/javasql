@@ -1,23 +1,24 @@
 package ch.sama.sql.query.helper.condition;
 
-import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.helper.Value;
 
-public class InCondition implements ICondition {
-    private Value value;
-    private IQuery query;
+import java.util.List;
 
-    public InCondition(Value value, IQuery query) {
+public class InListCondition implements ICondition {
+    private Value value;
+    private List<Value> list;
+
+    public InListCondition(Value value, List<Value> list) {
         this.value = value;
-        this.query = query;
+        this.list = list;
     }
 
     public Value getValue() {
         return value;
     }
 
-    public IQuery getQuery() {
-        return query;
+    public List<Value> getList() {
+        return list;
     }
     
     @Override

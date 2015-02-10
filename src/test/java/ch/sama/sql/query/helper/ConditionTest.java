@@ -7,7 +7,10 @@ import ch.sama.sql.query.helper.condition.IConditionRenderer;
 import ch.sama.sql.tsql.dialect.TSqlQueryFactory;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 public class ConditionTest {
     private static final IQueryFactory fac = new TSqlQueryFactory();
@@ -111,9 +114,20 @@ public class ConditionTest {
     }
 
     @Test
-    public void in() {
+    public void inQuery() {
         ICondition c = Condition.in(value.numeric(1), fac.query().select(value.numeric(1)));
         assertEquals("1 IN (\nSELECT 1\n)", c.render(parser));
+    }
+    
+    @Test
+    public void inList() {
+        List<Value> values = new ArrayList<Value>();
+        values.add(value.numeric(1));
+        values.add(value.numeric(2));
+        values.add(value.numeric(3));
+        
+        ICondition c = Condition.in(value.numeric(1), values);
+        assertEquals("1 IN (\n1, 2, 3\n)", c.render(parser));
     }
     
     @Test

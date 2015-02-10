@@ -1,5 +1,6 @@
 package ch.sama.sql.tsql.dialect;
 
+import ch.sama.sql.query.helper.Value;
 import ch.sama.sql.query.helper.condition.*;
 
 import java.util.List;
@@ -84,7 +85,22 @@ class TSqlConditionRenderer implements IConditionRenderer {
     }
 
     @Override
-    public String render(InCondition c) {
+    public String render(InQueryCondition c) {
         return c.getValue().getValue() + " IN (\n" + c.getQuery().getSql() + "\n)";
+    }
+    
+    @Override
+    public String render(InListCondition c) {
+        StringBuilder builder = new StringBuilder();
+        String prefix = "";
+
+        for (Value value : c.getList()) {
+            builder.append(prefix);
+            builder.append(value.getValue());
+
+            prefix = ", ";
+        }
+        
+        return c.getValue().getValue() + " IN (\n" + builder.toString() + "\n)";
     }
 }
