@@ -30,9 +30,11 @@ public class Source {
         if (!Identifier.test(alias)) {
             throw new IllegalIdentifierException(alias);
         }
+        
+        Source clone = new Source(source, value);
+        clone.alias = alias;
 
-        this.alias = alias;
-        return this;
+        return clone;
     }
 
     public String getValue() {

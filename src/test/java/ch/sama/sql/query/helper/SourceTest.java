@@ -31,6 +31,15 @@ public class SourceTest {
         assertEquals("[TABLE] AS [ALIAS]", source.table("TABLE").as("ALIAS").getString(renderer));
     }
     
+    @Test
+    public void aliasClone() {
+        Source so = source.table("TABLE");
+        Source sc = so.as("ALIAS");
+        
+        assertEquals(null, so.getAlias());
+        assertEquals("ALIAS", sc.getAlias());
+    }
+    
     @Test (expected = IllegalIdentifierException.class)
     public void withBadAlias() {
         source.table("TABLE").as("'");

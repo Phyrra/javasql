@@ -1,14 +1,17 @@
 package ch.sama.sql.query.helper;
 
-import static org.junit.Assert.*;
-
-import java.util.Date;
-import java.text.SimpleDateFormat;
-
-import ch.sama.sql.query.base.*;
+import ch.sama.sql.query.base.IQueryFactory;
+import ch.sama.sql.query.base.IQueryRenderer;
+import ch.sama.sql.query.base.ISourceFactory;
+import ch.sama.sql.query.base.IValueFactory;
 import ch.sama.sql.query.exception.IllegalIdentifierException;
 import ch.sama.sql.tsql.dialect.TSqlQueryFactory;
 import org.junit.Test;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static org.junit.Assert.assertEquals;
 
 public class ValueTest {
     private static final IQueryFactory fac = new TSqlQueryFactory();
@@ -58,6 +61,15 @@ public class ValueTest {
 	public void withAlias() {
 		assertEquals("[FIELD] AS [ALIAS]", value.field("FIELD").as("ALIAS").getString(renderer));
 	}
+
+    @Test
+    public void aliasClone() {
+        Value vo = value.field("FIELD");
+        Value vc = vo.as("ALIAS");
+
+        assertEquals(null, vo.getAlias());
+        assertEquals("ALIAS", vc.getAlias());
+    }
 	
 	@Test (expected = IllegalIdentifierException.class)
 	public void withBadAlias() {

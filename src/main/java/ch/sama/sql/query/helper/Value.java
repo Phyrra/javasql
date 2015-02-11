@@ -46,8 +46,10 @@ public class Value {
         if (!Identifier.test(alias)) {
             throw new IllegalIdentifierException(alias);
         }
+        
+        Value clone = new Value(source, value);
+        clone.alias = alias;
 
-        this.alias = alias;
-        return this;
+        return clone;
     }
 }
