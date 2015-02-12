@@ -282,7 +282,6 @@ class TSqlQueryRenderer implements IQueryRenderer {
         
         builder.append("UPDATE ");
         builder.append(query.getTable().getString(this));
-        builder.append(" SET (\n)");
         
         return builder.toString();
     }
@@ -292,19 +291,19 @@ class TSqlQueryRenderer implements IQueryRenderer {
         StringBuilder builder = new StringBuilder();
 
         IQuery parent = query.getParent();
-
-        String previous = parent.getSql();
-        builder.append(previous.substring(0, previous.length() - 2));
+        
+        builder.append(parent.getSql());
 
         if (parent instanceof UpdateQueryIM) {
             builder.append(",");
+        } else {
+            builder.append(" SET");
         }
         
         builder.append("\n[");
         builder.append(query.getField().getName());
         builder.append("] = ");
         builder.append(query.getValue().getString(this));
-        builder.append("\n)");
         
         return builder.toString();
     }

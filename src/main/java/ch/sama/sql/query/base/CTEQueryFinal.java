@@ -1,5 +1,6 @@
 package ch.sama.sql.query.base;
 
+import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.helper.Value;
 
 public class CTEQueryFinal implements IQuery {
@@ -42,5 +43,21 @@ public class CTEQueryFinal implements IQuery {
 
     public SelectQuery select(Value... v) {
         return new SelectQuery(renderer, this, v);
+    }
+
+    public InsertQuery insert() {
+        return new InsertQuery(renderer, this);
+    }
+
+    public DeleteQuery delete() {
+        return new DeleteQuery(renderer, this);
+    }
+
+    public UpdateQuery update(Table table) {
+        return new UpdateQuery(renderer, this, table);
+    }
+
+    public UpdateQuery update(String table) {
+        return update(new Table(table));
     }
 }
