@@ -22,6 +22,9 @@ public interface IQueryRenderer {
     public String render(DeleteQuery query);
     public String render(DeleteQueryIM query);
     public String render(DeleteQueryFinal query);
+    public String render(UpdateQuery query);
+    public String render(UpdateQueryIM query);
+    public String render(UpdateQueryFinal query);
     public String render(Field field);
     public String render(Table t);
     public String render(Value v);

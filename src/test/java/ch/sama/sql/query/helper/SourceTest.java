@@ -1,5 +1,6 @@
 package ch.sama.sql.query.helper;
 
+import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.base.IQueryFactory;
 import ch.sama.sql.query.base.IQueryRenderer;
 import ch.sama.sql.query.base.ISourceFactory;
@@ -17,8 +18,13 @@ public class SourceTest {
     private static final ISourceFactory source = fac.source();
     
     @Test
-    public void table() {
+    public void stringTable() {
         assertEquals("[TABLE]", source.table("TABLE").getString(renderer));
+    }
+    
+    @Test
+    public void table() {
+        assertEquals("[dbo].[TABLE]", source.table(new Table("dbo", "TABLE")).getString(renderer));
     }
     
     @Test

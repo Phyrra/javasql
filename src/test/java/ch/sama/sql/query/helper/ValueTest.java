@@ -1,5 +1,7 @@
 package ch.sama.sql.query.helper;
 
+import ch.sama.sql.dbo.Field;
+import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.base.IQueryFactory;
 import ch.sama.sql.query.base.IQueryRenderer;
 import ch.sama.sql.query.base.ISourceFactory;
@@ -47,14 +49,24 @@ public class ValueTest {
 		assertEquals("CONVERT(datetime, '2014-08-15 00:00:00', 21)", value.date(d).getString(renderer));
 	}
 	
+    @Test
+    public void field() {
+        assertEquals("[dbo].[TABLE].[FIELD]", value.field(new Field(new Table("dbo", "TABLE"), "FIELD")).getString(renderer));
+    }
+    
 	@Test
-	public void field() {
+	public void stringField() {
 		assertEquals("[FIELD]", value.field("FIELD").getString(renderer));
 	}
 
     @Test
-    public void tableField() {
+    public void stringTableField() {
         assertEquals("[TABLE].[FIELD]", value.field("TABLE", "FIELD").getString(renderer));
+    }
+    
+    @Test
+    public void tableField() {
+        assertEquals("[dbo].[TABLE].[FIELD]", value.field(new Table("dbo", "TABLE"), "FIELD").getString(renderer));
     }
 	
 	@Test

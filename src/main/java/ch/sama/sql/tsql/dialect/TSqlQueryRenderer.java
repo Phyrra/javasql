@@ -273,6 +273,53 @@ class TSqlQueryRenderer implements IQueryRenderer {
         
         return builder.toString();
     }
+    
+    @Override
+    public String render(UpdateQuery query) {
+        StringBuilder builder = new StringBuilder();
+        
+        appendIfExists(builder, query);
+        
+        builder.append("UPDATE ");
+        builder.append(query.getTable().getString(this));
+        builder.append(" SET (\n)");
+        
+        return builder.toString();
+    }
+    
+    @Override
+    public String render(UpdateQueryIM query) {
+        StringBuilder builder = new StringBuilder();
+
+        IQuery parent = query.getParent();
+
+        String previous = parent.getSql();
+        builder.append(previous.substring(0, previous.length() - 2));
+
+        if (parent instanceof UpdateQueryIM) {
+            builder.append(",");
+        }
+        
+        builder.append("\n[");
+        builder.append(query.getField().getName());
+        builder.append("] = ");
+        builder.append(query.getValue().getString(this));
+        builder.append("\n)");
+        
+        return builder.toString();
+    }
+    
+    @Override
+    public String render(UpdateQueryFinal query) {
+        StringBuilder builder = new StringBuilder();
+        
+        builder.append(query.getParent().getSql());
+        
+        builder.append("\nWHERE ");
+        builder.append(query.getCondition().render(conditionParser));
+        
+        return builder.toString();
+    }
 
     @Override
     public String render(Field f) {

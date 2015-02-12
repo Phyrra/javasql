@@ -43,6 +43,6 @@ public class InsertQueryIM implements IQuery {
             fieldList[i] = new Field(fields[i]);
         }
         
-        return new InsertQueryFinal(renderer, this, fieldList);
+        return columns(fieldList);
     }
 }

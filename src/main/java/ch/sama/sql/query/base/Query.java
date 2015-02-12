@@ -1,5 +1,6 @@
 package ch.sama.sql.query.base;
 
+import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.helper.Value;
 
 public class Query implements IQuery {
@@ -45,5 +46,13 @@ public class Query implements IQuery {
     
     public DeleteQuery delete() {
         return new DeleteQuery(renderer, this);
+    }
+    
+    public UpdateQuery update(Table table) {
+        return new UpdateQuery(renderer, this, table);
+    }
+
+    public UpdateQuery update(String table) {
+        return update(new Table(table));
     }
 }

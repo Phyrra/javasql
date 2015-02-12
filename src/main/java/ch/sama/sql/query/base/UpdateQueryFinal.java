@@ -1,14 +1,16 @@
 package ch.sama.sql.query.base;
 
-import ch.sama.sql.dbo.Table;
+import ch.sama.sql.query.helper.condition.ICondition;
 
-public class DeleteQuery implements IQuery {
+public class UpdateQueryFinal implements IQuery {
     private IQueryRenderer renderer;
 	private IQuery parent;
+    private ICondition condition;
 
-    public DeleteQuery(IQueryRenderer renderer, IQuery parent) {
+    public UpdateQueryFinal(IQueryRenderer renderer, IQuery parent, ICondition condition) {
         this.renderer = renderer;
         this.parent = parent;
+        this.condition = condition;
     }
 
     @Override
@@ -23,15 +25,10 @@ public class DeleteQuery implements IQuery {
 
     @Override
     public IQuery chainTo(IQuery query) {
-        this.parent = query;
-        return query;
+        return this.parent.chainTo(query);
     }
-
-	public DeleteQueryIM from(Table table) {
-		return new DeleteQueryIM(renderer, this, table);
-	}
     
-    public DeleteQueryIM from(String table) {
-        return from(new Table(table));
+    public ICondition getCondition() {
+        return condition;
     }
 }

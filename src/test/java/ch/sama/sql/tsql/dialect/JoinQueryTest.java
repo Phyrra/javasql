@@ -1,15 +1,14 @@
 package ch.sama.sql.tsql.dialect;
 
-import static org.junit.Assert.*;
-
 import ch.sama.sql.query.base.FromQuery;
 import ch.sama.sql.query.base.IQueryFactory;
 import ch.sama.sql.query.base.ISourceFactory;
 import ch.sama.sql.query.base.IValueFactory;
+import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.condition.ICondition;
 import org.junit.Test;
 
-import ch.sama.sql.query.helper.Condition;
+import static org.junit.Assert.assertEquals;
 
 public class JoinQueryTest {
     private static final IQueryFactory fac = new TSqlQueryFactory();
@@ -53,6 +52,30 @@ public class JoinQueryTest {
                         .join(
                                 source.query(query).as("T")
                         ).on(c1)
+                .getSql()
+        );
+    }
+    
+    @Test
+    public void leftJoin() {
+        ICondition c1 = Condition.eq(value.numeric(1), value.numeric(1));
+        
+        assertEquals(
+                "SELECT [F]\nFROM [T]\nLEFT JOIN [J] ON 1 = 1",
+                query
+                        .join(source.table("J")).left().on(c1)
+                .getSql()
+        );
+    }
+
+    @Test
+    public void rightJoin() {
+        ICondition c1 = Condition.eq(value.numeric(1), value.numeric(1));
+
+        assertEquals(
+                "SELECT [F]\nFROM [T]\nRIGHT JOIN [J] ON 1 = 1",
+                query
+                        .join(source.table("J")).right().on(c1)
                 .getSql()
         );
     }

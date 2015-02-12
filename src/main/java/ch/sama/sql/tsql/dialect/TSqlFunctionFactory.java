@@ -22,7 +22,6 @@ public class TSqlFunctionFactory {
     }
 
     public static interface WhenThen {
-        public boolean isElse();
         public String getString();
     }
 
@@ -35,16 +34,8 @@ public class TSqlFunctionFactory {
             this.value = value;
         }
 
-        public boolean isElse() {
-            return expression == null;
-        }
-
         public String getString() {
-            if (isElse()) {
-                return "ELSE " + value.getValue();
-            } else {
-                return "WHEN " + expression.getValue() + " THEN " + value.getValue();
-            }
+            return "WHEN " + expression.getValue() + " THEN " + value.getValue();
         }
     }
 
@@ -63,16 +54,8 @@ public class TSqlFunctionFactory {
             this.value = value;
         }
 
-        public boolean isElse() {
-            return condition == null;
-        }
-
         public String getString() {
-            if (isElse()) {
-                return "ELSE " + value.getValue();
-            } else {
-                return "WHEN " + condition.render(renderer) + " THEN " + value.getValue();
-            }
+            return "WHEN " + condition.render(renderer) + " THEN " + value.getValue();
         }
     }
 
@@ -85,10 +68,6 @@ public class TSqlFunctionFactory {
 
         public ElseWhenThen(Value value) {
             this.value = value;
-        }
-
-        public boolean isElse() {
-            return true;
         }
 
         public String getString() {
@@ -106,7 +85,7 @@ public class TSqlFunctionFactory {
         for (int i = 0; i < wts.length; ++i) {
             WhenThen wt = wts[i];
 
-            if (wt.isElse() && i != wts.length - 1) { // this also captures multiple ELSEs
+            if ((wt instanceof ElseWhenThen) && i != wts.length - 1) { // this also captures multiple ELSEs
                 throw new BadParameterException("ELSE must be the last argument");
             }
 

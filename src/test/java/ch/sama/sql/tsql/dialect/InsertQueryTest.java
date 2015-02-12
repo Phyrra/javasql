@@ -25,9 +25,9 @@ public class InsertQueryTest {
     @Test
     public void insertIntoTable() {
         assertEquals(
-                "INSERT INTO [TABLE]",
+                "INSERT INTO [dbo].[TABLE]",
                 fac.query()
-                        .insert().into(new Table("TABLE"))
+                        .insert().into(new Table("dbo", "TABLE"))
                 .getSql()
         );
     }
@@ -57,7 +57,7 @@ public class InsertQueryTest {
         assertEquals(
                 "INSERT INTO [TABLE] ([FIELD])",
                 fac.query()
-                        .insert().into("TABLE").columns(new Field("FIELD"))
+                        .insert().into("TABLE").columns(new Field("TABLE", "FIELD"))
                 .getSql()
         );
     }
@@ -67,7 +67,7 @@ public class InsertQueryTest {
         assertEquals(
                 "INSERT INTO [TABLE] ([FIELD1], [FIELD2])",
                 fac.query()
-                        .insert().into("TABLE").columns(new Field("FIELD1"), new Field("FIELD2"))
+                        .insert().into("TABLE").columns(new Field("TABLE", "FIELD1"), new Field("TABLE", "FIELD2"))
                 .getSql()
         );
     }

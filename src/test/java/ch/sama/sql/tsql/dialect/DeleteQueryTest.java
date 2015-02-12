@@ -25,9 +25,9 @@ public class DeleteQueryTest {
     @Test
     public void deleteFromTable() {
         assertEquals(
-                "DELETE FROM [TABLE]",
+                "DELETE FROM [dbo].[TABLE]",
                 fac.query()
-                        .delete().from(new Table("TABLE"))
+                        .delete().from(new Table("dbo", "TABLE"))
                 .getSql()
         );
     }

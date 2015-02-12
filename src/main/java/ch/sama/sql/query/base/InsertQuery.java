@@ -32,6 +32,6 @@ public class InsertQuery implements IQuery {
 	}
     
     public InsertQueryIM into(String table) {
-        return new InsertQueryIM(renderer, this, new Table(table));
+        return into(new Table(table));
     }
 }

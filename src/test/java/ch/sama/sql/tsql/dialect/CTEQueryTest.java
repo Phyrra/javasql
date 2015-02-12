@@ -3,9 +3,11 @@ package ch.sama.sql.tsql.dialect;
 import ch.sama.sql.query.base.IQueryFactory;
 import ch.sama.sql.query.base.ISourceFactory;
 import ch.sama.sql.query.base.IValueFactory;
+import ch.sama.sql.query.exception.BadSqlException;
+import ch.sama.sql.query.exception.IllegalIdentifierException;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class CTEQueryTest {
     private static final IQueryFactory fac = new TSqlQueryFactory();
@@ -61,5 +63,28 @@ public class CTEQueryTest {
                         .from(source.table("CTE1"))
                 .getSql()
         );
+    }
+    
+    @Test (expected = IllegalIdentifierException.class)
+    public void badName() {
+        fac.query()
+                .with("'").as(
+                fac.query()
+                        .select(value.field("F"))
+                        .from(source.table("T"))
+        );
+    }
+    
+    @Test (expected = BadSqlException.class)
+    public void nestedCte() {
+        fac.query()
+                .with("CTE1").as(
+                        fac.query()
+                                .with("CTE2").as(
+                                        fac.query()
+                                                .select(value.field("F"))
+                                                .from(source.table("T"))
+                                )
+                );
     }
 }
