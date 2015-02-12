@@ -16,6 +16,12 @@ public interface IQueryRenderer {
     public String render(JoinQueryFinal query);
     public String render(WhereQuery query);
     public String render(OrderQuery query);
+    public String render(InsertQuery query);
+    public String render(InsertQueryIM query);
+    public String render(InsertQueryFinal query);
+    public String render(DeleteQuery query);
+    public String render(DeleteQueryIM query);
+    public String render(DeleteQueryFinal query);
     public String render(Field field);
     public String render(Table t);
     public String render(Value v);

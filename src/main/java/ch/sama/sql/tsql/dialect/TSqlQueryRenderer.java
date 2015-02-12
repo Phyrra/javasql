@@ -22,6 +22,17 @@ class TSqlQueryRenderer implements IQueryRenderer {
         orderParser = new TSqlOrderRenderer();
     }
 
+    private void appendIfExists(StringBuilder builder, IQuery query) {
+        IQuery parent = query.getParent();
+        if (parent != null) {
+            String parentQuery = parent.getSql();
+            if (parentQuery != null) {
+                builder.append(parentQuery);
+                builder.append("\n");
+            }
+        }
+    }
+    
     @Override
     public String render(Query query) {
         IQuery parent = query.getParent();
@@ -69,14 +80,7 @@ class TSqlQueryRenderer implements IQueryRenderer {
     public String render(SelectQuery query) {
         StringBuilder builder = new StringBuilder();
 
-        IQuery parent = query.getParent();
-        if (parent != null) {
-            String parentQuery = parent.getSql();
-            if (parentQuery != null) {
-                builder.append(parentQuery);
-                builder.append("\n");
-            }
-        }
+        appendIfExists(builder, query);
 
         String prefix = "";
 
@@ -192,6 +196,83 @@ class TSqlQueryRenderer implements IQueryRenderer {
 
         return builder.toString();
     }
+    
+    @Override
+    public String render(InsertQuery query) {
+        StringBuilder builder = new StringBuilder();
+
+        appendIfExists(builder, query);
+        
+        return builder.toString();
+    }
+    
+    @Override
+    public String render(InsertQueryIM query) {
+        StringBuilder builder = new StringBuilder();
+        
+        builder.append(query.getParent().getSql());
+        builder.append("INSERT INTO ");
+        builder.append(query.getTable().getString(this));
+        
+        return builder.toString();
+    }
+    
+    @Override
+    public String render(InsertQueryFinal query) {
+        StringBuilder builder = new StringBuilder();
+        String prefix = "";
+        
+        builder.append(query.getParent().getSql());
+        builder.append(" (");
+        
+        List<Field> fields = query.getFields();
+        for (Field f : fields) {
+            builder.append(prefix);
+            builder.append("[");
+            builder.append(f.getName());
+            builder.append("]");
+            
+            prefix = ", ";
+        }
+        
+        builder.append(")");
+        
+        return builder.toString();
+    }
+    
+    @Override
+    public String render(DeleteQuery query) {
+        StringBuilder builder = new StringBuilder();
+
+        appendIfExists(builder, query);
+
+        return builder.toString();    
+    }
+    
+    @Override
+    public String render(DeleteQueryIM query) {
+        StringBuilder builder = new StringBuilder();
+        
+        builder.append(query.getParent().getSql());
+        
+        builder.append("DELETE FROM ");
+        builder.append(query.getTable().getString(this));
+        
+        return builder.toString();
+    }
+    
+    @Override
+    public String render(DeleteQueryFinal query) {
+        StringBuilder builder = new StringBuilder();
+        
+        builder.append(query.getParent().getSql());
+        
+        builder.append("\nWHERE ");
+        
+        builder.append(query.getCondition().render(conditionParser));
+        
+        return builder.toString();
+    }
 
     @Override
     public String render(Field f) {
@@ -215,7 +296,7 @@ class TSqlQueryRenderer implements IQueryRenderer {
 
         return builder.toString();
     }
-
+    
     @Override
     public String render(Table t) {
         StringBuilder builder = new StringBuilder();

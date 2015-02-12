@@ -27,6 +27,14 @@ public class Query implements IQuery {
 	public SelectQuery select(Value... v) {
 		return new SelectQuery(renderer, this, v);
 	}
+    
+    public InsertQuery insert() {
+        return new InsertQuery(renderer, this);
+    }
+    
+    public DeleteQuery delete() {
+        return new DeleteQuery(renderer, this);
+    }
 
     @Override
     public String getSql() {
