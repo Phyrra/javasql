@@ -18,6 +18,16 @@ public class CTEQueryFinal implements IQuery {
         return parent;
     }
 
+    @Override
+    public String getSql() {
+        return renderer.render(this);
+    }
+
+    @Override
+    public IQuery chainTo(IQuery query) {
+        return this.parent.chainTo(query);
+    }
+
     public String getCteName() {
         return parent.getName();
     }
@@ -32,15 +42,5 @@ public class CTEQueryFinal implements IQuery {
 
     public SelectQuery select(Value... v) {
         return new SelectQuery(renderer, this, v);
-    }
-
-    @Override
-    public String getSql() {
-        return renderer.render(this);
-    }
-
-    @Override
-    public IQuery chainTo(IQuery query) {
-        return this.parent.chainTo(query);
     }
 }

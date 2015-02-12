@@ -6,16 +6,27 @@ public class DeleteQuery implements IQuery {
     private IQueryRenderer renderer;
 	private IQuery parent;
 
+    public DeleteQuery(IQueryRenderer renderer, IQuery parent) {
+        this.renderer = renderer;
+        this.parent = parent;
+    }
+
     @Override
 	public IQuery getParent() {
 		return parent;
 	}
 
-	public DeleteQuery(IQueryRenderer renderer, IQuery parent) {
-        this.renderer = renderer;
-		this.parent = parent;
-	}
-	
+    @Override
+    public String getSql() {
+        return renderer.render(this);
+    }
+
+    @Override
+    public IQuery chainTo(IQuery query) {
+        this.parent = query;
+        return query;
+    }
+
 	public DeleteQueryIM from(Table table) {
 		return new DeleteQueryIM(renderer, this, table);
 	}
@@ -23,15 +34,4 @@ public class DeleteQuery implements IQuery {
     public DeleteQueryIM from(String table) {
         return new DeleteQueryIM(renderer, this, new Table(table));
     }
-
-    @Override
-    public String getSql() {
-        return renderer.render(this);
-    }
-
-	@Override
-	public IQuery chainTo(IQuery query) {
-		this.parent = query;
-		return query;
-	}
 }

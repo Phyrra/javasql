@@ -5,26 +5,18 @@ import ch.sama.sql.query.helper.condition.ICondition;
 
 public class DeleteQueryIM implements IQuery {
     private IQueryRenderer renderer;
-	private IQuery parent;
+	private DeleteQuery parent;
     private Table table;
 
+    public DeleteQueryIM(IQueryRenderer renderer, DeleteQuery parent, Table table) {
+        this.renderer = renderer;
+        this.parent = parent;
+        this.table = table;
+    }
+    
     @Override
 	public IQuery getParent() {
 		return parent;
-	}
-
-	public DeleteQueryIM(IQueryRenderer renderer, IQuery parent, Table table) {
-        this.renderer = renderer;
-		this.parent = parent;
-        this.table = table;
-	}
-    
-    public Table getTable() {
-        return table;
-    }
-	
-	public DeleteQueryFinal where(ICondition condition) {
-		return new DeleteQueryFinal(renderer, this, condition);
 	}
 
     @Override
@@ -32,9 +24,16 @@ public class DeleteQueryIM implements IQuery {
         return renderer.render(this);
     }
 
-	@Override
-	public IQuery chainTo(IQuery query) {
-		this.parent = query;
-		return query;
+    @Override
+    public IQuery chainTo(IQuery query) {
+        return this.parent.chainTo(query);
+    }
+    
+    public Table getTable() {
+        return table;
+    }
+	
+	public DeleteQueryFinal where(ICondition condition) {
+		return new DeleteQueryFinal(renderer, this, condition);
 	}
 }

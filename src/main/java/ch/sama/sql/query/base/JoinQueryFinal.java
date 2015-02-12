@@ -20,6 +20,16 @@ public class JoinQueryFinal implements IQuery {
 		return parent;
 	}
 
+    @Override
+    public String getSql() {
+        return renderer.render(this);
+    }
+
+    @Override
+    public IQuery chainTo(IQuery query) {
+        return this.parent.chainTo(query);
+    }
+
 	public Source getJoinSource() {
 		return parent.getSource();
 	}
@@ -43,14 +53,4 @@ public class JoinQueryFinal implements IQuery {
     public Query union() {
         return new Query(renderer, this);
     }
-
-    @Override
-    public String getSql() {
-        return renderer.render(this);
-    }
-
-	@Override
-	public IQuery chainTo(IQuery query) {
-		return this.parent.chainTo(query);
-	}
 }

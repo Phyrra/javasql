@@ -19,6 +19,17 @@ public class Query implements IQuery {
 	public IQuery getParent() {
 		return parent;
 	}
+
+    @Override
+    public String getSql() {
+        return renderer.render(this);
+    }
+
+    @Override
+    public IQuery chainTo(IQuery query) {
+        this.parent = query;
+        return query;
+    }
 	
 	public CTEQuery with(String name) {
 		return new CTEQuery(renderer, this, name);
@@ -34,16 +45,5 @@ public class Query implements IQuery {
     
     public DeleteQuery delete() {
         return new DeleteQuery(renderer, this);
-    }
-
-    @Override
-    public String getSql() {
-        return renderer.render(this);
-    }
-
-    @Override
-    public IQuery chainTo(IQuery query) {
-        this.parent = query;
-        return query;
     }
 }
