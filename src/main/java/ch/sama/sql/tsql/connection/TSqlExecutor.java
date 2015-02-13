@@ -2,7 +2,9 @@ package ch.sama.sql.tsql.connection;
 
 import ch.sama.sql.dbo.connection.DBConnection;
 import ch.sama.sql.dbo.connection.IQueryExecutor;
-import ch.sama.sql.dbo.connection.IResultSetTransformer;
+import ch.sama.sql.dbo.result.IResultSet;
+import ch.sama.sql.dbo.result.IResultSetTransformer;
+import ch.sama.sql.dbo.result.ResultRow;
 import ch.sama.sql.query.exception.BadSqlException;
 import ch.sama.sql.query.exception.ConnectionException;
 
@@ -10,8 +12,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
-import java.util.Map;
 
 public class TSqlExecutor implements IQueryExecutor {
     private DBConnection connection;
@@ -56,8 +56,8 @@ public class TSqlExecutor implements IQueryExecutor {
     }
 
     @Override
-    public List<Map<String, Object>> query(String query) {
-        List<Map<String, Object>> list;
+    public IResultSet query(String query) {
+        IResultSet result;
 
         Statement statement;
         try {
@@ -71,7 +71,7 @@ public class TSqlExecutor implements IQueryExecutor {
 
         try {
             ResultSet resultSet = statement.executeQuery(query);
-            list = transformer.transform(resultSet);
+            result = transformer.transform(resultSet);
         } catch (SQLException e) {
             closeStatement(statement);
             connection.close();
@@ -82,12 +82,12 @@ public class TSqlExecutor implements IQueryExecutor {
         closeStatement(statement);
         connection.close();
 
-        return list;
+        return result;
     }
 
     @Override
-    public Map<String, Object> get(String query) {
-        List<Map<String, Object>> list;
+    public ResultRow get(String query) {
+        IResultSet result;
 
         Statement statement;
         try {
@@ -101,7 +101,7 @@ public class TSqlExecutor implements IQueryExecutor {
 
         try {
             ResultSet resultSet = statement.executeQuery(query);
-            list = transformer.transform(resultSet);
+            result = transformer.transform(resultSet);
         } catch (SQLException e) {
             closeStatement(statement);
             connection.close();
@@ -112,10 +112,10 @@ public class TSqlExecutor implements IQueryExecutor {
         closeStatement(statement);
         connection.close();
 
-        if (list.size() != 1) {
-            throw new BadSqlException("Expected 1 Result, got " + list.size());
+        if (result.size() != 1) {
+            throw new BadSqlException("Expected 1 Result, got " + result.size());
         }
 
-        return list.get(0);
+        return result.get(0);
     }
 }

@@ -1,5 +1,6 @@
-package ch.sama.sql.dbo.connection;
+package ch.sama.sql.dbo.result;
 
+import ch.sama.sql.dbo.result.IResultSetTransformer;
 import ch.sama.sql.query.exception.BadSqlException;
 
 import java.io.BufferedReader;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public class DefaultTransformer implements IResultSetTransformer {
-    public List<Map<String, Object>> transform(ResultSet resultSet) throws SQLException {
+    public IResultSet transform(ResultSet resultSet) throws SQLException {
         ResultSetMetaData meta = resultSet.getMetaData();
 
         int colCount = meta.getColumnCount();
@@ -22,24 +23,25 @@ public class DefaultTransformer implements IResultSetTransformer {
             colNames[i] = meta.getColumnName(i + 1);
         }
 
-        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        DefaultResultSet result = new DefaultResultSet();
 
         while (resultSet.next()) {
-            LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
+            DefaultResultRow row = new DefaultResultRow();
+            
             for (int i = 0; i < colCount; ++i) {
                 Object val = resultSet.getObject(i + 1);
 
                 if (val instanceof Clob) {
-                    map.put(colNames[i], clobToString((Clob)val));
+                    row.put(colNames[i], clobToString((Clob)val));
                 } else {
-                    map.put(colNames[i], val);
+                    row.put(colNames[i], val);
                 }
             }
 
-            list.add(map);
+            result.add(row);
         }
 
-        return list;
+        return result;
     }
 
     private String clobToString(Clob clob) {

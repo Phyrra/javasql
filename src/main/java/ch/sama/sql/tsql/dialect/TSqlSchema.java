@@ -5,6 +5,8 @@ import ch.sama.sql.dbo.ISchema;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dbo.connection.IQueryExecutor;
 import ch.sama.sql.dbo.generator.ITableFilter;
+import ch.sama.sql.dbo.result.IResultSet;
+import ch.sama.sql.dbo.result.ResultRow;
 import ch.sama.sql.query.base.IQueryFactory;
 import ch.sama.sql.query.exception.BadSqlException;
 import ch.sama.sql.query.exception.ObjectNotFoundException;
@@ -37,19 +39,19 @@ public class TSqlSchema implements ISchema {
 
         tables = new HashMap<String, Table>();
 
-        List<Map<String, Object>> list = executor.query(
+        IResultSet result = executor.query(
                 fac.query()
                         .select(
                                 fac.value().field("TABLE_SCHEMA"),
                                 fac.value().field("TABLE_NAME")
                         )
                         .from(fac.source().table("INFORMATION_SCHEMA", "TABLES"))
-                        .getSql()
+                .getSql()
         );
 
-        for (Map<String, Object> row : list) {
-            String schema = (String)row.get("TABLE_SCHEMA");
-            String table = (String)row.get("TABLE_NAME");
+        for (ResultRow row : result) {
+            String schema = row.getAsString("TABLE_SCHEMA");
+            String table = row.getAsString("TABLE_NAME");
 
             if (!filter.filter(table)) {
                 continue;
@@ -60,7 +62,7 @@ public class TSqlSchema implements ISchema {
             Table t = new Table(schema, table);
             tables.put(table, t);
 
-            List<Map<String, Object>> columns = executor.query(
+            IResultSet columns = executor.query(
                     fac.query()
                             .select(
                                     fac.value().field("COLUMN_NAME"),
@@ -90,13 +92,13 @@ public class TSqlSchema implements ISchema {
                     .getSql()
             );
 
-            for (Map<String, Object> column : columns) {
-                Field f = new Field(t, (String)column.get("COLUMN_NAME"));
+            for (ResultRow column : columns) {
+                Field f = new Field(t, column.getAsString("COLUMN_NAME"));
 
-                String dataType = (String)column.get("DATA_TYPE");
+                String dataType = column.getAsString("DATA_TYPE");
                 Object maxLength = column.get("CHARACTER_MAXIMUM_LENGTH");
-                if (maxLength != null) {
-                    int l = (Integer)maxLength;
+                if (maxLength != null && maxLength instanceof Integer) {
+                    int l = (Integer) maxLength;
 
                     if (l == -1) {
                         dataType += "(max)";
@@ -106,22 +108,22 @@ public class TSqlSchema implements ISchema {
                 }
                 f.setDataType(dataType);
 
-                String nullable = (String)column.get("IS_NULLABLE");
+                String nullable = column.getAsString("IS_NULLABLE");
                 if ("NO".equals(nullable)) {
                     f.setNullable(false);
                 } else {
                     f.setNullable(true);
                 }
 
-                Object defaultValue = column.get("COLUMN_DEFAULT");
+                String defaultValue = column.getAsString("COLUMN_DEFAULT");
                 if (defaultValue != null) {
                     // The data type is inconsequential here
-                    f.setDefault(fac.value().plain((String)defaultValue));
+                    f.setDefault(fac.value().plain(defaultValue));
                 }
 
                 t.addColumn(f);
 
-                if ((Integer)column.get("IS_PKEY") == 1) {
+                if (column.getAsInt("IS_PKEY") == 1) {
                     f.setAsPrivateKey();
                 }
             }
