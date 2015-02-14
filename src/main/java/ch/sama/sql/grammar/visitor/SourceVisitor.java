@@ -7,6 +7,8 @@ import ch.sama.sql.query.base.IQueryFactory;
 import ch.sama.sql.query.base.ISourceFactory;
 import ch.sama.sql.query.helper.Source;
 
+import java.util.List;
+
 class SourceVisitor extends SqlBaseVisitor<Source> {
     private ISourceFactory source;
     private QueryVisitor visitor;
@@ -38,8 +40,13 @@ class SourceVisitor extends SqlBaseVisitor<Source> {
 
     @Override
     public Source visitTableSource(SqlParser.TableSourceContext ctx) {
-        String table = ctx.sqlIdentifier().Identifier().getText();
-        return source.table(table);
+        List<SqlParser.SqlIdentifierContext> identifiers = ctx.table().sqlIdentifier();
+        
+        if (identifiers.size() > 1) {
+            return source.table(identifiers.get(0).Identifier().getText(), identifiers.get(1).Identifier().getText());
+        } else {
+            return source.table(identifiers.get(0).Identifier().getText());
+        }
     }
 
     @Override

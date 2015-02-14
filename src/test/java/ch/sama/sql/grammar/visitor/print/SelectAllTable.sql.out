@@ -1,0 +1,10 @@
+sql
+    statement
+        select
+            value
+                all
+                    t
+        from
+            source
+                table
+                    t

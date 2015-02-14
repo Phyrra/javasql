@@ -1,5 +1,6 @@
 package ch.sama.sql.grammar.visitor;
 
+import ch.sama.sql.dbo.Table;
 import ch.sama.sql.grammar.antlr.SqlBaseVisitor;
 import ch.sama.sql.grammar.antlr.SqlParser;
 import ch.sama.sql.grammar.exception.SqlGrammarException;
@@ -32,8 +33,13 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
 
     @Override
     public Value visitAllTableFields(SqlParser.AllTableFieldsContext ctx) {
-        String table = ctx.sqlIdentifier().Identifier().getText();
-        return value.table(table);
+        List<SqlParser.SqlIdentifierContext> identifiers = ctx.table().sqlIdentifier();
+        
+        if (identifiers.size() > 1) {
+            return value.table(new Table(identifiers.get(0).Identifier().getText(), identifiers.get(1).Identifier().getText()));
+        } else {
+            return value.table(new Table(identifiers.get(0).Identifier().getText()));
+        }
     }
 
     @Override
@@ -134,8 +140,17 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
 
     @Override
     public Value visitTableField(SqlParser.TableFieldContext ctx) {
-        String table = ctx.sqlIdentifier(0).Identifier().getText();
-        String field = ctx.sqlIdentifier(1).Identifier().getText();
+        Table table;
+        List<SqlParser.SqlIdentifierContext> identifiers = ctx.table().sqlIdentifier();
+        
+        if (identifiers.size() > 1) {
+            table = new Table(identifiers.get(0).Identifier().getText(), identifiers.get(1).Identifier().getText());
+        } else {
+            table = new Table(identifiers.get(0).Identifier().getText());
+        }
+        
+        String field = ctx.sqlIdentifier().Identifier().getText();
+        
         return value.field(table, field);
     }
 

@@ -314,7 +314,7 @@ public class PrintVisitor extends SqlBaseVisitor<Void> {
 
     @Override
     public Void visitTableField(SqlParser.TableFieldContext ctx) {
-        appendIndented("table");
+        appendIndented("table field");
         indent();
 
         visitChildren(ctx);

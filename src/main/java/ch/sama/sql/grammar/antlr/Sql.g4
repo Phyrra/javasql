@@ -215,15 +215,20 @@ allFields
     ;
 
 allTableFields
-    : sqlIdentifier '.*'
+    : table '.*'
     ;
 
 field
     : sqlIdentifier
     ;
+    
+table
+    : sqlIdentifier
+    | sqlIdentifier '.' sqlIdentifier
+    ;
 
 tableField
-    : sqlIdentifier '.' sqlIdentifier
+    : table '.' sqlIdentifier
     ;
 
 valueList
@@ -237,7 +242,7 @@ source
     ;
 
 tableSource
-    : sqlIdentifier
+    : table
     ;
 
 aliasedTable
