@@ -171,7 +171,7 @@ public class MergeTest {
 
     @Test
     public void guessNull() {
-        assertEquals("int", m.value("FIELD", null).getField().getDataType());
+        assertEquals("none", m.value("FIELD", null).getField().getDataType());
     }
     
     @Test
@@ -237,5 +237,20 @@ public class MergeTest {
     @Test (expected = BadParameterException.class)
     public void wrongGuess() {
         m.value("FIELD", new Object());
+    }
+
+    @Test
+    public void fillGuessHoles() {
+        assertEquals(
+                "DECLARE @table (\nFIELD1 float,\nFIELD2 int,\nFIELD3 varchar(MAX)\n)\nINSERT INTO @table\nSELECT NULL, NULL, 'Hello' UNION ALL\nSELECT 1.23, NULL, NULL\nMERGE INTO [TABLE] AS [old]\nUSING @table AS [new] ON (\n[old].[FIELD1] = [new].[FIELD1]\n)\nWHEN MATCHED THEN\nUPDATE SET [FIELD1] = [new].[FIELD1], [FIELD2] = [new].[FIELD2], [FIELD3] = [new].[FIELD3]\nWHEN NOT MATCHED BY TARGET THEN\nINSERT ([FIELD1], [FIELD2], [FIELD3]) VALUES ([new].[FIELD1], [new].[FIELD2], [new].[FIELD3])\nOUTPUT INSERTED.[FIELD1], INSERTED.[FIELD2], INSERTED.[FIELD3]",
+                m.merge("TABLE")
+                        .values(
+                                m.row(m.value("FIELD1", null), m.value("FIELD2", null), m.value("FIELD3", "Hello")),
+                                m.row(m.value("FIELD1", 1.23), m.value("FIELD2", null), m.value("FIELD3", null))
+                        )
+                        .matching("FIELD1")
+                        .omit()
+                .getSql()
+        );
     }
 }

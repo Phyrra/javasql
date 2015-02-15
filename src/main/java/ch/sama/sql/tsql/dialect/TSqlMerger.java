@@ -64,18 +64,15 @@ public class TSqlMerger {
                 throw new BadParameterException("No values provided");
             }
             
-            this.parent = parent;
-            
-            this.values = new ArrayList<List<Pair>>();
-
             int length = values.get(0).size();
             for (List<Pair> row : values) {
                 if (row.size() != length) {
                     throw new BadParameterException("All rows must have same size");
                 }
-                
-                this.values.add(row);
             }
+
+            this.parent = parent;
+            this.values = values;
         }
         
         MergeQuery getParent() {
@@ -87,58 +84,62 @@ public class TSqlMerger {
         }
         
         public final MatchFields matching(Field... fields) {
-            return new MatchFields(this, fields);
+            List<String> list = new ArrayList<String>();
+            for (Field field : fields) {
+                list.add(field.getName());
+            }
+            
+            return new MatchFields(this, list);
         }
         
         public final MatchFields matching(String... fields) {
-            Field[] fieldList = new Field[fields.length];
-            for (int i = 0; i < fields.length; ++i) {
-                fieldList[i] = new Field(fields[i]);
-            }
+            List<String> list = new ArrayList<String>();
+            Collections.addAll(list, fields);
             
-            return matching(fieldList);
+            return new MatchFields(this, list);
         }
     }
 
     public static class MatchFields {
-        private List<Field> fields;
+        private List<String> fields;
         private MergeValues parent;
         
-        MatchFields(MergeValues parent, Field... fields) {
+        MatchFields(MergeValues parent, List<String> fields) {
             // Not possible, since the matching methods would be ambiguous
-            if (fields.length == 0) {
+            if (fields.size() == 0) {
                 throw new BadParameterException("Must match at least one field");
             }
             
             this.parent = parent;
-            
-            this.fields = new ArrayList<Field>();
-            Collections.addAll(this.fields, fields);
+            this.fields = fields;
         }
         
         MergeValues getParent() {
             return parent;
         }
 
-        List<Field> getFields() {
+        List<String> getFields() {
             return fields;
         }
 
         public final OmitFields omit() {
-            return new OmitFields(this);
+            return new OmitFields(this, new ArrayList<String>());
         }
 
         public final OmitFields omit(String... fields) {
-            return new OmitFields(this, fields);
+            List<String> list = new ArrayList<String>();
+            Collections.addAll(list, fields);
+            
+            return new OmitFields(this, list);
         }
 
         public final OmitFields omit(Field... fields) {
-            String[] fieldList = new String[fields.length];
-            for (int i = 0; i < fields.length; ++i) {
-                fieldList[i] = fields[i].getName();
+            List<String> list = new ArrayList<String>();
+            for (Field field : fields) {
+                list.add(field.getName());
             }
 
-            return omit(fieldList);
+            return new OmitFields(this, list);
         }
     }
 
@@ -147,16 +148,13 @@ public class TSqlMerger {
         private List<String> fields;
         private MatchFields parent;
         
-        OmitFields(MatchFields parent, String... fields) {
-            this.parent = parent;
-
-            if (fields.length == getParent().getParent().getValues().get(0).size()) {
+        OmitFields(MatchFields parent, List<String> fields) {
+            if (fields.size() == parent.getParent().getValues().get(0).size()) {
                 throw new BadParameterException("Cannot omit everything");
             }
 
-            this.fields = new ArrayList<String>();
-            Collections.addAll(this.fields, fields);
-
+            this.parent = parent;
+            this.fields = fields;
             this.renderer = new TSqlQueryRenderer();
         }
 
@@ -166,6 +164,26 @@ public class TSqlMerger {
         
         private boolean omitField(String field) {
             return fields.contains(field);
+        }
+        
+        private List<Pair> evalBestMatch(List<List<Pair>> values) {
+            List<Pair> result = new ArrayList<Pair>();
+
+            int maxI = values.size();
+            int maxJ = values.get(0).size();
+            
+            for (int j = 0; j < maxJ; ++j) {
+                Pair p = values.get(0).get(j);
+                for (int i = 0; i < maxI - 1 && "none".equals(p.getField().getDataType()); ++i, p = values.get(i).get(j)) { } // omg..
+                
+                if ("none".equals(p.getField().getDataType())) {
+                    p.getField().setDataType("int"); // None found, fallback to int
+                }
+                
+                result.add(p);
+            }
+            
+            return result;
         }
         
         public String getSql() {
@@ -178,8 +196,8 @@ public class TSqlMerger {
             
             Table table = mergeQuery.getTable();
             List<List<Pair>> values = mergeValues.getValues();
-            List<Pair> fields = values.get(0);
-            List<Field> matchers = matchFields.getFields();
+            List<Pair> fields = evalBestMatch(values);
+            List<String> matchers = matchFields.getFields();
             
             builder.append("DECLARE @table (\n");
             
@@ -226,14 +244,12 @@ public class TSqlMerger {
             builder.append("USING @table AS [new] ON (\n");
             
             prefix = "";
-            for (Field field : matchers) {
-                String name = field.getName();
-                
+            for (String field : matchers) {
                 builder.append(prefix);
                 builder.append("[old].[");
-                builder.append(name);
+                builder.append(field);
                 builder.append("] = [new].[");
-                builder.append(name);
+                builder.append(field);
                 builder.append("]");
                 
                 prefix = " AND ";
@@ -348,7 +364,7 @@ public class TSqlMerger {
         Field f = new Field(field);
         
         if (o == null) {
-            f.setDataType("int");
+            f.setDataType("none");
             return new Pair(f, value.value(Value.VALUE.NULL));
         }
         
