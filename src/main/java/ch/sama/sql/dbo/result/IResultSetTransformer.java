@@ -5,6 +5,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-public interface IResultSetTransformer {
-    public IResultSet transform(ResultSet resultSet) throws SQLException;
+public interface IResultSetTransformer<R> {
+    public List<R> transform(ResultSet resultSet) throws SQLException;
 }

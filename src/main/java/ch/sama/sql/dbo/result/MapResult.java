@@ -1,17 +1,36 @@
 package ch.sama.sql.dbo.result;
 
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 
-public abstract class ResultRow {
-    public abstract Object get(String key);
-    public abstract Object put(String key, Object value);
-    public abstract Set<String> keySet();
-    public abstract boolean contains(String key);
+public class MapResult {
+    Map<String, Object> map;
     
+    public MapResult() {
+        map = new LinkedHashMap<String, Object>();
+    }
+
+    public Object get(String key) {
+        return map.get(key);
+    }
+
+    public Object put(String key, Object value) {
+        return map.put(key, value);
+    }
+
+    public Set<String> keySet() {
+        return map.keySet();
+    }
+
+    public boolean contains(String key) {
+        return map.containsKey(key);
+    }
+
     public<T> T getAs(String key, Class<T> type) {
         Object o = get(key);
-        
+
         if (o == null) {
             return null;
         }

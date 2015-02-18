@@ -2,9 +2,7 @@ package ch.sama.sql.tsql.connection;
 
 import ch.sama.sql.dbo.connection.DBConnection;
 import ch.sama.sql.dbo.connection.IQueryExecutor;
-import ch.sama.sql.dbo.result.IResultSet;
 import ch.sama.sql.dbo.result.IResultSetTransformer;
-import ch.sama.sql.dbo.result.ResultRow;
 import ch.sama.sql.query.exception.BadSqlException;
 import ch.sama.sql.query.exception.ConnectionException;
 
@@ -12,12 +10,13 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
-public class TSqlExecutor implements IQueryExecutor {
+public class TSqlExecutor<R> implements IQueryExecutor<R> {
     private DBConnection connection;
-    private IResultSetTransformer transformer;
+    private IResultSetTransformer<R> transformer;
 
-    public TSqlExecutor(DBConnection connection, IResultSetTransformer transformer) {
+    public TSqlExecutor(DBConnection connection, IResultSetTransformer<R> transformer) {
         this.connection = connection;
         this.transformer = transformer;
     }
@@ -56,8 +55,8 @@ public class TSqlExecutor implements IQueryExecutor {
     }
 
     @Override
-    public IResultSet query(String query) {
-        IResultSet result;
+    public List<R> query(String query) {
+        List<R> result;
 
         Statement statement;
         try {
@@ -86,8 +85,8 @@ public class TSqlExecutor implements IQueryExecutor {
     }
 
     @Override
-    public ResultRow get(String query) {
-        IResultSet result;
+    public R get(String query) {
+        List<R> result;
 
         Statement statement;
         try {

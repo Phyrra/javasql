@@ -1,12 +1,11 @@
 package ch.sama.sql.dbo.connection;
 
-import ch.sama.sql.dbo.result.IResultSet;
-import ch.sama.sql.dbo.result.ResultRow;
+import java.util.List;
 
-public interface IQueryExecutor {
+public interface IQueryExecutor<R> {
     public void execute(String query);
 
-    public IResultSet query(String query);
+    public List<R> query(String query);
 
-    public ResultRow get(String query);
+    public R get(String query);
 }

@@ -5,8 +5,7 @@ import ch.sama.sql.dbo.ISchema;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dbo.connection.IQueryExecutor;
 import ch.sama.sql.dbo.generator.ITableFilter;
-import ch.sama.sql.dbo.result.IResultSet;
-import ch.sama.sql.dbo.result.ResultRow;
+import ch.sama.sql.dbo.result.MapResult;
 import ch.sama.sql.query.base.IQueryFactory;
 import ch.sama.sql.query.exception.BadSqlException;
 import ch.sama.sql.query.exception.ObjectNotFoundException;
@@ -26,20 +25,20 @@ public class TSqlSchema implements ISchema {
 
     private Map<String, Table> tables;
 
-    public TSqlSchema(IQueryExecutor executor) {
+    public TSqlSchema(IQueryExecutor<MapResult> executor) {
         loadSchema(executor, table -> true);
     }
 
-    public TSqlSchema(IQueryExecutor executor, ITableFilter filter) {
+    public TSqlSchema(IQueryExecutor<MapResult> executor, ITableFilter filter) {
         loadSchema(executor, filter);
     }
 
-    private void loadSchema(IQueryExecutor executor, ITableFilter filter) {
+    private void loadSchema(IQueryExecutor<MapResult> executor, ITableFilter filter) {
         TSqlFunctionFactory fnc = new TSqlFunctionFactory();
 
         tables = new HashMap<String, Table>();
 
-        IResultSet result = executor.query(
+        List<MapResult> result = executor.query(
                 fac.query()
                         .select(
                                 fac.value().field("TABLE_SCHEMA"),
@@ -49,7 +48,7 @@ public class TSqlSchema implements ISchema {
                 .getSql()
         );
 
-        for (ResultRow row : result) {
+        for (MapResult row : result) {
             String schema = row.getAsString("TABLE_SCHEMA");
             String table = row.getAsString("TABLE_NAME");
 
@@ -62,7 +61,7 @@ public class TSqlSchema implements ISchema {
             Table t = new Table(schema, table);
             tables.put(table, t);
 
-            IResultSet columns = executor.query(
+            List<MapResult> columns = executor.query(
                     fac.query()
                             .select(
                                     fac.value().field("COLUMN_NAME"),
@@ -92,7 +91,7 @@ public class TSqlSchema implements ISchema {
                     .getSql()
             );
 
-            for (ResultRow column : columns) {
+            for (MapResult column : columns) {
                 Field f = new Field(t, column.getAsString("COLUMN_NAME"));
 
                 String dataType = column.getAsString("DATA_TYPE");

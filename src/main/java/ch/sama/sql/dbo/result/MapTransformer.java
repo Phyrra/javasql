@@ -1,6 +1,5 @@
 package ch.sama.sql.dbo.result;
 
-import ch.sama.sql.dbo.result.IResultSetTransformer;
 import ch.sama.sql.query.exception.BadSqlException;
 
 import java.io.BufferedReader;
@@ -9,12 +8,10 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
-public class DefaultTransformer implements IResultSetTransformer {
-    public IResultSet transform(ResultSet resultSet) throws SQLException {
+public class MapTransformer implements IResultSetTransformer<MapResult> {
+    public List<MapResult> transform(ResultSet resultSet) throws SQLException {
         ResultSetMetaData meta = resultSet.getMetaData();
 
         int colCount = meta.getColumnCount();
@@ -23,10 +20,10 @@ public class DefaultTransformer implements IResultSetTransformer {
             colNames[i] = meta.getColumnName(i + 1);
         }
 
-        DefaultResultSet result = new DefaultResultSet();
+        List<MapResult> result = new ArrayList<MapResult>();
 
         while (resultSet.next()) {
-            DefaultResultRow row = new DefaultResultRow();
+            MapResult row = new MapResult();
             
             for (int i = 0; i < colCount; ++i) {
                 Object val = resultSet.getObject(i + 1);
