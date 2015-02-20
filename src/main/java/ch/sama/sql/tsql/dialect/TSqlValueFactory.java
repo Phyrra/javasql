@@ -102,4 +102,21 @@ class TSqlValueFactory implements IValueFactory {
                 throw new UnknownValueException("Caused by: " + value);
         }
     }
+    
+    @Override
+    public Value combine(String operator, Value... values) {
+        StringBuilder builder = new StringBuilder();
+        String prefix = "";
+        
+        for (Value v : values) {
+            builder.append(prefix);
+            builder.append(v.getValue());
+            
+            prefix = " " + operator + " ";
+        }
+        
+        String val = builder.toString();
+        
+        return new Value(val, val);
+    }
 }

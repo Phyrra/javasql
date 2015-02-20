@@ -26,4 +26,6 @@ public interface IValueFactory {
     public Value function(Function fnc);
     public Value query(IQuery query);
     public Value value(Value.VALUE val);
+    
+    public Value combine(String operator, Value... values);
 }

@@ -112,4 +112,19 @@ public class ValueTest {
 	public void allTable() {
 		assertEquals("[TABLE].*", value.table("TABLE").getString(renderer));
 	}
+    
+    @Test
+    public void combineTwo() {
+        assertEquals("[TABLE].[FIELD1] + [TABLE].[FIELD2]", value.combine("+", value.field("TABLE", "FIELD1"), value.field("TABLE", "FIELD2")).getString(renderer));
+    }
+    
+    @Test
+    public void combineMultiple() {
+        assertEquals("[TABLE].[FIELD1] + '_' + [TABLE].[FIELD2]", value.combine("+", value.field("TABLE", "FIELD1"), value.string("_"), value.field("TABLE", "FIELD2")).getString(renderer));
+    }
+    
+    @Test
+    public void combineWithAlias() {
+        assertEquals("[TABLE].[FIELD1] + [TABLE].[FIELD2] AS [ALIAS]", value.combine("+", value.field("TABLE", "FIELD1"), value.field("TABLE", "FIELD2")).as("ALIAS").getString(renderer));
+    }
 }
