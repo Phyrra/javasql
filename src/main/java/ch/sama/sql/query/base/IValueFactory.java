@@ -28,4 +28,5 @@ public interface IValueFactory {
     public Value value(Value.VALUE val);
     
     public Value combine(String operator, Value... values);
+    public Value bracket(Value value);
 }

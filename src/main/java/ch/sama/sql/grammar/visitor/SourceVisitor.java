@@ -31,11 +31,9 @@ class SourceVisitor extends SqlBaseVisitor<Source> {
     @Override
     public Source visitAliasedTable(SqlParser.AliasedTableContext ctx) {
         Source table = visit(ctx.tableSource());
-
         String alias = ctx.sqlIdentifier().Identifier().getText();
-        table.as(alias);
-
-        return table;
+        
+        return table.as(alias);
     }
 
     @Override

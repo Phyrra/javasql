@@ -17,6 +17,11 @@ public class Value {
     private String value;
     private String alias;
 
+    public Value(String value) {
+        this.source = value;
+        this.value = value;
+    }
+    
     public Value(Object o, String value) {
         this.source = o;
         this.value = value;

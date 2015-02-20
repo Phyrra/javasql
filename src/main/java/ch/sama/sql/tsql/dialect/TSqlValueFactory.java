@@ -115,8 +115,11 @@ class TSqlValueFactory implements IValueFactory {
             prefix = " " + operator + " ";
         }
         
-        String val = builder.toString();
-        
-        return new Value(val, val);
+        return new Value(builder.toString());
+    }
+    
+    @Override
+    public Value bracket(Value value) {
+        return new Value("(" + value.getValue() + ")");
     }
 }

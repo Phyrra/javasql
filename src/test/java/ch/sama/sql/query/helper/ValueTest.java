@@ -127,4 +127,9 @@ public class ValueTest {
     public void combineWithAlias() {
         assertEquals("[TABLE].[FIELD1] + [TABLE].[FIELD2] AS [ALIAS]", value.combine("+", value.field("TABLE", "FIELD1"), value.field("TABLE", "FIELD2")).as("ALIAS").getString(renderer));
     }
+    
+    @Test
+    public void simple() {
+        assertEquals("([TABLE].[FIELD])", value.bracket(value.field("TABLE", "FIELD")).getString(renderer));
+    }
 }

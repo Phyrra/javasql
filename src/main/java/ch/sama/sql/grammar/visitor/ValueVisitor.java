@@ -55,14 +55,7 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
             Value lhs = visit(ctx.additiveExpression());
             String op = ctx.additiveOperator().getText();
 
-            switch (op) {
-                case "+":
-                    return value.plain(lhs.getValue() + " + " + rhs.getValue());
-                case "-":
-                    return value.plain(lhs.getValue() + " - " + rhs.getValue());
-                default:
-                    throw new SqlGrammarException("Unknown operator: " + op, ctx);
-            }
+            return value.combine(op, lhs, rhs);
         }
 
         return rhs;
@@ -76,14 +69,7 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
             Value lhs = visit(ctx.multiplicativeExpression());
             String op = ctx.multiplicativeOperator().getText();
 
-            switch (op) {
-                case "*":
-                    return value.plain(lhs.getValue() + " * " + rhs.getValue());
-                case "/":
-                    return value.plain(lhs.getValue() + " / " + rhs.getValue());
-                default:
-                    throw new SqlGrammarException("Unknown operator: " + op, ctx);
-            }
+            return value.combine(op, lhs, rhs);
         }
 
         return rhs;
@@ -96,7 +82,7 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
         if (ctx.negateOperator() != null) {
             String op = ctx.negateOperator().getText();
 
-            switch (op) {
+            switch (op) { // TODO: Some sort of "combine"?
                 case "-":
                     return value.plain("-" + val.getValue());
                 default:
@@ -114,7 +100,9 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
 
     @Override
     public Value visitParExpression(SqlParser.ParExpressionContext ctx) {
-        return visit(ctx.expression());
+        Value val = visit(ctx.expression());
+        
+        return value.bracket(val);
     }
 
     @Override
@@ -127,9 +115,7 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
         String alias = ctx.sqlIdentifier().Identifier().getText();
         Value value = visit(ctx.expression());
 
-        value.as(alias);
-
-        return value;
+        return value.as(alias);
     }
 
     @Override
