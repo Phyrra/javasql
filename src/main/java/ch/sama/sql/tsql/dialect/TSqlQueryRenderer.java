@@ -14,12 +14,12 @@ import ch.sama.sql.query.helper.Value;
 import java.util.List;
 
 class TSqlQueryRenderer implements IQueryRenderer {
-    private IConditionRenderer conditionParser;
-    private IOrderRenderer orderParser;
+    private IConditionRenderer conditionRenderer;
+    private IOrderRenderer orderRenderer;
 
     public TSqlQueryRenderer() {
-        conditionParser = new TSqlConditionRenderer();
-        orderParser = new TSqlOrderRenderer();
+        conditionRenderer = new TSqlConditionRenderer();
+        orderRenderer = new TSqlOrderRenderer();
     }
 
     private void appendIfExists(StringBuilder builder, IQuery query) {
@@ -160,7 +160,7 @@ class TSqlQueryRenderer implements IQueryRenderer {
         builder.append(query.getParent().getSql());
 
         builder.append(" ON ");
-        builder.append(query.getCondition().render(conditionParser));
+        builder.append(query.getCondition().render(conditionRenderer));
 
         return builder.toString();
     }
@@ -171,7 +171,7 @@ class TSqlQueryRenderer implements IQueryRenderer {
 
         builder.append(query.getParent().getSql());
         builder.append("\nWHERE ");
-        builder.append(query.getCondition().render(conditionParser));
+        builder.append(query.getCondition().render(conditionRenderer));
 
         return builder.toString();
     }
@@ -189,7 +189,7 @@ class TSqlQueryRenderer implements IQueryRenderer {
         List<IOrder> orders = query.getOrders();
         for (IOrder o : orders) {
             builder.append(prefix);
-            builder.append(o.render(orderParser));
+            builder.append(o.render(orderRenderer));
 
             prefix = ", ";
         }
@@ -269,7 +269,7 @@ class TSqlQueryRenderer implements IQueryRenderer {
         
         builder.append("\nWHERE ");
         
-        builder.append(query.getCondition().render(conditionParser));
+        builder.append(query.getCondition().render(conditionRenderer));
         
         return builder.toString();
     }
@@ -315,7 +315,7 @@ class TSqlQueryRenderer implements IQueryRenderer {
         builder.append(query.getParent().getSql());
         
         builder.append("\nWHERE ");
-        builder.append(query.getCondition().render(conditionParser));
+        builder.append(query.getCondition().render(conditionRenderer));
         
         return builder.toString();
     }

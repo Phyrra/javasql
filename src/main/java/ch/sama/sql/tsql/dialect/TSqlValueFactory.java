@@ -8,13 +8,17 @@ import ch.sama.sql.query.base.IQueryRenderer;
 import ch.sama.sql.query.base.IValueFactory;
 import ch.sama.sql.query.exception.UnknownValueException;
 import ch.sama.sql.query.helper.Value;
+import ch.sama.sql.query.helper.type.IType;
+import ch.sama.sql.query.helper.type.ITypeRenderer;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 class TSqlValueFactory implements IValueFactory {
-    private static final IQueryRenderer renderer = new TSqlQueryRenderer();
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    
+    private static final IQueryRenderer queryRenderer = new TSqlQueryRenderer();
+    private static final ITypeRenderer typeRenderer = new TSqlTypeRenderer();
 
     @Override
     public Value table(String table) {
@@ -23,12 +27,12 @@ class TSqlValueFactory implements IValueFactory {
 
     @Override
     public Value table(Table table) {
-        return new Value(table, table.getString(renderer) + ".*");
+        return new Value(table, table.getString(queryRenderer) + ".*");
     }
 
     @Override
     public Value field(Field field) {
-        return new Value(field, field.getString(renderer));
+        return new Value(field, field.getString(queryRenderer));
     }
 
     @Override
@@ -48,12 +52,12 @@ class TSqlValueFactory implements IValueFactory {
 
     @Override
     public Value plain(String s) {
-        return new Value(null, s);
+        return new Value(s);
     }
 
     @Override
     public Value date(Date date) {
-        return new Value(date, "CONVERT(datetime, '" + dateFormat.format(date) + "', 21)");
+        return new Value(date, "CONVERT(datetime, '" + DATE_FORMAT.format(date) + "', 21)");
     }
 
     @Override
@@ -83,7 +87,7 @@ class TSqlValueFactory implements IValueFactory {
 
     @Override
     public Value function(Function fnc) {
-        return new Value(fnc, fnc.getString(renderer));
+        return new Value(fnc, fnc.getString(queryRenderer));
     }
 
     @Override
@@ -121,5 +125,10 @@ class TSqlValueFactory implements IValueFactory {
     @Override
     public Value bracket(Value value) {
         return new Value("(" + value.getValue() + ")");
+    }
+    
+    @Override
+    public Value type(IType type) {
+        return new Value(type, type.getString(typeRenderer));
     }
 }

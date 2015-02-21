@@ -3,11 +3,11 @@ package ch.sama.sql.grammar.visitor;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.grammar.antlr.SqlBaseVisitor;
 import ch.sama.sql.grammar.antlr.SqlParser;
-import ch.sama.sql.grammar.exception.SqlGrammarException;
 import ch.sama.sql.grammar.helper.StringGetter;
 import ch.sama.sql.query.base.IQueryFactory;
 import ch.sama.sql.query.base.IValueFactory;
 import ch.sama.sql.query.helper.Value;
+import ch.sama.sql.query.helper.type.TYPE;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +49,44 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
     
     @Override
     public Value visitDataType(SqlParser.DataTypeContext ctx) {
-        return value.plain(ctx.getText());
+        return visitChildren(ctx);
+    }
+    
+    @Override
+    public Value visitIntType(SqlParser.IntTypeContext ctx) {
+        return value.type(TYPE.INT_TYPE);
+    }
+    
+    @Override
+    public Value visitFloatType(SqlParser.FloatTypeContext ctx) {
+        return value.type(TYPE.FLOAT_TYPE);
+    }
+    
+    @Override
+    public Value visitDatetimeType(SqlParser.DatetimeTypeContext ctx) {
+        return value.type(TYPE.DATETIME_TYPE);
+    }
+    
+    @Override
+    public Value visitVarcharType(SqlParser.VarcharTypeContext ctx) {
+        return visitChildren(ctx);
+    }
+    
+    @Override
+    public Value visitVarcharTypeIntMax(SqlParser.VarcharTypeIntMaxContext ctx) {
+        int max = Integer.parseInt(ctx.IntegerConstant().getText());
+        
+        return value.type(TYPE.VARCHAR_TYPE(max));
+    }
+    
+    @Override
+    public Value visitVarcharTypeMax(SqlParser.VarcharTypeMaxContext ctx) {
+        return value.type(TYPE.VARCHAR_MAX_TYPE);
+    }
+    
+    @Override
+    public Value visitVarcharTypeNoMax(SqlParser.VarcharTypeNoMaxContext ctx) {
+        return value.type(TYPE.VARCHAR_TYPE);
     }
 
     @Override
@@ -92,12 +129,8 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
         if (ctx.negateOperator() != null) {
             String op = ctx.negateOperator().getText();
 
-            switch (op) { // TODO: Some sort of "combine"?
-                case "-":
-                    return value.plain("-" + val.getValue());
-                default:
-                    throw new SqlGrammarException("Unknown operator: " + op, ctx);
-            }
+            // TODO: Some sort of "combine"?
+            return value.plain(op + val.getValue());
         }
 
         return val;
@@ -158,17 +191,21 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
 
     @Override
     public Value visitNumericValue(SqlParser.NumericValueContext ctx) {
-        String s = ctx.getText();
-        if (ctx.IntegerConstant() != null) {
-            int i = Integer.parseInt(s);
-            return value.numeric(i);
-        } else if (ctx.FloatingConstant() != null) {
-            double d = Double.parseDouble(s);
-            return value.numeric(d);
-        } else {
-            // This should never happen, unless someone defined a bad grammar :)
-            throw new SqlGrammarException("Unknown Numeric Value", ctx);
-        }
+        return visitChildren(ctx);
+    }
+    
+    @Override
+    public Value visitIntegerValue(SqlParser.IntegerValueContext ctx) {
+        int i = Integer.parseInt(ctx.IntegerConstant().getText());
+        
+        return value.numeric(i);
+    }
+    
+    @Override
+    public Value visitFloatingValue(SqlParser.FloatingValueContext ctx) {
+        double d = Double.parseDouble(ctx.FloatingConstant().getText());
+        
+        return value.numeric(d);
     }
 
     @Override

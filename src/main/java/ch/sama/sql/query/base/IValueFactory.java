@@ -4,6 +4,7 @@ import ch.sama.sql.dbo.Field;
 import ch.sama.sql.query.helper.Function;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.helper.Value;
+import ch.sama.sql.query.helper.type.IType;
 
 import java.util.Date;
 
@@ -29,4 +30,6 @@ public interface IValueFactory {
     
     public Value combine(String operator, Value... values);
     public Value bracket(Value value);
+    
+    public Value type(IType type);
 }

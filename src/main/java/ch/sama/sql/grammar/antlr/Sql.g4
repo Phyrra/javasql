@@ -41,6 +41,7 @@ Int : [iI][nN][tT] ;
 Float : [fF][lL][oO][aA][tT] ;
 Datetime : [dD][aA][tT][eE][tT][iI][mM][eE] ;
 Varchar : [nN]?[vV][aA][rR][cC][hH][aA][rR] ;
+Max : [mM][aA][xX] ;
 
 Identifier
     : IdentifierNondigit ( IdentifierNondigit | Digit )*
@@ -112,15 +113,40 @@ SChar
     ;
 
 varcharType
+    : varcharTypeIntMax
+    | varcharTypeMax
+    | varcharTypeNoMax
+    ;
+    
+varcharTypeIntMax
     : Varchar '(' IntegerConstant ')'
-    | Varchar
+    ;
+    
+varcharTypeMax
+    : Varchar '(' Max ')'
+    ;
+    
+varcharTypeNoMax
+    : Varchar
+    ;
+    
+intType
+    : Int
+    ;
+    
+floatType
+    : Float
+    ;
+    
+datetimeType
+    : Datetime
     ;
     
 dataType
     : varcharType
-    | Int
-    | Float
-    | Datetime
+    | intType
+    | floatType
+    | datetimeType
     ;
 
 sqlIdentifier
@@ -199,8 +225,16 @@ stringValue
     ;
 
 numericValue
+    : integerValue
+    | floatingValue
+    ;
+    
+integerValue
     : IntegerConstant
-    | FloatingConstant
+    ;
+    
+floatingValue
+    : FloatingConstant
     ;
 
 functionValue

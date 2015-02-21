@@ -7,6 +7,7 @@ import ch.sama.sql.query.base.IQueryRenderer;
 import ch.sama.sql.query.base.ISourceFactory;
 import ch.sama.sql.query.base.IValueFactory;
 import ch.sama.sql.query.exception.IllegalIdentifierException;
+import ch.sama.sql.query.helper.type.TYPE;
 import ch.sama.sql.tsql.dialect.TSqlQueryFactory;
 import org.junit.Test;
 
@@ -19,7 +20,6 @@ public class ValueTest {
     private static final IQueryFactory fac = new TSqlQueryFactory();
     private static final IQueryRenderer renderer = fac.renderer();
     private static final IValueFactory value = fac.value();
-    private static final ISourceFactory source = fac.source();
 
 	@Test
 	public void string() {
@@ -129,7 +129,12 @@ public class ValueTest {
     }
     
     @Test
-    public void simple() {
+    public void bracket() {
         assertEquals("([TABLE].[FIELD])", value.bracket(value.field("TABLE", "FIELD")).getString(renderer));
+    }
+    
+    @Test
+    public void types() {
+        assertEquals("int", value.type(TYPE.INT_TYPE).getString(renderer));
     }
 }
