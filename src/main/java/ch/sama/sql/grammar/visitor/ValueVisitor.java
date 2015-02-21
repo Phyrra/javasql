@@ -41,6 +41,16 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
             return value.table(new Table(identifiers.get(0).Identifier().getText()));
         }
     }
+    
+    @Override
+    public Value visitArgument(SqlParser.ArgumentContext ctx) {
+        return visitChildren(ctx);
+    }
+    
+    @Override
+    public Value visitDataType(SqlParser.DataTypeContext ctx) {
+        return value.plain(ctx.getText());
+    }
 
     @Override
     public Value visitExpression(SqlParser.ExpressionContext ctx) {

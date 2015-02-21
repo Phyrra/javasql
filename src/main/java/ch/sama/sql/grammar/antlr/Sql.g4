@@ -37,6 +37,11 @@ With : [wW][iI][tT][hH] ;
 Union : [uU][nN][iI][oO][nN] ;
 All : [aA][lL][lL] ;
 
+Int : [iI][nN][tT] ;
+Float : [fF][lL][oO][aA][tT] ;
+Datetime : [dD][aA][tT][eE][tT][iI][mM][eE] ;
+Varchar : [nN]?[vV][aA][rR][cC][hH][aA][rR] ;
+
 Identifier
     : IdentifierNondigit ( IdentifierNondigit | Digit )*
     ;
@@ -104,6 +109,18 @@ fragment
 SChar
     : ~['\r\n]
     | EscapeSequence
+    ;
+
+varcharType
+    : Varchar '(' IntegerConstant ')'
+    | Varchar
+    ;
+    
+dataType
+    : varcharType
+    | Int
+    | Float
+    | Datetime
     ;
 
 sqlIdentifier
@@ -193,10 +210,15 @@ functionValue
 queryValue
     : '(' statement ')'
     ;
+    
+argument
+    : dataType
+    | expression
+    ;
 
 argumentList
-    : expression ',' argumentList
-    | expression
+    : argument ',' argumentList
+    | argument
     ;
 
 aliasedValue

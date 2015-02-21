@@ -251,9 +251,28 @@ public class PrintVisitor extends SqlBaseVisitor<Void> {
 
     @Override
     public Void visitArgumentList(SqlParser.ArgumentListContext ctx) {
-        visit(ctx.expression());
+        visit(ctx.argument());
         safeVisit(ctx.argumentList());
 
+        return null;
+    }
+    
+    @Override
+    public Void visitArgument(SqlParser.ArgumentContext ctx) {
+        appendIndented("argument");
+        indent();
+        
+        visitChildren(ctx);
+        
+        unindent();
+        
+        return null;
+    }
+    
+    @Override
+    public Void visitDataType(SqlParser.DataTypeContext ctx) {
+        appendIndented("data type: " + ctx.getText());
+        
         return null;
     }
 

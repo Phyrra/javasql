@@ -31,7 +31,7 @@ class ValueListVisitor extends SqlBaseVisitor<List<Value>> {
     public List<Value> visitArgumentList(SqlParser.ArgumentListContext ctx) {
         List<Value> values = new ArrayList<Value>();
 
-        values.add(valueVisitor.visit(ctx.expression()));
+        values.add(valueVisitor.visit(ctx.argument()));
 
         if (ctx.argumentList() != null) {
             values.addAll(visit(ctx.argumentList()));

@@ -1,0 +1,50 @@
+sql
+	statement
+		select
+			value
+				primary
+					function
+						argument
+							data type: datetime
+						argument
+							primary
+								string: 2015-02-21
+						argument
+							primary
+								numeric: 21
+			value
+				primary
+					function
+						argument
+							data type: int
+						argument
+							primary
+								string: 1
+			value
+				primary
+					function
+						argument
+							data type: float
+						argument
+							primary
+								string: 1.23
+			value
+				primary
+					function
+						argument
+							data type: varchar
+						argument
+							primary
+								field
+									dt
+						argument
+							primary
+								numeric: 21
+			value
+				primary
+					function
+						argument
+							data type: varchar(64)
+						argument
+							primary
+								string: 1.23

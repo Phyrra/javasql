@@ -4,12 +4,14 @@ sql
 			value
 				primary
 					function
-						primary
-							field
-								field1
-						primary
-							field
-								field2
+					    argument
+                            primary
+                                field
+                                    field1
+                        argument
+                            primary
+                                field
+                                    field2
 		from
 			source
 				table
