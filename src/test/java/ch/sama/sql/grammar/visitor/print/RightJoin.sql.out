@@ -8,13 +8,16 @@ sql
 				table
 					t1
 		join
+			right
 			source
-			    aliased
-				    table
-					    t2
-			        a
+				table
+					t2
 			condition
 				primary
-					numeric: 1
+					table field
+						t2
+						key
 				primary
-					numeric: 1
+					table field
+						t1
+						key

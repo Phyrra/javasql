@@ -1,1 +1,1 @@
-SELECT 1, 'hello', getdate()
+SELECT 1, 1.23, 'hello', getdate()

@@ -1,0 +1,16 @@
+sql
+	statement
+		select
+			value
+				primary
+					function
+						primary
+							field
+								field1
+						primary
+							field
+								field2
+		from
+			source
+				table
+					table

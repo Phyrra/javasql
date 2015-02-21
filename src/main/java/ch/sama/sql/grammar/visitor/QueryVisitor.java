@@ -188,10 +188,6 @@ public class QueryVisitor extends SqlBaseVisitor<IQuery> {
     public IQuery visitJoinStatement(SqlParser.JoinStatementContext ctx) {
         Source source = getSource(ctx.source());
 
-        if (ctx.sqlIdentifier() != null) {
-            source.as(ctx.sqlIdentifier().Identifier().getText());
-        }
-
         ICondition condition = getCondition(ctx.condition());
 
         String joinType = getJoinType(ctx);

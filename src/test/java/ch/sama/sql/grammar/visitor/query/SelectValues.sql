@@ -1,1 +1,1 @@
-select 1, 'hello', getdate()
+select 1, 1.23, 'hello', getdate()

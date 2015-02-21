@@ -157,7 +157,7 @@ joinType
     ;
 
 joinStatement
-    : joinType? Join source (As sqlIdentifier)? On condition
+    : joinType? Join source On condition
     ;
 
 whereStatement

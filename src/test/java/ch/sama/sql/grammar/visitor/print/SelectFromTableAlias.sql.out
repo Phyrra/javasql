@@ -1,0 +1,12 @@
+sql
+	statement
+		select
+			value
+				all
+					alias
+		from
+			source
+				aliased
+					table
+						t
+					alias
