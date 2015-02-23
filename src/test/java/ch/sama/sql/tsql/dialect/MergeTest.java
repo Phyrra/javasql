@@ -3,6 +3,7 @@ package ch.sama.sql.tsql.dialect;
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.query.base.IValueFactory;
 import ch.sama.sql.query.exception.BadParameterException;
+import ch.sama.sql.tsql.type.TYPE;
 import org.junit.Test;
 
 import java.util.Date;
@@ -16,7 +17,7 @@ public class MergeTest {
     @Test
     public void oneRowOneValueOneMatchNoOmit() {
         Field f = new Field("FIELD");
-        f.setDataType("int");
+        f.setDataType(TYPE.INT_TYPE);
         
         assertEquals(
                 "DECLARE @table TABLE (\nFIELD int\n);\nINSERT INTO @table\nSELECT 1;\nMERGE INTO [TABLE] AS [old]\nUSING @table AS [new] ON (\n[old].[FIELD] = [new].[FIELD]\n)\nWHEN MATCHED THEN\nUPDATE SET [FIELD] = [new].[FIELD]\nWHEN NOT MATCHED BY TARGET THEN\nINSERT ([FIELD]) VALUES ([new].[FIELD])\nOUTPUT INSERTED.[FIELD];",
@@ -33,10 +34,10 @@ public class MergeTest {
     @Test
     public void oneRowMultiValueOneMatchNoOmit() {
         Field f1 = new Field("FIELD1");
-        f1.setDataType("int");
+        f1.setDataType(TYPE.INT_TYPE);
 
         Field f2 = new Field("FIELD2");
-        f2.setDataType("int");
+        f2.setDataType(TYPE.INT_TYPE);
         
         assertEquals(
                 "DECLARE @table TABLE (\nFIELD1 int,\nFIELD2 int\n);\nINSERT INTO @table\nSELECT 1, 2;\nMERGE INTO [TABLE] AS [old]\nUSING @table AS [new] ON (\n[old].[FIELD1] = [new].[FIELD1]\n)\nWHEN MATCHED THEN\nUPDATE SET [FIELD1] = [new].[FIELD1], [FIELD2] = [new].[FIELD2]\nWHEN NOT MATCHED BY TARGET THEN\nINSERT ([FIELD1], [FIELD2]) VALUES ([new].[FIELD1], [new].[FIELD2])\nOUTPUT INSERTED.[FIELD1], INSERTED.[FIELD2];",
@@ -53,10 +54,10 @@ public class MergeTest {
     @Test
     public void oneRowMultiValueMultiMatchNoOmit() {
         Field f1 = new Field("FIELD1");
-        f1.setDataType("int");
+        f1.setDataType(TYPE.INT_TYPE);
 
         Field f2 = new Field("FIELD2");
-        f2.setDataType("int");
+        f2.setDataType(TYPE.INT_TYPE);
 
         assertEquals(
                 "DECLARE @table TABLE (\nFIELD1 int,\nFIELD2 int\n);\nINSERT INTO @table\nSELECT 1, 2;\nMERGE INTO [TABLE] AS [old]\nUSING @table AS [new] ON (\n[old].[FIELD1] = [new].[FIELD1] AND [old].[FIELD2] = [new].[FIELD2]\n)\nWHEN MATCHED THEN\nUPDATE SET [FIELD1] = [new].[FIELD1], [FIELD2] = [new].[FIELD2]\nWHEN NOT MATCHED BY TARGET THEN\nINSERT ([FIELD1], [FIELD2]) VALUES ([new].[FIELD1], [new].[FIELD2])\nOUTPUT INSERTED.[FIELD1], INSERTED.[FIELD2];",
@@ -73,10 +74,10 @@ public class MergeTest {
     @Test
     public void oneRowMultiValueOneMatchOneOmit() {
         Field f1 = new Field("FIELD1");
-        f1.setDataType("int");
+        f1.setDataType(TYPE.INT_TYPE);
 
         Field f2 = new Field("FIELD2");
-        f2.setDataType("int");
+        f2.setDataType(TYPE.INT_TYPE);
 
         assertEquals(
                 "DECLARE @table TABLE (\nFIELD1 int,\nFIELD2 int\n);\nINSERT INTO @table\nSELECT 1, 2;\nMERGE INTO [TABLE] AS [old]\nUSING @table AS [new] ON (\n[old].[FIELD1] = [new].[FIELD1]\n)\nWHEN MATCHED THEN\nUPDATE SET [FIELD2] = [new].[FIELD2]\nWHEN NOT MATCHED BY TARGET THEN\nINSERT ([FIELD2]) VALUES ([new].[FIELD2])\nOUTPUT INSERTED.[FIELD1], INSERTED.[FIELD2];",
@@ -93,13 +94,13 @@ public class MergeTest {
     @Test
     public void oneRowMultiValueOneMatchMultiOmit() {
         Field f1 = new Field("FIELD1");
-        f1.setDataType("int");
+        f1.setDataType(TYPE.INT_TYPE);
 
         Field f2 = new Field("FIELD2");
-        f2.setDataType("int");
+        f2.setDataType(TYPE.INT_TYPE);
 
         Field f3 = new Field("FIELD3");
-        f3.setDataType("int");
+        f3.setDataType(TYPE.INT_TYPE);
 
         assertEquals(
                 "DECLARE @table TABLE (\nFIELD1 int,\nFIELD2 int,\nFIELD3 int\n);\nINSERT INTO @table\nSELECT 1, 2, 3;\nMERGE INTO [TABLE] AS [old]\nUSING @table AS [new] ON (\n[old].[FIELD1] = [new].[FIELD1]\n)\nWHEN MATCHED THEN\nUPDATE SET [FIELD3] = [new].[FIELD3]\nWHEN NOT MATCHED BY TARGET THEN\nINSERT ([FIELD3]) VALUES ([new].[FIELD3])\nOUTPUT INSERTED.[FIELD1], INSERTED.[FIELD2], INSERTED.[FIELD3];",
@@ -116,7 +117,7 @@ public class MergeTest {
     @Test
     public void multiRowOneValueOneMatchNoOmit() {
         Field f = new Field("FIELD");
-        f.setDataType("int");
+        f.setDataType(TYPE.INT_TYPE);
 
         assertEquals(
                 "DECLARE @table TABLE (\nFIELD int\n);\nINSERT INTO @table\nSELECT 1 UNION ALL\nSELECT 2;\nMERGE INTO [TABLE] AS [old]\nUSING @table AS [new] ON (\n[old].[FIELD] = [new].[FIELD]\n)\nWHEN MATCHED THEN\nUPDATE SET [FIELD] = [new].[FIELD]\nWHEN NOT MATCHED BY TARGET THEN\nINSERT ([FIELD]) VALUES ([new].[FIELD])\nOUTPUT INSERTED.[FIELD];",
@@ -144,11 +145,11 @@ public class MergeTest {
     @Test (expected = BadParameterException.class)
     public void unevenValues() {
         Field f1 = new Field("FIELD1");
-        f1.setDataType("int");
+        f1.setDataType(TYPE.INT_TYPE);
 
         Field f2 = new Field("FIELD2");
-        f2.setDataType("int");
-        
+        f2.setDataType(TYPE.INT_TYPE);
+
         m.merge("TABLE")
                 .values(
                         m.row(m.value(f1, value.numeric(1))),
@@ -159,7 +160,7 @@ public class MergeTest {
     @Test (expected = BadParameterException.class)
     public void omitAll() {
         Field f1 = new Field("FIELD1");
-        f1.setDataType("int");
+        f1.setDataType(TYPE.INT_TYPE);
 
         m.merge("TABLE")
                 .values(
@@ -171,67 +172,67 @@ public class MergeTest {
 
     @Test
     public void guessNull() {
-        assertEquals("none", m.value("FIELD", null).getField().getDataType());
+        assertEquals("none", m.value("FIELD", null).getField().getDataType().getString());
     }
     
     @Test
     public void guessDouble() {
-        assertEquals("float", m.value("FIELD", 1.23).getField().getDataType());
+        assertEquals("float", m.value("FIELD", 1.23).getField().getDataType().getString());
     }
 
     @Test
     public void guessFloat() {
-        assertEquals("float", m.value("FIELD", 1.23f).getField().getDataType());
+        assertEquals("float", m.value("FIELD", 1.23f).getField().getDataType().getString());
     }
 
     @Test
     public void guessShort() {
-        assertEquals("int", m.value("FIELD", (short)1).getField().getDataType());
+        assertEquals("int", m.value("FIELD", (short)1).getField().getDataType().getString());
     }
 
     @Test
     public void guessInt() {
-        assertEquals("int", m.value("FIELD", 1).getField().getDataType());
+        assertEquals("int", m.value("FIELD", 1).getField().getDataType().getString());
     }
 
     @Test
     public void guessLong() {
-        assertEquals("int", m.value("FIELD", (long)1).getField().getDataType());
+        assertEquals("int", m.value("FIELD", (long)1).getField().getDataType().getString());
     }
 
     @Test
     public void guessDate() {
-        assertEquals("datetime", m.value("FIELD", new Date()).getField().getDataType());
+        assertEquals("datetime", m.value("FIELD", new Date()).getField().getDataType().getString());
     }
 
     @Test
     public void guessNullString() {
-        assertEquals("int", m.value("FIELD", "NuLl").getField().getDataType());
+        assertEquals("int", m.value("FIELD", "NuLl").getField().getDataType().getString());
     }
 
     @Test
     public void guessIntString() {
-        assertEquals("float", m.value("FIELD", "1").getField().getDataType());
+        assertEquals("int", m.value("FIELD", "1").getField().getDataType().getString());
     }
 
     @Test
     public void guessFloatString() {
-        assertEquals("float", m.value("FIELD", "1.23").getField().getDataType());
+        assertEquals("float", m.value("FIELD", "1.23").getField().getDataType().getString());
     }
 
     @Test
     public void guessNormDateString() {
-        assertEquals("datetime", m.value("FIELD", "14.02.2015").getField().getDataType());
+        assertEquals("datetime", m.value("FIELD", "14.02.2015").getField().getDataType().getString());
     }
 
     @Test
     public void guessIsoDateString() {
-        assertEquals("datetime", m.value("FIELD", "2015-02-14").getField().getDataType());
+        assertEquals("datetime", m.value("FIELD", "2015-02-14").getField().getDataType().getString());
     }
 
     @Test
     public void guessString() {
-        assertEquals("varchar(MAX)", m.value("FIELD", "Hello").getField().getDataType());
+        assertEquals("varchar(MAX)", m.value("FIELD", "Hello").getField().getDataType().getString());
     }
 
     @Test (expected = BadParameterException.class)

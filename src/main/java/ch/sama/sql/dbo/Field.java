@@ -10,7 +10,7 @@ public class Field {
     private String tableName;
 	private String field;
 
-    private String dataType;
+    private IType dataType;
     private boolean nullable = true;
     private Value defaultValue;
     private boolean isPrivateKey = false;
@@ -49,11 +49,11 @@ public class Field {
         return field;
     }
 
-    public void setDataType(String dataType) {
+    public void setDataType(IType dataType) {
         this.dataType = dataType;
     }
 
-    public String getDataType() {
+    public IType getDataType() {
         return dataType;
     }
 
@@ -98,12 +98,12 @@ public class Field {
             return false;
         }
 
-        String otherType = other.getDataType();
+        IType otherType = other.getDataType();
         if (dataType == null && otherType != null || dataType != null && otherType == null) {
             return false;
         }
         if (dataType != null && otherType != null) {
-            if (!dataType.equals(otherType)) {
+            if (!dataType.getClass().equals(otherType.getClass())) {
                 return false;
             }
         }

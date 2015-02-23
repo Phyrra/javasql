@@ -1,4 +1,6 @@
-package ch.sama.sql.query.helper.type;
+package ch.sama.sql.tsql.type;
+
+import ch.sama.sql.dbo.IType;
 
 public class VarcharType implements IType {
     private boolean hasMaxLength;
@@ -14,8 +16,16 @@ public class VarcharType implements IType {
     }
     
     @Override
-    public String getString(ITypeRenderer renderer) {
-        return renderer.render(this);
+    public String getString() {
+        if (hasMaxLength) {
+            if (maxLength < 0) {
+                return "varchar(MAX)";
+            } else {
+                return "varchar(" + maxLength  + ")";
+            }
+        } else {
+            return "varchar";
+        }
     }
     
     public boolean hasMaxLength() {

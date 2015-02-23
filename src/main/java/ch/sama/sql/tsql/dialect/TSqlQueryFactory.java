@@ -3,7 +3,6 @@ package ch.sama.sql.tsql.dialect;
 import ch.sama.sql.query.base.*;
 import ch.sama.sql.query.helper.condition.IConditionRenderer;
 import ch.sama.sql.query.helper.order.IOrderRenderer;
-import ch.sama.sql.query.helper.type.ITypeRenderer;
 
 public class TSqlQueryFactory implements IQueryFactory {
     private IValueFactory value = new TSqlValueFactory();
@@ -11,7 +10,6 @@ public class TSqlQueryFactory implements IQueryFactory {
     private IQueryRenderer renderer = new TSqlQueryRenderer();
     private IConditionRenderer condition = new TSqlConditionRenderer();
     private IOrderRenderer order = new TSqlOrderRenderer();
-    private ITypeRenderer type = new TSqlTypeRenderer();
 
     @Override
     public IValueFactory value() {
@@ -36,11 +34,6 @@ public class TSqlQueryFactory implements IQueryFactory {
     @Override
     public IOrderRenderer order() {
         return order;
-    }
-    
-    @Override
-    public ITypeRenderer type() {
-        return type;
     }
 
     @Override

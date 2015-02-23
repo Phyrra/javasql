@@ -1,42 +1,59 @@
 package ch.sama.sql.query.helper;
 
-import ch.sama.sql.query.helper.type.ITypeRenderer;
-import ch.sama.sql.query.helper.type.TYPE;
+import ch.sama.sql.tsql.type.TYPE;
 import ch.sama.sql.tsql.dialect.TSqlQueryFactory;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 public class TypeTest {
-    private static final ITypeRenderer type = new TSqlQueryFactory().type();
+    @Test
+    public void uniqueidentifier() {
+        assertEquals("uniqueidentifier", TYPE.UNIQUEIDENTIFIER_TYPE.getString());    
+    }
     
     @Test
     public void intType() {
-        assertEquals("int", type.render(TYPE.INT_TYPE));
+        assertEquals("int", TYPE.INT_TYPE.getString());
     }
     
     @Test
     public void floatType() {
-        assertEquals("float", type.render(TYPE.FLOAT_TYPE));
+        assertEquals("float", TYPE.FLOAT_TYPE.getString());
     }
     
     @Test
     public void datetimeType() {
-        assertEquals("datetime", type.render(TYPE.DATETIME_TYPE));
+        assertEquals("datetime", TYPE.DATETIME_TYPE.getString());
     }
     
     @Test
     public void varcharNoMax() {
-        assertEquals("varchar", type.render(TYPE.VARCHAR_TYPE));
+        assertEquals("varchar", TYPE.VARCHAR_TYPE.getString());
     }
     
     @Test
     public void varcharMax() {
-        assertEquals("varchar(MAX)", type.render(TYPE.VARCHAR_MAX_TYPE));
+        assertEquals("varchar(MAX)", TYPE.VARCHAR_MAX_TYPE.getString());
     }
     
     @Test
     public void varcharIntMax() {
-        assertEquals("varchar(64)", type.render(TYPE.VARCHAR_TYPE(64)));
+        assertEquals("varchar(64)", TYPE.VARCHAR_TYPE(64).getString());
+    }
+
+    @Test
+    public void nvarcharNoMax() {
+        assertEquals("nvarchar", TYPE.NVARCHAR_TYPE.getString());
+    }
+
+    @Test
+    public void nvarcharMax() {
+        assertEquals("nvarchar(MAX)", TYPE.NVARCHAR_MAX_TYPE.getString());
+    }
+
+    @Test
+    public void nvarcharIntMax() {
+        assertEquals("nvarchar(64)", TYPE.NVARCHAR_TYPE(64).getString());
     }
 }

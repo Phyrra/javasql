@@ -86,7 +86,7 @@ public class SchemaTest {
         Field field = columns.get(0);
 
         assertEquals("iField", field.getName());
-        assertEquals("int", field.getDataType());
+        assertEquals("int", field.getDataType().getString());
         assertEquals(true, field.getNullable());
     }
 
@@ -103,7 +103,7 @@ public class SchemaTest {
         Field field = columns.get(0);
 
         assertEquals("sField", field.getName());
-        assertEquals("varchar(50)", field.getDataType());
+        assertEquals("varchar(50)", field.getDataType().getString());
         assertEquals(true, field.getNullable());
     }
 
@@ -120,7 +120,7 @@ public class SchemaTest {
         Field field = columns.get(0);
 
         assertEquals("sField", field.getName());
-        assertEquals("varchar(max)", field.getDataType());
+        assertEquals("varchar(MAX)", field.getDataType().getString());
         assertEquals(true, field.getNullable());
     }
 
@@ -137,7 +137,7 @@ public class SchemaTest {
         Field field = columns.get(0);
 
         assertEquals("iField", field.getName());
-        assertEquals("int", field.getDataType());
+        assertEquals("int", field.getDataType().getString());
         assertEquals(false, field.getNullable());
     }
 
@@ -154,7 +154,7 @@ public class SchemaTest {
         Field field = columns.get(0);
 
         assertEquals("iField", field.getName());
-        assertEquals("int", field.getDataType());
+        assertEquals("int", field.getDataType().getString());
         assertEquals(false, field.getNullable());
         assertEquals("(1337)", field.getDefault().getValue());
     }
@@ -172,7 +172,7 @@ public class SchemaTest {
         Field field = columns.get(0);
 
         assertEquals("uidId", field.getName());
-        assertEquals("uniqueidentifier", field.getDataType());
+        assertEquals("uniqueidentifier", field.getDataType().getString());
         assertEquals(false, field.getNullable());
         assertEquals("(newsequentialid())", field.getDefault().getValue());
     }

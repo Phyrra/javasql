@@ -11,6 +11,7 @@ import ch.sama.sql.query.exception.BadSqlException;
 import ch.sama.sql.query.exception.ObjectNotFoundException;
 import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.Value;
+import ch.sama.sql.tsql.type.TYPE;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -105,7 +106,7 @@ public class TSqlSchema implements ISchema {
                         dataType += "(" + l + ")";
                     }
                 }
-                f.setDataType(dataType);
+                f.setDataType(TYPE.fromString(dataType));
 
                 String nullable = column.getAsString("IS_NULLABLE");
                 if ("NO".equals(nullable)) {
@@ -235,7 +236,7 @@ public class TSqlSchema implements ISchema {
         builder.append(field.getName());
         builder.append("] [");
 
-        String dataType = field.getDataType();
+        String dataType = field.getDataType().getString();
         if (dataType.contains("(")) {
             int idx = dataType.indexOf("(");
 
@@ -384,7 +385,7 @@ public class TSqlSchema implements ISchema {
                         }
 
                         if (dataType != null) {
-                            field.setDataType(dataType);
+                            field.setDataType(TYPE.fromString(dataType));
                         }
 
                         if (line.contains("CONSTRAINT") && line.contains("DEFAULT")) { // The only supported constraint is DEFAULT

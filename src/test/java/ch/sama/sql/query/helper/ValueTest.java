@@ -4,10 +4,9 @@ import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.base.IQueryFactory;
 import ch.sama.sql.query.base.IQueryRenderer;
-import ch.sama.sql.query.base.ISourceFactory;
 import ch.sama.sql.query.base.IValueFactory;
 import ch.sama.sql.query.exception.IllegalIdentifierException;
-import ch.sama.sql.query.helper.type.TYPE;
+import ch.sama.sql.tsql.type.TYPE;
 import ch.sama.sql.tsql.dialect.TSqlQueryFactory;
 import org.junit.Test;
 

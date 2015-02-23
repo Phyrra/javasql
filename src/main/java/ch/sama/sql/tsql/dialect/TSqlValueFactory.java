@@ -8,8 +8,7 @@ import ch.sama.sql.query.base.IQueryRenderer;
 import ch.sama.sql.query.base.IValueFactory;
 import ch.sama.sql.query.exception.UnknownValueException;
 import ch.sama.sql.query.helper.Value;
-import ch.sama.sql.query.helper.type.IType;
-import ch.sama.sql.query.helper.type.ITypeRenderer;
+import ch.sama.sql.dbo.IType;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,7 +17,6 @@ class TSqlValueFactory implements IValueFactory {
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     
     private static final IQueryRenderer queryRenderer = new TSqlQueryRenderer();
-    private static final ITypeRenderer typeRenderer = new TSqlTypeRenderer();
 
     @Override
     public Value table(String table) {
@@ -129,6 +127,6 @@ class TSqlValueFactory implements IValueFactory {
     
     @Override
     public Value type(IType type) {
-        return new Value(type, type.getString(typeRenderer));
+        return new Value(type, type.getString());
     }
 }

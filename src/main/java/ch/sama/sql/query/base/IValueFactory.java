@@ -4,7 +4,7 @@ import ch.sama.sql.dbo.Field;
 import ch.sama.sql.query.helper.Function;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.helper.Value;
-import ch.sama.sql.query.helper.type.IType;
+import ch.sama.sql.dbo.IType;
 
 import java.util.Date;
 

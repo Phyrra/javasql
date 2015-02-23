@@ -7,7 +7,7 @@ import ch.sama.sql.grammar.helper.StringGetter;
 import ch.sama.sql.query.base.IQueryFactory;
 import ch.sama.sql.query.base.IValueFactory;
 import ch.sama.sql.query.helper.Value;
-import ch.sama.sql.query.helper.type.TYPE;
+import ch.sama.sql.tsql.type.TYPE;
 
 import java.util.ArrayList;
 import java.util.List;

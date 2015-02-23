@@ -1,11 +1,13 @@
 package ch.sama.sql.tsql.dialect;
 
 import ch.sama.sql.dbo.Field;
+import ch.sama.sql.dbo.IType;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.base.IQueryRenderer;
 import ch.sama.sql.query.base.IValueFactory;
 import ch.sama.sql.query.exception.BadParameterException;
 import ch.sama.sql.query.helper.Value;
+import ch.sama.sql.tsql.type.TYPE;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -172,6 +174,10 @@ public class TSqlMerger {
         private boolean omitField(String field) {
             return fields.contains(field);
         }
+        
+        private boolean sameType(IType t1, IType t2) {
+            return t1.getClass().equals(t2.getClass());
+        }
 
         private List<Pair> evalBestMatch(List<List<Pair>> values) {
             List<Pair> result = new ArrayList<Pair>();
@@ -181,10 +187,10 @@ public class TSqlMerger {
             
             for (int j = 0; j < maxJ; ++j) {
                 Pair p = values.get(0).get(j);
-                for (int i = 0; i < maxI - 1 && "none".equals(p.getField().getDataType()); ++i, p = values.get(i).get(j)) { } // omg..
+                for (int i = 0; i < maxI - 1 && sameType(TYPE.NO_TYPE, p.getField().getDataType()); ++i, p = values.get(i).get(j)) { } // omg..
                 
-                if ("none".equals(p.getField().getDataType())) {
-                    p.getField().setDataType("int"); // None found, fallback to int
+                if (sameType(TYPE.NO_TYPE, p.getField().getDataType())) {
+                    p.getField().setDataType(TYPE.INT_TYPE); // None found, fallback to int
                 }
                 
                 result.add(p);
@@ -212,12 +218,12 @@ public class TSqlMerger {
             for (Pair pair : fields) {
                 Field field = pair.getField();
                 String name = field.getName();
-                String type = field.getDataType();
+                IType type = field.getDataType();
                 
                 builder.append(prefix);
                 builder.append(name);
                 builder.append(" ");
-                builder.append(type);
+                builder.append(type.getString());
                 
                 prefix = ",\n";
             }
@@ -343,7 +349,8 @@ public class TSqlMerger {
 
     public static final String NORM_DATE = "^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$";
     public static final String ISO_DATE = "^[0-9]{4}-[0-9]{2}-[0-9]{2}$";
-    public static final String NUMERIC = "^(\\d+|\\d+\\.\\d*|\\d*\\.\\d+)";
+    public static final String INT = "^\\d+$";
+    public static final String FLOAT = "^(\\d+\\.\\d*|\\d*\\.\\d+)$";
     
     public TSqlMerger() { }
     
@@ -377,12 +384,12 @@ public class TSqlMerger {
         Field f = new Field(field);
         
         if (o == null) {
-            f.setDataType("none");
+            f.setDataType(TYPE.NO_TYPE);
             return new Pair(f, value.value(Value.VALUE.NULL));
         }
         
         if (o instanceof Double || o instanceof Float) {
-            f.setDataType("float");
+            f.setDataType(TYPE.FLOAT_TYPE);
             
             if (o instanceof Double) {
                 return new Pair(f, value.numeric((double) o));
@@ -392,7 +399,7 @@ public class TSqlMerger {
         }
         
         if (o instanceof Integer || o instanceof Short || o instanceof Long) {
-            f.setDataType("int");
+            f.setDataType(TYPE.INT_TYPE);
             
             if (o instanceof Integer) {
                 return new Pair(f, value.numeric((int) o));
@@ -404,7 +411,7 @@ public class TSqlMerger {
         }
         
         if (o instanceof Date) {
-            f.setDataType("datetime");
+            f.setDataType(TYPE.DATETIME_TYPE);
             return new Pair(f, value.date((Date) o));
         }
         
@@ -412,17 +419,22 @@ public class TSqlMerger {
             String s = (String) o;
             
             if (s.length() == 0 || s.toLowerCase().equals("null")) {
-                f.setDataType("int");
+                f.setDataType(TYPE.INT_TYPE);
                 return new Pair(f, value.value(Value.VALUE.NULL));
             }
             
-            if (s.matches(NUMERIC)) {
-                f.setDataType("float");
+            if (s.matches(INT)) {
+                f.setDataType(TYPE.INT_TYPE);
+                return new Pair(f, value.numeric(Integer.parseInt(s)));
+            }
+            
+            if (s.matches(FLOAT)) {
+                f.setDataType(TYPE.FLOAT_TYPE);
                 return new Pair(f, value.numeric(Double.parseDouble(s)));
             }
             
             if (s.matches(NORM_DATE)) {
-                f.setDataType("datetime");
+                f.setDataType(TYPE.DATETIME_TYPE);
                 
                 String[] parts = s.split("\\.");
                 
@@ -430,7 +442,7 @@ public class TSqlMerger {
                         f,
                         value.function(
                                 "CONVERT",
-                                value.plain("datetime"),
+                                value.type(TYPE.DATETIME_TYPE),
                                 value.string(parts[2] + "-" + parts[1] + "-" + parts[0] + " 00:00:00.000"),
                                 value.numeric(21)
                         )
@@ -438,20 +450,20 @@ public class TSqlMerger {
             }
             
             if (s.matches(ISO_DATE)) {
-                f.setDataType("datetime");
+                f.setDataType(TYPE.DATETIME_TYPE);
                 
                 return new Pair(
                         f,
                         value.function(
                                 "CONVERT",
-                                value.plain("datetime"),
+                                value.type(TYPE.DATETIME_TYPE),
                                 value.string(s + " 00:00:00.000"),
                                 value.numeric(21)
                         )
                 );
             }
             
-            f.setDataType("varchar(MAX)");
+            f.setDataType(TYPE.VARCHAR_MAX_TYPE);
             return new Pair(f, value.string(s));
         }
         
