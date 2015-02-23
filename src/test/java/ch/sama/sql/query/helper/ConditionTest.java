@@ -15,30 +15,30 @@ import static org.junit.Assert.assertEquals;
 public class ConditionTest {
     private static final IQueryFactory fac = new TSqlQueryFactory();
     private static final IValueFactory value = fac.value();
-    private static final IConditionRenderer parser = fac.condition();
+    private static final IConditionRenderer condition = fac.condition();
 	
 	@Test
 	public void eq() {
 		ICondition c = Condition.eq(value.numeric(1), value.numeric(2));
-		assertEquals("1 = 2", c.render(parser));
+		assertEquals("1 = 2", c.render(condition));
 	}
 	
 	@Test
 	public void neq() {
 		ICondition c = Condition.neq(value.numeric(1), value.numeric(2));
-		assertEquals("1 <> 2", c.render(parser));
+		assertEquals("1 <> 2", c.render(condition));
 	}
 	
 	@Test
 	public void like() {
 		ICondition c = Condition.like(value.string("hello"), value.string("hell%"));
-		assertEquals("'hello' LIKE 'hell%'", c.render(parser));
+		assertEquals("'hello' LIKE 'hell%'", c.render(condition));
 	}
 	
 	@Test
 	public void not() {
 		ICondition c = Condition.not(Condition.eq(value.numeric(1), value.numeric(2)));
-		assertEquals("NOT (1 = 2)", c.render(parser));
+		assertEquals("NOT (1 = 2)", c.render(condition));
 	}
 	
 	@Test
@@ -48,7 +48,7 @@ public class ConditionTest {
 				Condition.eq(value.numeric(3), value.numeric(4))
 		);
 		
-		assertEquals("(1 = 2 AND 3 = 4)", c.render(parser));
+		assertEquals("(1 = 2 AND 3 = 4)", c.render(condition));
 	}
 
     @Test
@@ -59,7 +59,7 @@ public class ConditionTest {
                 Condition.eq(value.numeric(3), value.numeric(3))
         );
 
-        assertEquals("(1 = 1 AND 2 = 2 AND 3 = 3)", c.render(parser));
+        assertEquals("(1 = 1 AND 2 = 2 AND 3 = 3)", c.render(condition));
     }
 	
 	@Test
@@ -69,7 +69,7 @@ public class ConditionTest {
 				Condition.eq(value.numeric(3), value.numeric(4))
 		);
 		
-		assertEquals("(1 = 2 OR 3 = 4)", c.render(parser));
+		assertEquals("(1 = 2 OR 3 = 4)", c.render(condition));
 	}
 
     @Test
@@ -80,43 +80,43 @@ public class ConditionTest {
                 Condition.eq(value.numeric(3), value.numeric(3))
         );
 
-        assertEquals("(1 = 1 OR 2 = 2 OR 3 = 3)", c.render(parser));
+        assertEquals("(1 = 1 OR 2 = 2 OR 3 = 3)", c.render(condition));
     }
 
     @Test
      public void gt() {
         ICondition c = Condition.gt(value.numeric(1), value.numeric(2));
-        assertEquals("1 > 2", c.render(parser));
+        assertEquals("1 > 2", c.render(condition));
     }
 
     @Test
     public void ge() {
         ICondition c = Condition.ge(value.numeric(1), value.numeric(2));
-        assertEquals("1 >= 2", c.render(parser));
+        assertEquals("1 >= 2", c.render(condition));
     }
 
     @Test
     public void lt() {
         ICondition c = Condition.lt(value.numeric(1), value.numeric(2));
-        assertEquals("1 < 2", c.render(parser));
+        assertEquals("1 < 2", c.render(condition));
     }
 
     @Test
     public void le() {
         ICondition c = Condition.le(value.numeric(1), value.numeric(2));
-        assertEquals("1 <= 2", c.render(parser));
+        assertEquals("1 <= 2", c.render(condition));
     }
 
     @Test
     public void exists() {
         ICondition c = Condition.exists(fac.query().select(value.numeric(1)));
-        assertEquals("EXISTS (\nSELECT 1\n)", c.render(parser));
+        assertEquals("EXISTS (\nSELECT 1\n)", c.render(condition));
     }
 
     @Test
     public void inQuery() {
         ICondition c = Condition.in(value.numeric(1), fac.query().select(value.numeric(1)));
-        assertEquals("1 IN (\nSELECT 1\n)", c.render(parser));
+        assertEquals("1 IN (\nSELECT 1\n)", c.render(condition));
     }
     
     @Test
@@ -127,12 +127,12 @@ public class ConditionTest {
         values.add(value.numeric(3));
         
         ICondition c = Condition.in(value.numeric(1), values);
-        assertEquals("1 IN (\n1, 2, 3\n)", c.render(parser));
+        assertEquals("1 IN (\n1, 2, 3\n)", c.render(condition));
     }
     
     @Test
     public void isNull() {
         ICondition c = Condition.isNull(value.field("FIELD"));
-        assertEquals("[FIELD] IS NULL", c.render(parser));
+        assertEquals("[FIELD] IS NULL", c.render(condition));
     }
 }

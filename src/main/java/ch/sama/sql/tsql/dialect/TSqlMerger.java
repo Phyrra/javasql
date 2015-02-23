@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TSqlMerger {
     public static class Pair {
@@ -51,6 +52,12 @@ public class TSqlMerger {
             List<List<Pair>> list = new ArrayList<List<Pair>>();
             Collections.addAll(list, values);
             
+            return new MergeValues(this, list);
+        }
+
+        public MergeValues values(List<List<Pair>> values) {
+            List<List<Pair>> list = values.stream().collect(Collectors.toList());
+
             return new MergeValues(this, list);
         }
     }
@@ -165,7 +172,7 @@ public class TSqlMerger {
         private boolean omitField(String field) {
             return fields.contains(field);
         }
-        
+
         private List<Pair> evalBestMatch(List<List<Pair>> values) {
             List<Pair> result = new ArrayList<Pair>();
 
@@ -199,7 +206,7 @@ public class TSqlMerger {
             List<Pair> fields = evalBestMatch(values);
             List<String> matchers = matchFields.getFields();
             
-            builder.append("DECLARE @table (\n");
+            builder.append("DECLARE @table TABLE (\n");
             
             prefix = "";
             for (Pair pair : fields) {
@@ -215,7 +222,7 @@ public class TSqlMerger {
                 prefix = ",\n";
             }
             
-            builder.append("\n)\n");
+            builder.append("\n);\n");
             builder.append("INSERT INTO @table\n");
             
             prefix = "";
@@ -237,7 +244,7 @@ public class TSqlMerger {
                 prefix = " UNION ALL\n";
             }
             
-            builder.append("\n");
+            builder.append(";\n");
             builder.append("MERGE INTO ");
             builder.append(table.getString(renderer));
             builder.append(" AS [old]\n");
@@ -299,6 +306,10 @@ public class TSqlMerger {
             for (Pair pair : fields) {
                 String name = pair.getField().getName();
 
+                // TODO
+                // I think it makes sense to repeat the matcher fields here
+                //  case: merge (ROW_INT) into table match on (ROW_INT)
+                //  the setter would be empty otherwise (-> bad query)
                 if (!omitField(name)) {
                     builder.append(prefix);
                     builder.append("[new].[");
@@ -323,6 +334,8 @@ public class TSqlMerger {
 
                 prefix = ", ";
             }
+            
+            builder.append(";");
             
             return builder.toString();
         }

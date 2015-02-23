@@ -2,7 +2,7 @@ package ch.sama.sql.tsql.dialect;
 
 import ch.sama.sql.query.helper.type.*;
 
-public class TSqlTypeRenderer implements ITypeRenderer {
+class TSqlTypeRenderer implements ITypeRenderer {
     @Override
     public String render(VarcharType type) {
         if (type.hasMaxLength()) {

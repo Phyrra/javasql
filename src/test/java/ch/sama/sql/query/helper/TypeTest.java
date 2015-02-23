@@ -2,13 +2,13 @@ package ch.sama.sql.query.helper;
 
 import ch.sama.sql.query.helper.type.ITypeRenderer;
 import ch.sama.sql.query.helper.type.TYPE;
-import ch.sama.sql.tsql.dialect.TSqlTypeRenderer;
+import ch.sama.sql.tsql.dialect.TSqlQueryFactory;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 public class TypeTest {
-    private static final ITypeRenderer type = new TSqlTypeRenderer();
+    private static final ITypeRenderer type = new TSqlQueryFactory().type();
     
     @Test
     public void intType() {
