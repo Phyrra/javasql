@@ -78,6 +78,7 @@ public class QueryFinder {
         return sources;
     }
 
+    // TODO: This will not work with "UNION ALL" (what should even be returned?)
     public<T> List<T> getSources(IQuery src, Class<T> dst) {
         List<T> sources = new ArrayList<T>();
 

@@ -1,18 +1,18 @@
 package ch.sama.sql.query.base.check;
 
-import static org.junit.Assert.*;
-
 import ch.sama.sql.dbo.Field;
-import ch.sama.sql.query.helper.Function;
 import ch.sama.sql.dbo.Table;
+import ch.sama.sql.query.base.*;
 import ch.sama.sql.query.helper.Condition;
+import ch.sama.sql.query.helper.Function;
 import ch.sama.sql.query.helper.Source;
 import ch.sama.sql.query.helper.Value;
-import ch.sama.sql.query.base.*;
 import ch.sama.sql.tsql.dialect.TSqlQueryFactory;
 import org.junit.Test;
 
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 public class QueryFinderTest {
     private static final QueryFinder finder = new QueryFinder();

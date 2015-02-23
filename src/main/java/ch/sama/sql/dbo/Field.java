@@ -81,7 +81,7 @@ public class Field {
         if (this.table == null) {
             return this.tableName;
         } else {
-            return this.table.getName(); // This will break if the table has an alias
+            return this.table.getName();
         }
     }
 
@@ -113,7 +113,7 @@ public class Field {
             return false;
         }
         if (defaultValue != null && otherDefault != null) {
-            if (!defaultValue.toString().equals(otherDefault.toString())) {
+            if (!defaultValue.getValue().equals(otherDefault.getValue())) {
                 return false;
             }
         }
