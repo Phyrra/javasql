@@ -1,25 +1,32 @@
 package ch.sama.sql.tsql.type;
 
 import ch.sama.sql.dbo.IType;
-import ch.sama.sql.query.exception.NotImplementedException;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TYPE {
+    private static final String CHAR_PATTERN  = "char\\((\\d+|max)\\)";
     private static final String VARCHAR_PATTERN  = "varchar\\((\\d+|max)\\)";
     private static final String NVARCHAR_PATTERN  = "nvarchar\\((\\d+|max)\\)";
+    private static final String TEXT_PATTERN = "text(\\(\\d+\\))?";
     
-    public static final None NO_TYPE = new None();
-    
-    public static final Uniqueidentifier UNIQUEIDENTIFIER_TYPE = new Uniqueidentifier();
+    public static final UniqueidentifierType UNIQUEIDENTIFIER_TYPE = new UniqueidentifierType();
     public static final IntType INT_TYPE = new IntType();
     public static final FloatType FLOAT_TYPE = new FloatType();
     public static final DatetimeType DATETIME_TYPE = new DatetimeType();
+    public static final CharType CHAR_TYPE = new CharType();
+    public static final CharType CHAR_MAX_TYPE = new CharType(-1);
     public static final VarcharType VARCHAR_TYPE = new VarcharType();
     public static final VarcharType VARCHAR_MAX_TYPE = new VarcharType(-1);
     public static final NVarcharType NVARCHAR_TYPE = new NVarcharType();
     public static final NVarcharType NVARCHAR_MAX_TYPE = new NVarcharType(-1);
+    public static final TextType TEXT_TYPE = new TextType();
+    public static final CustomType NO_TYPE = new CustomType("none");
+
+    public static CharType CHAR_TYPE(int max) {
+        return new CharType(max);
+    }
     
     public static VarcharType VARCHAR_TYPE(int max) {
         return new VarcharType(max);
@@ -27,6 +34,10 @@ public class TYPE {
     
     public static NVarcharType NVARCHAR_TYPE(int max) {
         return new NVarcharType(max);
+    }
+    
+    public static CustomType CUSTOM_TYPE(String name) {
+        return new CustomType(name);
     }
     
     public static IType fromString(String type) {
@@ -41,12 +52,27 @@ public class TYPE {
                 return FLOAT_TYPE;
             case "datetime":
                 return DATETIME_TYPE;
+            case "char":
+                return CHAR_TYPE;
             case "varchar":
                 return VARCHAR_TYPE;
             case "nvarchar":
                 return NVARCHAR_TYPE;
+            case "text":
+                return TEXT_TYPE;
         }
 
+        Matcher charP = Pattern.compile(CHAR_PATTERN).matcher(sType);
+        if (charP.matches()) {
+            String length = charP.group(1);
+
+            if ("max".equals(length)) {
+                return CHAR_MAX_TYPE;
+            } else {
+                return CHAR_TYPE(Integer.parseInt(length));
+            }
+        }
+        
         Matcher varchar = Pattern.compile(VARCHAR_PATTERN).matcher(sType);
         if (varchar.matches()) {
             String length = varchar.group(1);
@@ -69,6 +95,11 @@ public class TYPE {
             }
         }
         
-        throw new NotImplementedException("Unknown type: " + type);
+        Matcher text = Pattern.compile(TEXT_PATTERN).matcher(sType);
+        if (text.matches()) {
+            return TEXT_TYPE;
+        }
+        
+        return CUSTOM_TYPE(type);
     }
 }
