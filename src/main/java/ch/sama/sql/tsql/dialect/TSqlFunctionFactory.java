@@ -5,6 +5,12 @@ import ch.sama.sql.query.exception.BadParameterException;
 import ch.sama.sql.query.helper.Value;
 import ch.sama.sql.query.helper.condition.ICondition;
 import ch.sama.sql.query.helper.condition.IConditionRenderer;
+import ch.sama.sql.query.helper.order.IOrder;
+import ch.sama.sql.query.helper.order.IOrderRenderer;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /*
     There is no parent object to this,
@@ -16,7 +22,7 @@ public class TSqlFunctionFactory {
     public TSqlFunctionFactory() { }
     
     public Value coalesce(Value lhs, Value rhs) {
-        Function f = new  Function("COALESCE", lhs, rhs);
+        Function f = new Function("COALESCE", lhs, rhs);
 
         return new Value(f, f.getDefaultString());
     }
@@ -120,6 +126,51 @@ public class TSqlFunctionFactory {
 
         return new Value(null, builder.toString());
     }
+    
+    public List<Value> valueList(Value... value) {
+        List<Value> values = new ArrayList<Value>();
+        Collections.addAll(values, value);
+        
+        return values;
+    }
+    
+    public List<IOrder> orderList(IOrder... order) {
+        List<IOrder> orders = new ArrayList<IOrder>();
+        Collections.addAll(orders, order);
+        
+        return orders;
+    }
+    
+    public Value rowNumber(List<Value> partition, List<IOrder> order) {
+        IOrderRenderer renderer = new TSqlOrderRenderer();
+        
+        StringBuilder builder = new StringBuilder();
+        String prefix;
+        
+        builder.append("ROW_NUMBER() OVER (PARTITION BY ");
 
+        prefix = "";
+        for (Value v : partition) {
+            builder.append(prefix);
+            builder.append(v.getValue());
+            
+            prefix = ", ";
+        }
+        
+        builder.append(" ORDER BY ");
+        
+        prefix = "";
+        for (IOrder o : order) {
+            builder.append(prefix);
+            builder.append(o.render(renderer));
+            
+            prefix = ", ";
+        }
+        
+        builder.append(")");
+        
+        return new Value(null, builder.toString());
+    }
+    
     // extend at leisure
 }

@@ -6,6 +6,7 @@ import ch.sama.sql.query.base.IValueFactory;
 import ch.sama.sql.query.exception.BadParameterException;
 import ch.sama.sql.query.exception.IllegalIdentifierException;
 import ch.sama.sql.query.helper.Condition;
+import ch.sama.sql.query.helper.Order;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -82,4 +83,29 @@ public class FunctionTest {
                 .getString(renderer)
         );
     }
+    
+    @Test
+    public void rowNumberOneValueOneOrder() {
+        assertEquals(
+                "ROW_NUMBER() OVER (PARTITION BY [FIELD1] ORDER BY [FIELD2])",
+                function.rowNumber(
+                        function.valueList(value.field("FIELD1")),
+                        function.orderList(Order.def(value.field("FIELD2")))
+                )
+                .getString(renderer)
+        );
+    }
+
+    @Test
+    public void rowNumberTwoValuesTwoOrders() {
+        assertEquals(
+                "ROW_NUMBER() OVER (PARTITION BY [FIELD1], [FIELD2] ORDER BY [FIELD3] ASC, [FIELD4] DESC)",
+                function.rowNumber(
+                        function.valueList(value.field("FIELD1"), value.field("FIELD2")),
+                        function.orderList(Order.asc(value.field("FIELD3")), Order.desc(value.field("FIELD4")))
+                )
+                .getString(renderer)
+        );
+    }
+    
 }
