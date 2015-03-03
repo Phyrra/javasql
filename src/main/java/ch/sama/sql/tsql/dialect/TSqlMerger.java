@@ -174,10 +174,6 @@ public class TSqlMerger {
         private boolean omitField(String field) {
             return fields.contains(field);
         }
-        
-        private boolean sameType(IType t1, IType t2) {
-            return t1.getClass().equals(t2.getClass());
-        }
 
         private List<Pair> evalBestMatch(List<List<Pair>> values) {
             List<Pair> result = new ArrayList<Pair>();
@@ -187,9 +183,9 @@ public class TSqlMerger {
             
             for (int j = 0; j < maxJ; ++j) {
                 Pair p = values.get(0).get(j);
-                for (int i = 0; i < maxI - 1 && sameType(TYPE.NO_TYPE, p.getField().getDataType()); ++i, p = values.get(i).get(j)) { } // omg..
+                for (int i = 0; i < maxI - 1 && TYPE.isEqualType(TYPE.NO_TYPE, p.getField().getDataType()); ++i, p = values.get(i).get(j)) { } // omg..
                 
-                if (sameType(TYPE.NO_TYPE, p.getField().getDataType())) {
+                if (TYPE.isEqualType(TYPE.NO_TYPE, p.getField().getDataType())) {
                     p.getField().setDataType(TYPE.INT_TYPE); // None found, fallback to int
                 }
                 

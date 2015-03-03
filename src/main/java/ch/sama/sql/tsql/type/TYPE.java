@@ -102,4 +102,8 @@ public class TYPE {
         
         return CUSTOM_TYPE(type);
     }
+    
+    public static boolean isEqualType(IType t1, IType t2) {
+        return t1.getClass().equals(t2.getClass());
+    }
 }
