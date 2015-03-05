@@ -77,6 +77,15 @@ class TSqlValueFactory implements IValueFactory {
     public Value numeric(Double d) {
         return new Value(d, d.toString());
     }
+    
+    @Override
+    public Value bool(Boolean b) {
+        if (b) {
+            return new Value(true, "1");
+        } else {
+            return new Value(false, "0");
+        }
+    }
 
     @Override
     public Value function(String fnc, Value... parameters) {

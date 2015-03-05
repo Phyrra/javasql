@@ -40,6 +40,12 @@ public class ValueTest {
 		assertEquals("1.1", value.numeric(1.1f).getString(renderer));
 		assertEquals("1.1", value.numeric(1.1d).getString(renderer));
 	}
+    
+    @Test
+    public void bool() {
+        assertEquals("1", value.bool(true).getString(renderer));
+        assertEquals("0", value.bool(false).getString(renderer));
+    }
 	
 	@Test
 	public void date() throws Exception {

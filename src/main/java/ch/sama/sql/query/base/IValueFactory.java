@@ -23,6 +23,7 @@ public interface IValueFactory {
     public Value numeric(Integer i);
     public Value numeric(Float f);
     public Value numeric(Double d);
+    public Value bool(Boolean b);
     public Value function(String fnc, Value... parameters);
     public Value function(Function fnc);
     public Value query(IQuery query);
