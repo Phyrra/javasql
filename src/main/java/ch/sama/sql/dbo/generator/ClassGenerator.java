@@ -2,6 +2,7 @@ package ch.sama.sql.dbo.generator;
 
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.ISchema;
+import ch.sama.sql.dbo.IType;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.base.IQueryFactory;
 
@@ -24,6 +25,23 @@ public class ClassGenerator<T extends IQueryFactory> {
     }
 
     public void generate(String srcFolder, String pkg, ITableFilter filter) throws IOException {
+        BufferedWriter type = createClassFile(srcFolder, pkg, "GenericType");
+
+        type.write("package " + pkg + ";\n\n");
+        type.write("import ch.sama.sql.dbo.IType;\n\n");
+        type.write("public class GenericType implements IType {\n");
+        type.write("\tprivate String type;\n\n");
+        type.write("\tpublic GenericType(String type) {\n");
+        type.write("\t\tthis.type = type;\n");
+        type.write("\t}\n\n");
+        type.write("\t@Override\n");
+        type.write("\tpublic String getString() {\n");
+        type.write("\t\treturn type;\n");
+        type.write("\t}\n");
+        type.write("}");
+
+        type.close();
+
         BufferedWriter tables = createClassFile(srcFolder, pkg, "Tables");
 
         tables.write("package " + pkg + ";\n\n");
@@ -76,8 +94,11 @@ public class ClassGenerator<T extends IQueryFactory> {
         BufferedWriter writer = createClassFile(srcFolder, tPkg, tableClassName);
 
         writer.write("package " + tPkg + ";\n\n");
+        writer.write("import java.util.Arrays;\n");
+        writer.write("import java.util.List;\n");
         writer.write("import ch.sama.sql.dbo.Table;\n");
-        writer.write("import ch.sama.sql.dbo.Field;\n\n");
+        writer.write("import ch.sama.sql.dbo.Field;\n");
+        writer.write("import " + pkg + ".GenericType;\n\n");
         writer.write("public class " + tableClassName + " extends Table {\n");
         writer.write("\tpublic " + tableClassName + "(String schema, String table) {\n");
         writer.write("\t\tsuper(schema, table);\n");
@@ -88,8 +109,30 @@ public class ClassGenerator<T extends IQueryFactory> {
 
         for (Field field : table.getColumns()) {
             String fieldName = field.getName();
-            writer.write("\tpublic Field " + fieldName + " = new Field(this, \"" + fieldName + "\");\n");
+            IType type = field.getDataType();
+
+            if (type == null) {
+                writer.write("\tpublic Field " + fieldName + " = new Field(this, \"" + fieldName + "\");\n");
+            } else {
+                writer.write("\tpublic Field " + fieldName + " = new Field(this, \"" + fieldName + "\", new GenericType(\"" + type.getString() + "\"));\n");
+            }
         }
+
+        writer.write("\n\t@Override\n");
+        writer.write("\tpublic List<Field> getColumns() {\n");
+        writer.write("\t\treturn Arrays.asList(\n");
+
+        String prefix = "";
+        for (Field field : table.getColumns()) {
+            String fieldName = field.getName();
+
+            writer.write(prefix + "\t\t\t" + fieldName);
+
+            prefix = ",\n";
+        }
+
+        writer.write("\n\t\t);\n");
+        writer.write("\t}");
 
         writer.write("}");
         writer.close();

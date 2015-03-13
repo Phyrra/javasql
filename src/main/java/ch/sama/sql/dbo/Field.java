@@ -7,7 +7,6 @@ import ch.sama.sql.query.helper.Value;
 
 public class Field {
     private Table table;
-    private String tableName;
 	private String field;
 
     private IType dataType;
@@ -23,26 +22,34 @@ public class Field {
 		this.field = field;
 	}
 
+    public Field(String field, IType type) {
+        this(field);
+
+        this.dataType = type;
+    }
+
     public Field(String table, String field) {
-        if (!Identifier.test(field)) {
-            throw new IllegalIdentifierException(field);
-        }
+        this(field);
 
-        if (!Identifier.test(table)) {
-            throw new IllegalIdentifierException(table);
-        }
-
-        this.tableName = table;
-        this.field = field;
+        this.table = new Table(table);
     }
 
     public Field(Table table, String field) {
-        if (!Identifier.test(field)) {
-            throw new IllegalIdentifierException(field);
-        }
+        this(field);
 
         this.table = table;
-        this.field = field;
+    }
+
+    public Field(String table, String field, IType type) {
+        this(table, field);
+
+        this.dataType = type;
+    }
+
+    public Field(Table table, String field, IType type) {
+        this(table, field);
+
+        this.dataType = type;
     }
 
     public String getName() {
@@ -78,18 +85,18 @@ public class Field {
     }
 
     public String getTableName() {
-        if (this.table == null) {
-            return this.tableName;
-        } else {
-            return this.table.getName();
+        if (table == null) {
+            return null;
         }
+
+        return table.getName();
     }
 
-    public void setAsPrivateKey() {
+    public void setAsPrimaryKey() {
         isPrivateKey = true;
     }
 
-    public boolean isPrivateKey() {
+    public boolean isPrimaryKey() {
         return isPrivateKey;
     }
 

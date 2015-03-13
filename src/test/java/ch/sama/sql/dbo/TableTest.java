@@ -53,4 +53,34 @@ public class TableTest {
 		assertEquals(true, t.hasColumn("COLUMN1"));
 		assertEquals("COLUMN1", t.getColumn("COLUMN1").getName());
 	}
+
+    @Test
+    public void getSinglePrimaryKey() {
+        Table t = new Table("TABLE");
+
+        Field key = new Field("COLUMN");
+        key.setAsPrimaryKey();
+
+        t.addColumn(key);
+
+        List<Field> pKey = t.getPrimaryKey();
+
+        assertEquals(1, pKey.size());
+        assertEquals("COLUMN", pKey.get(0).getName());
+    }
+
+    @Test
+    public void getMultiplePrimaryKey() {
+        Table t = new Table("TABLE");
+
+        Field key1 = new Field("COLUMN1");
+        key1.setAsPrimaryKey();
+        t.addColumn(key1);
+
+        Field key2 = new Field("COLUMN2");
+        key2.setAsPrimaryKey();
+        t.addColumn(key2);
+
+        assertEquals(2, t.getPrimaryKey().size());
+    }
 }

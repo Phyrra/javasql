@@ -124,7 +124,7 @@ public class TSqlSchema implements ISchema {
                 t.addColumn(f);
 
                 if (column.getAsInt("IS_PKEY") == 1) {
-                    f.setAsPrivateKey();
+                    f.setAsPrimaryKey();
                 }
             }
         }
@@ -209,22 +209,26 @@ public class TSqlSchema implements ISchema {
             prefix = ",\n";
         }
 
-        builder.append(",\n\tCONSTRAINT [PK_");
-        builder.append(table.getName());
-        builder.append("] PRIMARY KEY CLUSTERED (\n");
+        if (table.hasPrimaryKey()) {
+            builder.append(",\n\tCONSTRAINT [PK_");
+            builder.append(table.getName());
+            builder.append("] PRIMARY KEY CLUSTERED (\n");
 
-        prefix = "";
-        for (Field pKey : table.getPrimaryKey()) {
-            builder.append(prefix);
-            builder.append("\t\t[");
-            builder.append(pKey.getName());
-            builder.append("] ASC");
+            prefix = "";
+            for (Field pKey : table.getPrimaryKey()) {
+                builder.append(prefix);
+                builder.append("\t\t[");
+                builder.append(pKey.getName());
+                builder.append("] ASC");
 
-            prefix = ",\n";
+                prefix = ",\n";
+            }
+
+            builder.append("\n\t)\n) ON [PRIMARY]");
+            // Ignores all the options: WITH  (...) ON [PRIMARY]
+        } else {
+            builder.append("\n)");
         }
-
-        builder.append("\n\t)\n) ON [PRIMARY]");
-        // Ignores all the options: WITH  (...) ON [PRIMARY]
 
         return builder.toString();
     }
@@ -414,7 +418,7 @@ public class TSqlSchema implements ISchema {
                             throw new BadSqlException("Schema error, no field name: " + line);
                         }
 
-                        table.getColumn(fieldName).setAsPrivateKey();
+                        table.getColumn(fieldName).setAsPrimaryKey();
 
                         break;
                     default:

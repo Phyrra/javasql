@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Table {
     private String schema;
@@ -65,15 +66,13 @@ public class Table {
     }
 
     public List<Field> getPrimaryKey() {
-        List<Field> key = new ArrayList<Field>();
+        return columns.values().stream()
+                .filter(Field::isPrimaryKey)
+                .collect(Collectors.toList());
+    }
 
-        for (Field f : columns.values()) {
-            if (f.isPrivateKey()) {
-                key.add(f);
-            }
-        }
-
-        return key;
+    public boolean hasPrimaryKey() {
+        return !getPrimaryKey().isEmpty();
     }
 
     public String getString(IQueryRenderer renderer) {

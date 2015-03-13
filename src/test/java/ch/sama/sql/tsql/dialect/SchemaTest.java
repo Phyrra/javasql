@@ -215,8 +215,8 @@ public class SchemaTest {
         assertEquals(2, table.getPrimaryKey().size());
 
         // Order of keys is not kept
-        assertEquals(true, table.getColumn("uidId1").isPrivateKey());
-        assertEquals(true, table.getColumn("uidId2").isPrivateKey());
+        assertEquals(true, table.getColumn("uidId1").isPrimaryKey());
+        assertEquals(true, table.getColumn("uidId2").isPrimaryKey());
     }
 
     @Test (expected = ObjectNotFoundException.class)
