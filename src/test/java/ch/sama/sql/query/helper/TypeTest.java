@@ -13,6 +13,11 @@ public class TypeTest {
     }
     
     @Test
+    public void bitType() {
+        assertEquals("bit", TYPE.BIT_TYPE.getString());
+    }
+    
+    @Test
     public void intType() {
         assertEquals("int", TYPE.INT_TYPE.getString());
     }
@@ -90,6 +95,11 @@ public class TypeTest {
     @Test
     public void uniqueidentifierFromString() {
         assertEquals(UniqueidentifierType.class, TYPE.fromString("uniqueidentifier").getClass());
+    }
+    
+    @Test
+    public void bitFromString() {
+        assertEquals(BitType.class, TYPE.fromString("bit").getClass());
     }
     
     @Test

@@ -186,7 +186,7 @@ public class TSqlMerger {
                 for (int i = 0; i < maxI - 1 && TYPE.isEqualType(TYPE.NO_TYPE, p.getField().getDataType()); ++i, p = values.get(i).get(j)) { } // omg..
                 
                 if (TYPE.isEqualType(TYPE.NO_TYPE, p.getField().getDataType())) {
-                    p.getField().setDataType(TYPE.INT_TYPE); // None found, fallback to int
+                    p.getField().setDataType(TYPE.BIT_TYPE); // None found, fallback to bit
                 }
                 
                 result.add(p);
@@ -371,7 +371,7 @@ public class TSqlMerger {
 
     /**
      * Do you like guessing? 
-     * @param field with guessed type
+     * @param field with type to be guessed
      * @param o to be guessed
      * @return field-value pair
      */
@@ -382,6 +382,24 @@ public class TSqlMerger {
         if (o == null) {
             f.setDataType(TYPE.NO_TYPE);
             return new Pair(f, value.value(Value.VALUE.NULL));
+        }
+
+        if (o instanceof Boolean) {
+            f.setDataType(TYPE.BIT_TYPE);
+            
+            return new Pair(f, value.bool((boolean) o));
+        }
+        
+        if (o instanceof Integer || o instanceof Short || o instanceof Long) {
+            f.setDataType(TYPE.INT_TYPE);
+
+            if (o instanceof Integer) {
+                return new Pair(f, value.numeric((int) o));
+            } else if (o instanceof Short) {
+                return new Pair(f, value.numeric((int) ((short) o)));
+            } else {
+                return new Pair(f, value.numeric((int) ((long) o)));
+            }
         }
         
         if (o instanceof Double || o instanceof Float) {
@@ -394,18 +412,6 @@ public class TSqlMerger {
             }
         }
         
-        if (o instanceof Integer || o instanceof Short || o instanceof Long) {
-            f.setDataType(TYPE.INT_TYPE);
-            
-            if (o instanceof Integer) {
-                return new Pair(f, value.numeric((int) o));
-            } else if (o instanceof Short) {
-                return new Pair(f, value.numeric((int) ((short) o)));
-            } else {
-                return new Pair(f, value.numeric((int) ((long) o)));
-            }
-        }
-        
         if (o instanceof Date) {
             f.setDataType(TYPE.DATETIME_TYPE);
             return new Pair(f, value.date((Date) o));
@@ -415,7 +421,7 @@ public class TSqlMerger {
             String s = (String) o;
             
             if (s.length() == 0 || s.toLowerCase().equals("null")) {
-                f.setDataType(TYPE.INT_TYPE);
+                f.setDataType(TYPE.NO_TYPE);
                 return new Pair(f, value.value(Value.VALUE.NULL));
             }
             

@@ -9,9 +9,10 @@ public class TYPE {
     private static final String CHAR_PATTERN  = "char\\((\\d+|max)\\)";
     private static final String VARCHAR_PATTERN  = "varchar\\((\\d+|max)\\)";
     private static final String NVARCHAR_PATTERN  = "nvarchar\\((\\d+|max)\\)";
-    private static final String TEXT_PATTERN = "text(\\(\\d+\\))?";
+    private static final String TEXT_PATTERN = "text\\(\\d+\\)";
     
     public static final UniqueidentifierType UNIQUEIDENTIFIER_TYPE = new UniqueidentifierType();
+    public static final BitType BIT_TYPE = new BitType();
     public static final IntType INT_TYPE = new IntType();
     public static final FloatType FLOAT_TYPE = new FloatType();
     public static final DatetimeType DATETIME_TYPE = new DatetimeType();
@@ -46,6 +47,8 @@ public class TYPE {
         switch (sType) {
             case "uniqueidentifier":
                 return UNIQUEIDENTIFIER_TYPE;
+            case "bit":
+                return BIT_TYPE;
             case "int":
                 return INT_TYPE;
             case "float":
