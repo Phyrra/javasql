@@ -4,8 +4,6 @@ import ch.sama.sql.query.base.IQueryFactory;
 import ch.sama.sql.query.base.IQueryRenderer;
 import ch.sama.sql.query.exception.IllegalIdentifierException;
 import ch.sama.sql.tsql.dialect.TSqlQueryFactory;
-import ch.sama.sql.tsql.type.IntType;
-import ch.sama.sql.tsql.type.TYPE;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -37,28 +35,4 @@ public class FieldTest {
 	public void badTable() {
 		new Field("'", "FIELD");
 	}
-    
-    @Test
-    public void withType() {
-        Field f = new Field("FIELD", TYPE.INT_TYPE);
-        
-        assertEquals("[FIELD]", f.getString(renderer));
-        assertEquals(IntType.class, f.getDataType().getClass());
-    }
-    
-    @Test
-    public void withTableNameAndType() {
-        Field f = new Field("TABLE", "FIELD", TYPE.INT_TYPE);
-
-        assertEquals("[TABLE].[FIELD]", f.getString(renderer));
-        assertEquals(IntType.class, f.getDataType().getClass());
-    }
-
-    @Test
-    public void withTableAndType() {
-        Field f = new Field(new Table("TABLE"), "FIELD", TYPE.INT_TYPE);
-
-        assertEquals("[TABLE].[FIELD]", f.getString(renderer));
-        assertEquals(IntType.class, f.getDataType().getClass());
-    }
 }

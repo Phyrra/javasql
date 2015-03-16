@@ -109,13 +109,26 @@ public class ClassGenerator<T extends IQueryFactory> {
 
         for (Field field : table.getColumns()) {
             String fieldName = field.getName();
-            IType type = field.getDataType();
+            writer.write("\tpublic Field " + fieldName + " = new Field(this, \"" + fieldName + "\")");
 
-            if (type == null) {
-                writer.write("\tpublic Field " + fieldName + " = new Field(this, \"" + fieldName + "\");\n");
-            } else {
-                writer.write("\tpublic Field " + fieldName + " = new Field(this, \"" + fieldName + "\", new GenericType(\"" + type.getString() + "\"));\n");
+            IType type = field.getDataType();
+            if (type != null) {
+                writer.write(".chainType(new GenericType(\"" + type.getString() + "\"))");
             }
+
+            if (!field.isNullable()) {
+                writer.write(".chainNullable(false)");
+            }
+
+            if (field.isPrimaryKey()) {
+                writer.write(".chainPrimaryKey(true)");
+            }
+
+            if (field.isAutoIncrement()) {
+                writer.write(".chainAutoIncrement(true)");
+            }
+
+            writer.write(";\n");
         }
 
         writer.write("\n\t@Override\n");

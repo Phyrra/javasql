@@ -85,7 +85,13 @@ public class TSqlSchema implements ISchema {
                                                             )
                                             ),
                                             fac.value().numeric(0)
-                                    ).as("IS_PKEY")
+                                    ).as("IS_PKEY"),
+                                    fac.value().function(
+                                            "columnproperty",
+                                            fac.value().function("object_id", fac.value().field("TABLE_NAME")),
+                                            fac.value().field("COLUMN_NAME"),
+                                            fac.value().string("IsIdentity")
+                                    ).as("IS_IDENTITY")
                             )
                             .from(fac.source().table("INFORMATION_SCHEMA", "COLUMNS"))
                             .where(Condition.eq(fac.value().field("TABLE_NAME"), fac.value().string(table)))
@@ -110,21 +116,25 @@ public class TSqlSchema implements ISchema {
 
                 String nullable = column.getAsString("IS_NULLABLE");
                 if ("NO".equals(nullable)) {
-                    f.setNullable(false);
+                    f.setNotNullable();
                 } else {
-                    f.setNullable(true);
+                    f.setNullable();
                 }
 
                 String defaultValue = column.getAsString("COLUMN_DEFAULT");
                 if (defaultValue != null) {
                     // The data type is inconsequential here
-                    f.setDefault(fac.value().plain(defaultValue));
+                    f.setDefaultValue(fac.value().plain(defaultValue));
                 }
 
                 t.addColumn(f);
 
                 if (column.getAsInt("IS_PKEY") == 1) {
                     f.setAsPrimaryKey();
+                }
+
+                if (column.getAsInt("IS_IDENTITY") == 1) {
+                    f.setAutoIncrement();
                 }
             }
         }
@@ -252,13 +262,17 @@ public class TSqlSchema implements ISchema {
             builder.append("]");
         }
 
-        if (field.getNullable()) {
+        if (field.isAutoIncrement()) {
+            builder.append(" IDENTITY(1,1)");
+        }
+
+        if (field.isNullable()) {
             builder.append(" NULL");
         } else {
             builder.append(" NOT NULL");
         }
 
-        Value defaultValue = field.getDefault();
+        Value defaultValue = field.getDefaultValue();
         if (defaultValue != null) {
             String defaultString = defaultValue.getValue();
 
@@ -383,9 +397,9 @@ public class TSqlSchema implements ISchema {
                         Field field = new Field(table, fieldName);
 
                         if (line.contains("NOT NULL")) {
-                            field.setNullable(false);
+                            field.setNotNullable();
                         } else {
-                            field.setNullable(true); // nullable = true is default if none is set
+                            field.setNullable(); // nullable = true is default if none is set
                         }
 
                         if (dataType != null) {
@@ -398,7 +412,7 @@ public class TSqlSchema implements ISchema {
                             int idx2 = line.lastIndexOf(")");
 
                             String defaultValue = line.substring(idx1, idx2 + 1);
-                            field.setDefault(new Value(null, defaultValue));
+                            field.setDefaultValue(new Value(null, defaultValue));
                         }
 
                         table.addColumn(field); // if this does invoke NPE something went wrong

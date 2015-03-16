@@ -10,9 +10,11 @@ public class Field {
 	private String field;
 
     private IType dataType;
-    private boolean nullable = true;
     private Value defaultValue;
-    private boolean isPrivateKey = false;
+
+    private boolean isNullable = true;
+    private boolean isPrimaryKey = false;
+    private boolean isAutoIncrement = false;
 	
 	public Field(String field) {
         if (!Identifier.test(field)) {
@@ -21,12 +23,6 @@ public class Field {
 
 		this.field = field;
 	}
-
-    public Field(String field, IType type) {
-        this(field);
-
-        this.dataType = type;
-    }
 
     public Field(String table, String field) {
         this(field);
@@ -40,16 +36,34 @@ public class Field {
         this.table = table;
     }
 
-    public Field(String table, String field, IType type) {
-        this(table, field);
-
+    public Field chainType(IType type) {
         this.dataType = type;
+
+        return this;
     }
 
-    public Field(Table table, String field, IType type) {
-        this(table, field);
+    public Field chainNullable(boolean nullable) {
+        this.isNullable = nullable;
 
-        this.dataType = type;
+        return this;
+    }
+
+    public Field chainPrimaryKey(boolean primaryKey) {
+        this.isPrimaryKey = primaryKey;
+
+        return this;
+    }
+
+    public Field chainAutoIncrement(boolean autoIncr) {
+        this.isAutoIncrement = autoIncr;
+
+        return this;
+    }
+
+    public Field chainDefaultValue(Value defaultValue) {
+        this.defaultValue = defaultValue;
+
+        return this;
     }
 
     public String getName() {
@@ -64,24 +78,32 @@ public class Field {
         return dataType;
     }
 
-    public void setNullable(boolean nullable) {
-        this.nullable = nullable;
+    public void setNullable() {
+        this.isNullable = true;
     }
 
-    public boolean getNullable() {
-        return nullable;
+    public void setNotNullable() {
+        this.isNullable = false;
     }
 
-    public void setDefault(Value val) {
-        this.defaultValue = val;
+    public boolean isNullable() {
+        return isNullable;
     }
 
-    public Value getDefault() {
-        return this.defaultValue;
+    public void setDefaultValue(Value val) {
+        defaultValue = val;
+    }
+
+    public Value getDefaultValue() {
+        return defaultValue;
+    }
+
+    public boolean hasDefaultValue() {
+        return defaultValue != null;
     }
 
     public Table getTable() {
-        return this.table;
+        return table;
     }
 
     public String getTableName() {
@@ -93,15 +115,27 @@ public class Field {
     }
 
     public void setAsPrimaryKey() {
-        isPrivateKey = true;
+        isPrimaryKey = true;
     }
 
     public boolean isPrimaryKey() {
-        return isPrivateKey;
+        return isPrimaryKey;
+    }
+
+    public void setAutoIncrement() {
+        isAutoIncrement = true;
+    }
+
+    public boolean isAutoIncrement() {
+        return isAutoIncrement;
     }
 
     public boolean compareTo(Field other) {
-        if (nullable != other.getNullable()) {
+        if (isNullable != other.isNullable()) {
+            return false;
+        }
+
+        if (isAutoIncrement() != other.isAutoIncrement()) {
             return false;
         }
 
@@ -115,7 +149,7 @@ public class Field {
             }
         }
 
-        Value otherDefault = other.getDefault();
+        Value otherDefault = other.getDefaultValue();
         if (defaultValue == null && otherDefault != null || defaultValue != null && otherDefault == null) {
             return false;
         }

@@ -87,7 +87,7 @@ public class SchemaTest {
 
         assertEquals("iField", field.getName());
         assertEquals("int", field.getDataType().getString());
-        assertEquals(true, field.getNullable());
+        assertEquals(true, field.isNullable());
     }
 
     @Test
@@ -104,7 +104,7 @@ public class SchemaTest {
 
         assertEquals("sField", field.getName());
         assertEquals("varchar(50)", field.getDataType().getString());
-        assertEquals(true, field.getNullable());
+        assertEquals(true, field.isNullable());
     }
 
     @Test
@@ -121,7 +121,7 @@ public class SchemaTest {
 
         assertEquals("sField", field.getName());
         assertEquals("varchar(MAX)", field.getDataType().getString());
-        assertEquals(true, field.getNullable());
+        assertEquals(true, field.isNullable());
     }
 
     @Test
@@ -138,7 +138,7 @@ public class SchemaTest {
 
         assertEquals("iField", field.getName());
         assertEquals("int", field.getDataType().getString());
-        assertEquals(false, field.getNullable());
+        assertEquals(false, field.isNullable());
     }
 
     @Test
@@ -155,8 +155,8 @@ public class SchemaTest {
 
         assertEquals("iField", field.getName());
         assertEquals("int", field.getDataType().getString());
-        assertEquals(false, field.getNullable());
-        assertEquals("(1337)", field.getDefault().getValue());
+        assertEquals(false, field.isNullable());
+        assertEquals("(1337)", field.getDefaultValue().getValue());
     }
 
     @Test
@@ -173,8 +173,8 @@ public class SchemaTest {
 
         assertEquals("uidId", field.getName());
         assertEquals("uniqueidentifier", field.getDataType().getString());
-        assertEquals(false, field.getNullable());
-        assertEquals("(newsequentialid())", field.getDefault().getValue());
+        assertEquals(false, field.isNullable());
+        assertEquals("(newsequentialid())", field.getDefaultValue().getValue());
     }
 
     // PKey
