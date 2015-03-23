@@ -6,6 +6,7 @@ import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dbo.connection.IQueryExecutor;
 import ch.sama.sql.dbo.generator.ITableFilter;
 import ch.sama.sql.dbo.result.MapResult;
+import ch.sama.sql.dbo.result.MapResultList;
 import ch.sama.sql.query.base.IQueryFactory;
 import ch.sama.sql.query.exception.BadSqlException;
 import ch.sama.sql.query.exception.ObjectNotFoundException;
@@ -26,20 +27,20 @@ public class TSqlSchema implements ISchema {
 
     private Map<String, Table> tables;
 
-    public TSqlSchema(IQueryExecutor<MapResult> executor) {
+    public TSqlSchema(IQueryExecutor<MapResultList> executor) {
         loadSchema(executor, table -> true);
     }
 
-    public TSqlSchema(IQueryExecutor<MapResult> executor, ITableFilter filter) {
+    public TSqlSchema(IQueryExecutor<MapResultList> executor, ITableFilter filter) {
         loadSchema(executor, filter);
     }
 
-    private void loadSchema(IQueryExecutor<MapResult> executor, ITableFilter filter) {
+    private void loadSchema(IQueryExecutor<MapResultList> executor, ITableFilter filter) {
         TSqlFunctionFactory fnc = new TSqlFunctionFactory();
 
         tables = new HashMap<String, Table>();
 
-        List<MapResult> result = executor.query(
+        MapResultList result = executor.query(
                 fac.query()
                         .select(
                                 fac.value().field("TABLE_SCHEMA"),
@@ -62,7 +63,7 @@ public class TSqlSchema implements ISchema {
             Table t = new Table(schema, table);
             tables.put(table, t);
 
-            List<MapResult> columns = executor.query(
+            MapResultList columns = executor.query(
                     fac.query()
                             .select(
                                     fac.value().field("COLUMN_NAME"),

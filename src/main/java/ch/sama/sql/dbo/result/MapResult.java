@@ -6,9 +6,9 @@ import java.util.Map;
 import java.util.Set;
 
 public class MapResult {
-    Map<String, Object> map;
+    private Map<String, Object> map;
     
-    public MapResult() {
+    MapResult() {
         map = new LinkedHashMap<String, Object>();
     }
 

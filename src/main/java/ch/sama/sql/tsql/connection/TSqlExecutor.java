@@ -12,11 +12,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
-public class TSqlExecutor<R> implements IQueryExecutor<R> {
+public class TSqlExecutor<S> implements IQueryExecutor<S> {
     private DBConnection connection;
-    private IResultSetTransformer<R> transformer;
+    private IResultSetTransformer<S> transformer;
 
-    public TSqlExecutor(DBConnection connection, IResultSetTransformer<R> transformer) {
+    public TSqlExecutor(DBConnection connection, IResultSetTransformer<S> transformer) {
         this.connection = connection;
         this.transformer = transformer;
     }
@@ -55,8 +55,8 @@ public class TSqlExecutor<R> implements IQueryExecutor<R> {
     }
 
     @Override
-    public List<R> query(String query) {
-        List<R> result;
+    public S query(String query) {
+        S result;
 
         Statement statement;
         try {
@@ -82,39 +82,5 @@ public class TSqlExecutor<R> implements IQueryExecutor<R> {
         connection.close();
 
         return result;
-    }
-
-    @Override
-    public R get(String query) {
-        List<R> result;
-
-        Statement statement;
-        try {
-            Connection con = connection.open();
-            statement = con.createStatement();
-        } catch (Exception e) {
-            connection.close();
-
-            throw new ConnectionException(e);
-        }
-
-        try {
-            ResultSet resultSet = statement.executeQuery(query);
-            result = transformer.transform(resultSet);
-        } catch (SQLException e) {
-            closeStatement(statement);
-            connection.close();
-
-            throw new BadSqlException(e);
-        }
-
-        closeStatement(statement);
-        connection.close();
-
-        if (result.size() != 1) {
-            throw new BadSqlException("Expected 1 Result, got " + result.size());
-        }
-
-        return result.get(0);
     }
 }

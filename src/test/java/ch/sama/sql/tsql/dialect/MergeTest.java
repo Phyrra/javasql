@@ -1,11 +1,14 @@
 package ch.sama.sql.tsql.dialect;
 
+import ch.sama.sql.csv.CSVRow;
+import ch.sama.sql.csv.CSVSet;
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.query.base.IValueFactory;
 import ch.sama.sql.query.exception.BadParameterException;
 import ch.sama.sql.tsql.type.*;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
@@ -256,6 +259,35 @@ public class MergeTest {
                         )
                         .matching("FIELD1")
                         .omit()
+                .getSql()
+        );
+    }
+
+    @Test (expected = BadParameterException.class)
+    public void noCSVTitle() {
+        m.merge("TABLE").values(new CSVSet());
+    }
+
+    @Test (expected = BadParameterException.class)
+    public void emptyCSV() {
+        CSVSet data = new CSVSet();
+        data.addTitle(new CSVRow(Arrays.asList("A")));
+
+        m.merge("TABLE").values(data);
+    }
+
+    @Test
+    public void mergeCSV() {
+        CSVSet data = new CSVSet();
+        data.addTitle(new CSVRow(Arrays.asList("FIELD1", "FIELD2", "FIELD3")));
+        data.add(new CSVRow(Arrays.asList("1", "value", "")));
+
+        assertEquals(
+                "DECLARE @table TABLE (\nFIELD1 int,\nFIELD2 varchar(MAX),\nFIELD3 bit\n);\nINSERT INTO @table\nSELECT 1, 'value', NULL;\nMERGE INTO [TABLE] AS [old]\nUSING @table AS [new] ON (\n[old].[FIELD1] = [new].[FIELD1]\n)\nWHEN MATCHED THEN\nUPDATE SET [FIELD2] = [new].[FIELD2], [FIELD3] = [new].[FIELD3]\nWHEN NOT MATCHED BY TARGET THEN\nINSERT ([FIELD2], [FIELD3]) VALUES ([new].[FIELD2], [new].[FIELD3])\nOUTPUT INSERTED.[FIELD1], INSERTED.[FIELD2], INSERTED.[FIELD3];",
+                m.merge("TABLE")
+                        .values(data)
+                        .matching("FIELD1")
+                        .omit("FIELD1")
                 .getSql()
         );
     }

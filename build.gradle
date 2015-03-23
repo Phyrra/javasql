@@ -51,6 +51,15 @@ task generate() {
     }
 }
 
+/*
+// Copies the dependencies into the jar
+jar {
+    from configurations.compile.collect {
+        it.isDirectory() ? it : zipTree(it)
+    }
+}
+*/
+
 jacocoTestReport {
     reports {
         xml.enabled false
