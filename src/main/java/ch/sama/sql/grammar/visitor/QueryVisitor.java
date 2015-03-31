@@ -62,15 +62,6 @@ public class QueryVisitor extends SqlBaseVisitor<IQuery> {
         return conditionVisitor.visit(ctx);
     }
 
-    private String getJoinType(SqlParser.JoinStatementContext ctx) {
-        String joinType = "";
-        if (ctx.joinType() != null) {
-            joinType = ctx.joinType().getText().toLowerCase();
-        }
-
-        return joinType;
-    }
-
     private IQuery chain(IQuery child, IQuery parent) {
         IQuery top = child;
         while (top.getParent() != null) {
@@ -188,16 +179,28 @@ public class QueryVisitor extends SqlBaseVisitor<IQuery> {
     public IQuery visitJoinStatement(SqlParser.JoinStatementContext ctx) {
         Source source = getSource(ctx.source());
 
+        JoinQuery query = new JoinQuery(renderer, null, source);
+
         ICondition condition = getCondition(ctx.condition());
 
-        String joinType = getJoinType(ctx);
+        String joinType = "";
+        if (ctx.joinType() != null) {
+            joinType = ctx.joinType().getText().toLowerCase();
+        }
+
         switch (joinType) {
             case "left":
-                return new JoinQuery(renderer, null, source).left().on(condition);
+                return query.left().on(condition);
             case "right":
-                return new JoinQuery(renderer, null, source).right().on(condition);
+                return query.right().on(condition);
+            case "inner":
+                return query.inner().on(condition);
+            case "full":
+                return query.full().on(condition);
+            case "cross":
+                return query.cross().on(condition);
             default:
-                return new JoinQuery(renderer, null, source).on(condition);
+                return query.on(condition);
         }
     }
 

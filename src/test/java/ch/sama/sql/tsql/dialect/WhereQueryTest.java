@@ -1,12 +1,14 @@
 package ch.sama.sql.tsql.dialect;
 
-import static org.junit.Assert.*;
-
-import ch.sama.sql.query.base.*;
+import ch.sama.sql.query.base.FromQuery;
+import ch.sama.sql.query.base.IQueryFactory;
+import ch.sama.sql.query.base.ISourceFactory;
+import ch.sama.sql.query.base.IValueFactory;
+import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.condition.ICondition;
 import org.junit.Test;
 
-import ch.sama.sql.query.helper.Condition;
+import static org.junit.Assert.assertEquals;
 
 public class WhereQueryTest {
     private static final IQueryFactory fac = new TSqlQueryFactory();

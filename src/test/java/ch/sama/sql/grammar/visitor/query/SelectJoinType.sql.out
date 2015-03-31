@@ -1,0 +1,8 @@
+SELECT *
+FROM [t]
+JOIN [j0] ON 1 = 1
+INNER JOIN [jI] ON 1 = 1
+LEFT JOIN [jL] ON 1 = 1
+RIGHT JOIN [jR] ON 1 = 1
+FULL JOIN [jF] ON 1 = 1
+CROSS JOIN [jC] ON 1 = 1

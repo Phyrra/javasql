@@ -134,18 +134,30 @@ class TSqlQueryRenderer implements IQueryRenderer {
         JoinQuery.TYPE type = query.getType();
         if (type != null) {
             switch (type) {
+                case INNER:
+                    builder.append("INNER");
+                    break;
                 case LEFT:
                     builder.append("LEFT");
                     break;
                 case RIGHT:
                     builder.append("RIGHT");
                     break;
+                case FULL:
+                    builder.append("FULL");
+                    break;
+                case CROSS:
+                    builder.append("CROSS");
+                    break;
                 default:
                     throw new UnknownValueException("Unknown join type: " + type);
             }
 
             builder.append(" ");
+        } else {
+            // builder.append("INNER "); // Don't really like it
         }
+
         builder.append("JOIN ");
 
         builder.append(render(query.getSource()));

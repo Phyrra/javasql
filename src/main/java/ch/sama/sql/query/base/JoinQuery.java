@@ -6,7 +6,10 @@ import ch.sama.sql.query.helper.condition.ICondition;
 public class JoinQuery implements IQuery {
     public enum TYPE {
         LEFT,
-        RIGHT
+        RIGHT,
+        INNER,
+        FULL,
+        CROSS
     }
 
     private IQueryRenderer renderer;
@@ -55,8 +58,20 @@ public class JoinQuery implements IQuery {
 		return this;
 	}
 	
-	// Could also add inner/outer/cross and so on..
-	//	Since I never use them, I didn't :>
+	public JoinQuery inner() {
+		this.type = TYPE.INNER;
+		return this;
+	}
+
+	public JoinQuery full() {
+		this.type = TYPE.FULL;
+		return this;
+	}
+
+	public JoinQuery cross() {
+		this.type = TYPE.CROSS;
+		return this;
+	}
 	
 	public JoinQueryFinal on(ICondition condition) {
 		return new JoinQueryFinal(renderer, this, condition);

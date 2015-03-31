@@ -30,6 +30,9 @@ Or : [oO][rR] ;
 Null : [nN][uU][lL][lL] ;
 Left : [lL][eE][fF][tT] ;
 Right : [rR][iI][gG][hH][tT] ;
+Inner : [iI][nN][nN][eE][rR] ;
+Full : [fF][uU][lL][lL] ;
+Cross : [cC][rR][oO][sS][sS] ;
 Not : [nN][oO][tT] ;
 Like : [lL][iI][kK][eE] ;
 Is : [iI][sS] ;
@@ -197,6 +200,9 @@ fromStatement
 joinType
     : Left
     | Right
+    | Inner
+    | Full
+    | Cross
     ;
 
 joinStatement
