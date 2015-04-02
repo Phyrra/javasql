@@ -11,6 +11,10 @@ public class DBConnection implements IConnection {
     private String userName;
     private String password;
 
+    public DBConnection(String connectionString) {
+        this.connectionString = connectionString;
+    }
+
     public DBConnection(String connectionString, String userName, String password) {
         this.connectionString = connectionString;
         this.userName = userName;
@@ -19,9 +23,7 @@ public class DBConnection implements IConnection {
 
     @Override
     public Connection open() throws SQLException {
-        this.connection = DriverManager.getConnection(connectionString, userName, password);
-
-        return this.connection;
+        return (connection = DriverManager.getConnection(connectionString, userName, password));
     }
 
     @Override

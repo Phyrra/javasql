@@ -1,9 +1,5 @@
 package ch.sama.sql.dbo.result;
 
-import ch.sama.sql.query.exception.BadSqlException;
-
-import java.io.BufferedReader;
-import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 

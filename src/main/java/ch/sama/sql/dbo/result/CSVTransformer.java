@@ -12,6 +12,7 @@ public class CSVTransformer implements IResultSetTransformer<CSVSet> {
         String[] colNames = TransformerHelper.getColumnNames(resultSet);
 
         CSVSet result = new CSVSet();
+        result.addTitle(new CSVRow(colNames));
 
         while (resultSet.next()) {
             CSVRow row = new CSVRow();
