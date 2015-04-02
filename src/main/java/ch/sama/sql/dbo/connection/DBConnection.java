@@ -7,21 +7,18 @@ import java.sql.SQLException;
 public class DBConnection implements IConnection {
     private Connection connection;
 
-    private String className;
     private String connectionString;
     private String userName;
     private String password;
 
-    public DBConnection(String className, String connectionString, String userName, String password) {
-        this.className = className;
+    public DBConnection(String connectionString, String userName, String password) {
         this.connectionString = connectionString;
         this.userName = userName;
         this.password = password;
     }
 
     @Override
-    public Connection open() throws ClassNotFoundException, SQLException {
-        Class.forName(className);
+    public Connection open() throws SQLException {
         this.connection = DriverManager.getConnection(connectionString, userName, password);
 
         return this.connection;
