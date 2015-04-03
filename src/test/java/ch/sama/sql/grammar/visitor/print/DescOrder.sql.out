@@ -1,0 +1,15 @@
+sql
+	statement
+		select
+			value
+				all
+		from
+			source
+				table
+					t
+	order
+		by
+			desc
+				primary
+					field
+						f

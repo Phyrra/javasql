@@ -1,0 +1,16 @@
+sql
+	statement
+		select
+			value
+				primary
+					query
+						statement
+							select
+								value
+									primary
+										field
+											f
+							from
+								source
+									table
+										t

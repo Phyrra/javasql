@@ -1,0 +1,10 @@
+syntax: glob
+*.class
+.idea/*
+build/*
+gradle/*
+.gradle/*
+gradlew
+gradlew.bat
+bin/*
+src/main/java/ch/sama/sql/grammar/antlr/*

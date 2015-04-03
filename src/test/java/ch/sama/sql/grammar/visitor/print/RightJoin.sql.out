@@ -1,0 +1,23 @@
+sql
+	statement
+		select
+			value
+				all
+		from
+			source
+				table
+					t1
+		join
+			right
+			source
+				table
+					t2
+			condition
+				primary
+					table field
+						t2
+						key
+				primary
+					table field
+						t1
+						key

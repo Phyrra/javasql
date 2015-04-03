@@ -1,0 +1,5 @@
+sql
+	statement
+		select
+			value
+				all
