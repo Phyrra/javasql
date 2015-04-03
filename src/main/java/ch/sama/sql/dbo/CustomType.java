@@ -1,11 +1,9 @@
-package ch.sama.sql.tsql.type;
-
-import ch.sama.sql.dbo.IType;
+package ch.sama.sql.dbo;
 
 public class CustomType implements IType {
     private String name;
     
-    CustomType(String name) {
+    public CustomType(String name) {
         this.name = name;    
     }
     

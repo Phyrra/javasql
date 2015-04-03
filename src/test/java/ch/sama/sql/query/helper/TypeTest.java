@@ -1,5 +1,6 @@
 package ch.sama.sql.query.helper;
 
+import ch.sama.sql.dbo.CustomType;
 import ch.sama.sql.dbo.IType;
 import ch.sama.sql.tsql.type.*;
 import org.junit.Test;

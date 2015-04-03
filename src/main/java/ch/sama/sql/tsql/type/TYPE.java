@@ -1,5 +1,6 @@
 package ch.sama.sql.tsql.type;
 
+import ch.sama.sql.dbo.CustomType;
 import ch.sama.sql.dbo.IType;
 
 import java.util.regex.Matcher;
