@@ -4,24 +4,18 @@ import ch.sama.sql.query.helper.Source;
 import ch.sama.sql.query.helper.Value;
 import ch.sama.sql.query.helper.condition.ICondition;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SelectQuery implements IQuery {
-    private IQueryRenderer renderer;
+    private IQueryFactory factory;
 	private IQuery parent;
-	private List<Value> values;	
-	private int n;
+	private List<Value> values;
 
-    public SelectQuery(IQueryRenderer renderer, IQuery parent, Value... v) {
-        this.renderer = renderer;
+    public SelectQuery(IQueryFactory factory, IQuery parent, Value[] v) {
+        this.factory = factory;
         this.parent = parent;
-        this.values = new ArrayList<Value>();
-        this.n = -1;
-
-        for (Value aV : v) {
-            values.add(aV);
-        }
+        this.values = Arrays.asList(v);
     }
 
     @Override
@@ -31,7 +25,7 @@ public class SelectQuery implements IQuery {
 
     @Override
     public String getSql() {
-        return renderer.render(this);
+        return factory.renderer().render(this);
     }
 
     @Override
@@ -44,24 +38,15 @@ public class SelectQuery implements IQuery {
 		return values;
 	}
 	
-	public int getTopN() {
-		return n;
-	}
-	
-	public SelectQuery top(int n) {
-		this.n = n;
-		return this;
-	}
-	
 	public FromQuery from(Source... s) {
-		return new FromQuery(renderer, this, s);
+        return factory.from(this, s);
 	}
 
     public Query union() {
-        return new Query(renderer, this);
+        return factory.query(this);
     }
 
     public WhereQuery where(ICondition c) {
-        return new WhereQuery(renderer, this, c);
+        return factory.where(this, c);
     }
 }

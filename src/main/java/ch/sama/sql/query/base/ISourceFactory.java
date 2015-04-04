@@ -1,6 +1,7 @@
 package ch.sama.sql.query.base;
 
 import ch.sama.sql.dbo.Table;
+import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.helper.Source;
 
 public interface ISourceFactory {

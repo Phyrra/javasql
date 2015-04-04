@@ -1,5 +1,7 @@
 package ch.sama.sql.csv;
 
+import ch.sama.sql.csv.CSVFormat;
+import ch.sama.sql.csv.CSVRow;
 import org.junit.Test;
 
 import java.util.Arrays;

@@ -2,12 +2,11 @@ package ch.sama.sql.query.helper;
 
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
-import ch.sama.sql.query.base.IQueryFactory;
-import ch.sama.sql.query.base.IQueryRenderer;
-import ch.sama.sql.query.base.IValueFactory;
 import ch.sama.sql.query.exception.IllegalIdentifierException;
-import ch.sama.sql.tsql.type.TYPE;
-import ch.sama.sql.tsql.dialect.TSqlQueryFactory;
+import ch.sama.sql.dialect.tsql.TSqlQueryBuilder;
+import ch.sama.sql.dialect.tsql.TSqlQueryRenderer;
+import ch.sama.sql.dialect.tsql.TSqlValueFactory;
+import ch.sama.sql.dialect.tsql.type.TYPE;
 import org.junit.Test;
 
 import java.text.SimpleDateFormat;
@@ -16,67 +15,67 @@ import java.util.Date;
 import static org.junit.Assert.assertEquals;
 
 public class ValueTest {
-    private static final IQueryFactory fac = new TSqlQueryFactory();
-    private static final IQueryRenderer renderer = fac.renderer();
-    private static final IValueFactory value = fac.value();
+    private static final TSqlQueryBuilder sql = new TSqlQueryBuilder();
+    private static final TSqlQueryRenderer renderer = sql.renderer();
+    private static final TSqlValueFactory value = sql.value();
 
 	@Test
 	public void string() {
-		assertEquals("'hello'", value.string("hello").getString(renderer));
+		assertEquals("'hello'", renderer.render(value.string("hello")));
 	}
 	
 	@Test
 	public void stringEscape() {
-		assertEquals("'hello ''john'''", value.string("hello 'john'").getString(renderer));
+		assertEquals("'hello ''john'''", renderer.render(value.string("hello 'john'")));
 	}
 	
 	@Test
 	public void integer() {
-		assertEquals("1", value.numeric(1).getString(renderer));
+		assertEquals("1", renderer.render(value.numeric(1)));
 	}
 	
 	@Test
 	public void numeric() {
-		assertEquals("1.1", value.numeric(1.1f).getString(renderer));
-		assertEquals("1.1", value.numeric(1.1d).getString(renderer));
+		assertEquals("1.1", renderer.render(value.numeric(1.1f)));
+		assertEquals("1.1", renderer.render(value.numeric(1.1d)));
 	}
     
     @Test
     public void bool() {
-        assertEquals("1", value.bool(true).getString(renderer));
-        assertEquals("0", value.bool(false).getString(renderer));
+        assertEquals("1", renderer.render(value.bool(true)));
+        assertEquals("0", renderer.render(value.bool(false)));
     }
 	
 	@Test
 	public void date() throws Exception {
 		SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 		Date d = format.parse("15.08.2014");
-		assertEquals("CONVERT(datetime, '2014-08-15 00:00:00', 21)", value.date(d).getString(renderer));
+		assertEquals("CONVERT(datetime, '2014-08-15 00:00:00', 21)", renderer.render(value.date(d)));
 	}
 	
     @Test
     public void field() {
-        assertEquals("[dbo].[TABLE].[FIELD]", value.field(new Field(new Table("dbo", "TABLE"), "FIELD")).getString(renderer));
+        assertEquals("[dbo].[TABLE].[FIELD]", renderer.render(value.field(new Field(new Table("dbo", "TABLE"), "FIELD"))));
     }
     
 	@Test
 	public void stringField() {
-		assertEquals("[FIELD]", value.field("FIELD").getString(renderer));
+		assertEquals("[FIELD]", renderer.render(value.field("FIELD")));
 	}
 
     @Test
     public void stringTableField() {
-        assertEquals("[TABLE].[FIELD]", value.field("TABLE", "FIELD").getString(renderer));
+        assertEquals("[TABLE].[FIELD]", renderer.render(value.field("TABLE", "FIELD")));
     }
     
     @Test
     public void tableField() {
-        assertEquals("[dbo].[TABLE].[FIELD]", value.field(new Table("dbo", "TABLE"), "FIELD").getString(renderer));
+        assertEquals("[dbo].[TABLE].[FIELD]", renderer.render(value.field(new Table("dbo", "TABLE"), "FIELD")));
     }
 	
 	@Test
 	public void withAlias() {
-		assertEquals("[FIELD] AS [ALIAS]", value.field("FIELD").as("ALIAS").getString(renderer));
+		assertEquals("[FIELD] AS [ALIAS]", renderer.render(value.field("FIELD").as("ALIAS")));
 	}
 
     @Test
@@ -95,51 +94,51 @@ public class ValueTest {
 	
 	@Test
 	public void subQuery() {
-		assertEquals("(\nSELECT 1\n) AS [QUERY]", value.query(fac.query().select(value.numeric(1))).as("QUERY").getString(renderer));
+		assertEquals("(\nSELECT 1\n) AS [QUERY]", renderer.render(value.query(sql.query().select(value.numeric(1))).as("QUERY")));
 	}
 	
 	@Test
 	public void function() {
-		assertEquals("COUNT(*) AS [_COUNT]", value.function("COUNT", value.value(Value.ALL)).as("_COUNT").getString(renderer));
+		assertEquals("COUNT(*) AS [_COUNT]", renderer.render(value.function("COUNT", value.value(Value.ALL)).as("_COUNT")));
 	}
 
 	@Test
 	public void nullValue() {
-		assertEquals("NULL", value.value(Value.NULL).getString(renderer));
+		assertEquals("NULL", renderer.render(value.value(Value.NULL)));
 	}
 
 	@Test
 	public void allValue() {
-		assertEquals("*", value.value(Value.ALL).getString(renderer));
+		assertEquals("*", renderer.render(value.value(Value.ALL)));
 	}
 	
 	@Test
 	public void allTable() {
-		assertEquals("[TABLE].*", value.table("TABLE").getString(renderer));
+		assertEquals("[TABLE].*", renderer.render(value.table("TABLE")));
 	}
     
     @Test
     public void combineTwo() {
-        assertEquals("[TABLE].[FIELD1] + [TABLE].[FIELD2]", value.combine("+", value.field("TABLE", "FIELD1"), value.field("TABLE", "FIELD2")).getString(renderer));
+        assertEquals("[TABLE].[FIELD1] + [TABLE].[FIELD2]", renderer.render(value.combine("+", value.field("TABLE", "FIELD1"), value.field("TABLE", "FIELD2"))));
     }
     
     @Test
     public void combineMultiple() {
-        assertEquals("[TABLE].[FIELD1] + '_' + [TABLE].[FIELD2]", value.combine("+", value.field("TABLE", "FIELD1"), value.string("_"), value.field("TABLE", "FIELD2")).getString(renderer));
+        assertEquals("[TABLE].[FIELD1] + '_' + [TABLE].[FIELD2]", renderer.render(value.combine("+", value.field("TABLE", "FIELD1"), value.string("_"), value.field("TABLE", "FIELD2"))));
     }
     
     @Test
     public void combineWithAlias() {
-        assertEquals("[TABLE].[FIELD1] + [TABLE].[FIELD2] AS [ALIAS]", value.combine("+", value.field("TABLE", "FIELD1"), value.field("TABLE", "FIELD2")).as("ALIAS").getString(renderer));
+        assertEquals("[TABLE].[FIELD1] + [TABLE].[FIELD2] AS [ALIAS]", renderer.render(value.combine("+", value.field("TABLE", "FIELD1"), value.field("TABLE", "FIELD2")).as("ALIAS")));
     }
     
     @Test
     public void bracket() {
-        assertEquals("([TABLE].[FIELD])", value.bracket(value.field("TABLE", "FIELD")).getString(renderer));
+        assertEquals("([TABLE].[FIELD])", renderer.render(value.bracket(value.field("TABLE", "FIELD"))));
     }
     
     @Test
     public void types() {
-        assertEquals("int", value.type(TYPE.INT_TYPE).getString(renderer));
+        assertEquals("int", renderer.render(value.type(TYPE.INT_TYPE)));
     }
 }

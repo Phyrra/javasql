@@ -3,17 +3,16 @@ package ch.sama.sql.dbo.result;
 import ch.sama.sql.csv.CSVSet;
 import ch.sama.sql.csv.CSVWriter;
 import ch.sama.sql.dbo.connection.QueryExecutor;
-import ch.sama.sql.query.base.IQueryFactory;
-import ch.sama.sql.query.base.IValueFactory;
-import ch.sama.sql.tsql.dialect.TSqlQueryFactory;
+import ch.sama.sql.dialect.tsql.TSqlQueryBuilder;
+import ch.sama.sql.dialect.tsql.TSqlValueFactory;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 public class CSVTransformerTest {
-    private static final IQueryFactory fac = new TSqlQueryFactory();
-    private static final IValueFactory value = fac.value();
+    private static final TSqlQueryBuilder sql = new TSqlQueryBuilder();
+    private static final TSqlValueFactory value = sql.value();
 
     private QueryExecutor<CSVSet> executor;
 
@@ -28,9 +27,9 @@ public class CSVTransformerTest {
     @Test
     public void oneResult() {
         CSVSet result = executor.query(
-                fac.query()
+                sql.query()
                         .select(value.numeric(1))
-                        .getSql()
+                .getSql()
         );
 
         assertEquals(1, result.size());
@@ -40,7 +39,7 @@ public class CSVTransformerTest {
     @Test
     public void multiResult() {
         CSVSet result = executor.query(
-                fac.query()
+                sql.query()
                         .select(value.numeric(1))
                         .union()
                         .select(value.numeric(2))
@@ -55,7 +54,7 @@ public class CSVTransformerTest {
     @Test
     public void csvOutputSingleRow() {
         CSVSet result = executor.query(
-                fac.query()
+                sql.query()
                         .select(value.numeric(1).as("f1"), value.string("Hello World").as("f2"))
                 .getSql()
         );
@@ -70,7 +69,7 @@ public class CSVTransformerTest {
     @Test
     public void csvOutputMultiRow() {
         CSVSet result = executor.query(
-                fac.query()
+                sql.query()
                         .select(value.string("1.1").as("f1"), value.string("1.2").as("f2"))
                         .union()
                         .select(value.string("2.1").as("f2"), value.string("2.2").as("f2"))

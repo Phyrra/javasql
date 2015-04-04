@@ -1,18 +1,17 @@
 package ch.sama.sql.query.helper;
 
-import ch.sama.sql.query.base.IQueryFactory;
-import ch.sama.sql.query.base.IValueFactory;
 import ch.sama.sql.query.helper.order.IOrder;
-import ch.sama.sql.query.helper.order.IOrderRenderer;
-import ch.sama.sql.tsql.dialect.TSqlQueryFactory;
+import ch.sama.sql.dialect.tsql.TSqlOrderRenderer;
+import ch.sama.sql.dialect.tsql.TSqlQueryBuilder;
+import ch.sama.sql.dialect.tsql.TSqlValueFactory;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class OrderTest {
-    private static final IQueryFactory fac = new TSqlQueryFactory();
-    private static final IValueFactory value = fac.value();
-    private static final IOrderRenderer order = fac.order();
+    private static final TSqlQueryBuilder sql = new TSqlQueryBuilder();
+    private static final TSqlValueFactory value = sql.value();
+    private static final TSqlOrderRenderer order = sql.order();
 	
 	@Test
 	public void ascSingle() {

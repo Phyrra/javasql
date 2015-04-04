@@ -1,8 +1,8 @@
 package ch.sama.sql.dbo;
 
 import ch.sama.sql.query.base.IQueryRenderer;
-import ch.sama.sql.query.exception.IllegalIdentifierException;
 import ch.sama.sql.query.base.check.Identifier;
+import ch.sama.sql.query.exception.IllegalIdentifierException;
 import ch.sama.sql.query.helper.Value;
 
 public class Field {

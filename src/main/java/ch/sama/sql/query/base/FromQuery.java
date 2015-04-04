@@ -5,21 +5,18 @@ import ch.sama.sql.query.helper.condition.ICondition;
 import ch.sama.sql.query.helper.order.IOrder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class FromQuery implements IQuery {
-    private IQueryRenderer renderer;
+    private IQueryFactory factory;
 	private IQuery parent;
 	private List<Source> sources;
 
-    public FromQuery(IQueryRenderer renderer, IQuery parent, Source... sources) {
-        this.renderer = renderer;
+    public FromQuery(IQueryFactory factory, IQuery parent, Source[] sources) {
+        this.factory = factory;
         this.parent = parent;
-
-        this.sources = new ArrayList<Source>();
-        for (Source s : sources) {
-            this.sources.add(s);
-        }
+        this.sources = Arrays.asList(sources);
     }
     
     @Override
@@ -29,7 +26,7 @@ public class FromQuery implements IQuery {
     
     @Override
     public String getSql() {
-        return renderer.render(this);
+        return factory.renderer().render(this);
     }
 
     @Override
@@ -43,18 +40,18 @@ public class FromQuery implements IQuery {
 	}
 	
 	public JoinQuery join(Source source) {
-		return new JoinQuery(renderer, this, source);
+        return factory.join(this, source);
 	}
 	
 	public OrderQuery order(IOrder... orders) {
-		return new OrderQuery(renderer, this, orders);
+        return factory.order(this, orders);
 	}
 	
 	public WhereQuery where(ICondition condition) {
-		return new WhereQuery(renderer, this, condition);
+        return factory.where(this, condition);
 	}
 
     public Query union() {
-        return new Query(renderer, this);
+        return factory.query(this);
     }
 }

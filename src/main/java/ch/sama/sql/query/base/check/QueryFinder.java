@@ -9,6 +9,7 @@ import ch.sama.sql.query.helper.Value;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class QueryFinder {
     public QueryFinder() { }
@@ -46,18 +47,12 @@ public class QueryFinder {
         SelectQuery query = get(src, SelectQuery.class);
         List<Value> values = query.getValues();
 
-        List<T> fields = new ArrayList<T>();
-        for (Value v : values) {
-            Object o = v.getSource();
-
-            if (o != null) {
-                if (dst.isAssignableFrom(o.getClass())) {
-                    fields.add(dst.cast(o));
-                }
-            }
-        }
-
-        return fields;
+        return values.stream()
+                .filter(v -> v.getSource() != null)
+                .map(Value::getSource)
+                .filter(o -> dst.isAssignableFrom(o.getClass()))
+                .map(dst::cast)
+                .collect(Collectors.toList());
     }
 
     public List<Source> getSources(IQuery src) {
@@ -67,13 +62,17 @@ public class QueryFinder {
         List<JoinQuery> joins = getAll(src, JoinQuery.class);
 
         List<Source> tmp = from.getSources();
-        for (Source s : tmp) {
-            sources.add(s);
-        }
 
-        for (JoinQuery j : joins) {
-            sources.add(j.getSource());
-        }
+        sources.addAll(
+                tmp.stream()
+                        .collect(Collectors.toList())
+        );
+
+        sources.addAll(
+                joins.stream()
+                        .map(JoinQuery::getSource)
+                        .collect(Collectors.toList())
+        );
 
         return sources;
     }
@@ -86,26 +85,26 @@ public class QueryFinder {
         List<JoinQuery> joins = getAll(src, JoinQuery.class);
 
         List<Source> tmp = from.getSources();
-        for (Source s : tmp) {
-            Object o = s.getSource();
 
-            if (o != null) {
-                if (dst.isAssignableFrom(o.getClass())) {
-                    sources.add(dst.cast(o));
-                }
-            }
-        }
+        sources.addAll(
+                tmp.stream()
+                        .filter(s -> s.getSource() != null)
+                        .map(Source::getSource)
+                        .filter(o -> dst.isAssignableFrom(o.getClass()))
+                        .map(dst::cast)
+                        .collect(Collectors.toList())
+        );
 
-        for (JoinQuery j : joins) {
-            Source s = j.getSource();
-            Object o = s.getSource();
-
-            if (o != null) {
-                if (dst.isAssignableFrom(o.getClass())) {
-                    sources.add(dst.cast(o));
-                }
-            }
-        }
+        sources.addAll(
+                joins.stream()
+                        .filter(j -> j.getSource() != null)
+                        .map(JoinQuery::getSource)
+                        .filter(s -> s.getSource() != null)
+                        .map(Source::getSource)
+                        .filter(o -> dst.isAssignableFrom(o.getClass()))
+                        .map(dst::cast)
+                        .collect(Collectors.toList())
+        );
 
         return sources;
     }

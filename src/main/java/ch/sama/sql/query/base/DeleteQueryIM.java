@@ -4,12 +4,12 @@ import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.helper.condition.ICondition;
 
 public class DeleteQueryIM implements IQuery {
-    private IQueryRenderer renderer;
+    private IQueryFactory factory;
 	private DeleteQuery parent;
     private Table table;
 
-    public DeleteQueryIM(IQueryRenderer renderer, DeleteQuery parent, Table table) {
-        this.renderer = renderer;
+    public DeleteQueryIM(IQueryFactory factory, DeleteQuery parent, Table table) {
+        this.factory = factory;
         this.parent = parent;
         this.table = table;
     }
@@ -21,7 +21,7 @@ public class DeleteQueryIM implements IQuery {
 
     @Override
     public String getSql() {
-        return renderer.render(this);
+        return factory.renderer().render(this);
     }
 
     @Override
@@ -34,6 +34,6 @@ public class DeleteQueryIM implements IQuery {
     }
 	
 	public DeleteQueryFinal where(ICondition condition) {
-		return new DeleteQueryFinal(renderer, this, condition);
+        return factory.deleteWhere(this, condition);
 	}
 }

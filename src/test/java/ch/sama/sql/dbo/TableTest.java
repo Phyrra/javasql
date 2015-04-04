@@ -1,9 +1,8 @@
 package ch.sama.sql.dbo;
 
-import ch.sama.sql.query.base.IQueryFactory;
-import ch.sama.sql.query.base.IQueryRenderer;
 import ch.sama.sql.query.exception.IllegalIdentifierException;
-import ch.sama.sql.tsql.dialect.TSqlQueryFactory;
+import ch.sama.sql.dialect.tsql.TSqlQueryBuilder;
+import ch.sama.sql.dialect.tsql.TSqlQueryRenderer;
 import org.junit.Test;
 
 import java.util.List;
@@ -11,17 +10,17 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 public class TableTest {
-    private static final IQueryFactory fac = new TSqlQueryFactory();
-    private static final IQueryRenderer renderer = fac.renderer();
+    private static final TSqlQueryBuilder sql = new TSqlQueryBuilder();
+    private static final TSqlQueryRenderer renderer = sql.renderer();
 
     @Test
 	public void nameOnly() {
-		assertEquals("[NAME]", new Table("NAME").getString(renderer));
+		assertEquals("[NAME]", renderer.render(new Table("NAME")));
 	}
 	
 	@Test
 	public void withSchema() {
-		assertEquals("[dbo].[NAME]", new Table("dbo", "NAME").getString(renderer));
+		assertEquals("[dbo].[NAME]", renderer.render(new Table("dbo", "NAME")));
 	}
 	
 	@Test (expected = IllegalIdentifierException.class)

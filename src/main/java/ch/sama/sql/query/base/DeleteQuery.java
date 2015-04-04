@@ -3,11 +3,11 @@ package ch.sama.sql.query.base;
 import ch.sama.sql.dbo.Table;
 
 public class DeleteQuery implements IQuery {
-    private IQueryRenderer renderer;
+    private IQueryFactory factory;
 	private IQuery parent;
 
-    public DeleteQuery(IQueryRenderer renderer, IQuery parent) {
-        this.renderer = renderer;
+    public DeleteQuery(IQueryFactory factory, IQuery parent) {
+        this.factory = factory;
         this.parent = parent;
     }
 
@@ -18,7 +18,7 @@ public class DeleteQuery implements IQuery {
 
     @Override
     public String getSql() {
-        return renderer.render(this);
+        return factory.renderer().render(this);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class DeleteQuery implements IQuery {
     }
 
 	public DeleteQueryIM from(Table table) {
-		return new DeleteQueryIM(renderer, this, table);
+        return factory.deleteFrom(this, table);
 	}
     
     public DeleteQueryIM from(String table) {

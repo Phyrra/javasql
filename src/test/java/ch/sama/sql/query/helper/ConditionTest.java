@@ -1,10 +1,9 @@
 package ch.sama.sql.query.helper;
 
-import ch.sama.sql.query.base.IQueryFactory;
-import ch.sama.sql.query.base.IValueFactory;
 import ch.sama.sql.query.helper.condition.ICondition;
-import ch.sama.sql.query.helper.condition.IConditionRenderer;
-import ch.sama.sql.tsql.dialect.TSqlQueryFactory;
+import ch.sama.sql.dialect.tsql.TSqlConditionRenderer;
+import ch.sama.sql.dialect.tsql.TSqlQueryBuilder;
+import ch.sama.sql.dialect.tsql.TSqlValueFactory;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -13,9 +12,9 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 public class ConditionTest {
-    private static final IQueryFactory fac = new TSqlQueryFactory();
-    private static final IValueFactory value = fac.value();
-    private static final IConditionRenderer condition = fac.condition();
+    private static final TSqlQueryBuilder sql = new TSqlQueryBuilder();
+    private static final TSqlValueFactory value = sql.value();
+    private static final TSqlConditionRenderer condition = sql.condition();
 	
 	@Test
 	public void eq() {
@@ -109,13 +108,13 @@ public class ConditionTest {
 
     @Test
     public void exists() {
-        ICondition c = Condition.exists(fac.query().select(value.numeric(1)));
+        ICondition c = Condition.exists(sql.query().select(value.numeric(1)));
         assertEquals("EXISTS (\nSELECT 1\n)", c.render(condition));
     }
 
     @Test
     public void inQuery() {
-        ICondition c = Condition.in(value.numeric(1), fac.query().select(value.numeric(1)));
+        ICondition c = Condition.in(value.numeric(1), sql.query().select(value.numeric(1)));
         assertEquals("1 IN (\nSELECT 1\n)", c.render(condition));
     }
     

@@ -3,20 +3,20 @@ package ch.sama.sql.query.base;
 import ch.sama.sql.query.helper.order.IOrder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class OrderQuery implements IQuery {
-    private IQueryRenderer renderer;
+    private IQueryFactory factory;
 	private IQuery parent;
 	private List<IOrder> orders;
 
-    public OrderQuery(IQueryRenderer renderer, IQuery parent, IOrder... orders) {
-        this.renderer = renderer;
+    public OrderQuery(IQueryFactory factory, IQuery parent, IOrder[] orders) {
+        this.factory = factory;
         this.parent = parent;
 
-        this.orders = new ArrayList<IOrder>();
-        Collections.addAll(this.orders, orders);
+        this.orders = Arrays.asList(orders);
     }
     
     @Override
@@ -26,7 +26,7 @@ public class OrderQuery implements IQuery {
 
     @Override
     public String getSql() {
-        return renderer.render(this);
+        return factory.renderer().render(this);
     }
 
     @Override

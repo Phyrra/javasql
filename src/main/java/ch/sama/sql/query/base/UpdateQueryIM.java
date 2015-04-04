@@ -5,13 +5,13 @@ import ch.sama.sql.query.helper.Value;
 import ch.sama.sql.query.helper.condition.ICondition;
 
 public class UpdateQueryIM implements IQuery {
-    private IQueryRenderer renderer;
+    private IQueryFactory factory;
 	private IQuery parent;
     private Field field;
     private Value value;
 
-    public UpdateQueryIM(IQueryRenderer renderer, IQuery parent, Field field, Value value) {
-        this.renderer = renderer;
+    public UpdateQueryIM(IQueryFactory factory, IQuery parent, Field field, Value value) {
+        this.factory = factory;
         this.parent = parent;
         this.field = field;
         this.value = value;
@@ -24,7 +24,7 @@ public class UpdateQueryIM implements IQuery {
 
     @Override
     public String getSql() {
-        return renderer.render(this);
+        return factory.renderer().render(this);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class UpdateQueryIM implements IQuery {
     }
 	
 	public UpdateQueryIM set(Field field, Value value) {
-		return new UpdateQueryIM(renderer, this, field, value);
+        return factory.updateField(this, field, value);
 	}
     
     public UpdateQueryIM set(String field, Value value) {
@@ -49,6 +49,6 @@ public class UpdateQueryIM implements IQuery {
     }
     
     public UpdateQueryFinal where(ICondition condition) {
-        return new UpdateQueryFinal(renderer, this, condition);
+        return factory.updateWhere(this, condition);
     }
 }

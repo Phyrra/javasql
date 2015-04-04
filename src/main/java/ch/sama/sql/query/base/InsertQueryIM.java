@@ -4,12 +4,12 @@ import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
 
 public class InsertQueryIM implements IQuery {
-    private IQueryRenderer renderer;
+    private IQueryFactory factory;
 	private InsertQuery parent;
     private Table table;
 
-    public InsertQueryIM(IQueryRenderer renderer, InsertQuery parent, Table table) {
-        this.renderer = renderer;
+    public InsertQueryIM(IQueryFactory factory, InsertQuery parent, Table table) {
+        this.factory = factory;
         this.parent = parent;
         this.table = table;
     }
@@ -21,7 +21,7 @@ public class InsertQueryIM implements IQuery {
 
     @Override
     public String getSql() {
-        return renderer.render(this);
+        return factory.renderer().render(this);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class InsertQueryIM implements IQuery {
     }
 	
 	public InsertQueryFinal columns(Field... fields) {
-		return new InsertQueryFinal(renderer, this, fields);
+        return factory.insertColumns(this, fields);
 	}
     
     public InsertQueryFinal columns(String... fields) {

@@ -1,8 +1,7 @@
 package ch.sama.sql.query.base.check;
 
 import org.junit.Test;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class IdentifierTest {
     @Test

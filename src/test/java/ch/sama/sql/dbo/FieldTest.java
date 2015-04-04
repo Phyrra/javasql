@@ -1,29 +1,28 @@
 package ch.sama.sql.dbo;
 
-import ch.sama.sql.query.base.IQueryFactory;
-import ch.sama.sql.query.base.IQueryRenderer;
 import ch.sama.sql.query.exception.IllegalIdentifierException;
-import ch.sama.sql.tsql.dialect.TSqlQueryFactory;
+import ch.sama.sql.dialect.tsql.TSqlQueryBuilder;
+import ch.sama.sql.dialect.tsql.TSqlQueryRenderer;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 public class FieldTest {
-    private static final IQueryFactory fac = new TSqlQueryFactory();
-    private static final IQueryRenderer renderer = fac.renderer();
+    private static final TSqlQueryBuilder sql = new TSqlQueryBuilder();
+    private static final TSqlQueryRenderer renderer = sql.renderer();
 
 	public void nameOnly() {
-		assertEquals("[FIELD]", new Field("FIELD").getString(renderer));
+		assertEquals("[FIELD]", renderer.render(new Field("FIELD")));
 	}
 	
 	@Test
 	public void withTableName() {
-		assertEquals("[TABLE].[FIELD]", new Field("TABLE", "FIELD").getString(renderer));
+		assertEquals("[TABLE].[FIELD]", renderer.render(new Field("TABLE", "FIELD")));
 	}
 
     @Test
     public void withTable() {
-        assertEquals("[TABLE].[FIELD]", new Field(new Table("TABLE"), "FIELD").getString(renderer));
+        assertEquals("[TABLE].[FIELD]", renderer.render(new Field(new Table("TABLE"), "FIELD")));
     }
 	
 	@Test (expected = IllegalIdentifierException.class)

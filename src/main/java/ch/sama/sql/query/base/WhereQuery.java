@@ -4,12 +4,12 @@ import ch.sama.sql.query.helper.condition.ICondition;
 import ch.sama.sql.query.helper.order.IOrder;
 
 public class WhereQuery implements IQuery {
-    private IQueryRenderer renderer;
+    private IQueryFactory factory;
 	private IQuery parent;
 	private ICondition condition;
 
-    public WhereQuery(IQueryRenderer renderer, IQuery parent, ICondition condition) {
-        this.renderer = renderer;
+    public WhereQuery(IQueryFactory factory, IQuery parent, ICondition condition) {
+        this.factory = factory;
         this.parent = parent;
         this.condition = condition;
     }
@@ -21,7 +21,7 @@ public class WhereQuery implements IQuery {
 
     @Override
     public String getSql() {
-        return renderer.render(this);
+        return factory.renderer().render(this);
     }
 
     @Override
@@ -35,10 +35,10 @@ public class WhereQuery implements IQuery {
 	}
 	
 	public OrderQuery order(IOrder... order) {
-		return new OrderQuery(renderer, this, order);
+        return factory.order(this, order);
 	}
 
     public Query union() {
-        return new Query(renderer, this);
+        return factory.query(this);
     }
 }

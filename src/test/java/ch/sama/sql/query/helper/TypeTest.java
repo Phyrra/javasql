@@ -2,7 +2,7 @@ package ch.sama.sql.query.helper;
 
 import ch.sama.sql.dbo.CustomType;
 import ch.sama.sql.dbo.IType;
-import ch.sama.sql.tsql.type.*;
+import ch.sama.sql.dialect.tsql.type.*;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

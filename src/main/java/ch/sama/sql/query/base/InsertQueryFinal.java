@@ -4,21 +4,18 @@ import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.helper.Value;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 public class InsertQueryFinal implements IQuery {
-    private IQueryRenderer renderer;
+    private IQueryFactory factory;
 	private InsertQueryIM parent;
     private List<Field> fields;
 
-    public InsertQueryFinal(IQueryRenderer renderer, InsertQueryIM parent, Field... fields) {
-        this.renderer = renderer;
+    public InsertQueryFinal(IQueryFactory factory, InsertQueryIM parent, Field[] fields) {
+        this.factory = factory;
         this.parent = parent;
-
-        this.fields = new ArrayList<Field>();
-        Collections.addAll(this.fields, fields);
+        this.fields = Arrays.asList(fields);
     }
 
     @Override
@@ -28,7 +25,7 @@ public class InsertQueryFinal implements IQuery {
 
     @Override
     public String getSql() {
-        return renderer.render(this);
+        return factory.renderer().render(this);
     }
 
     @Override
@@ -45,6 +42,6 @@ public class InsertQueryFinal implements IQuery {
     }
     
     public SelectQuery select(Value... values) {
-        return new SelectQuery(renderer, this, values);
+        return factory.select(this, values);
     }
 }
