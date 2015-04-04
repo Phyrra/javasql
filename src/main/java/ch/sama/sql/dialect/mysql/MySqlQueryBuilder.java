@@ -1,5 +1,6 @@
 package ch.sama.sql.dialect.mysql;
 
+import ch.sama.sql.dialect.mysql.query.MySqlQuery;
 import ch.sama.sql.query.base.IQueryBuilder;
 import ch.sama.sql.query.base.Query;
 
@@ -42,7 +43,7 @@ public class MySqlQueryBuilder implements IQueryBuilder {
     }
 
     @Override
-    public Query query() {
+    public MySqlQuery query() {
         return factory.query();
     }
 }

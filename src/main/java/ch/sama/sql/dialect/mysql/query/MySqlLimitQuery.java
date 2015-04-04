@@ -36,4 +36,12 @@ public class MySqlLimitQuery implements IQuery {
         this.parent = query;
         return query;
     }
+
+    public int getStart() {
+        return start;
+    }
+
+    public int getStop() {
+        return stop;
+    }
 }

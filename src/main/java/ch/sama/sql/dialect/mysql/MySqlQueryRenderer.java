@@ -34,6 +34,15 @@ public class MySqlQueryRenderer extends QueryRenderer {
     }
 
     public String render(MySqlLimitQuery query) {
-        return null;
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(query.getParent().getSql());
+
+        builder.append("\nLIMIT ");
+        builder.append(query.getStart());
+        builder.append(", ");
+        builder.append(query.getStop());
+
+        return builder.toString();
     }
 }
