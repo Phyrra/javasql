@@ -1,6 +1,6 @@
 package ch.sama.sql.dialect.tsql.type;
 
-import ch.sama.sql.dbo.CustomType;
+import ch.sama.sql.dbo.GenericType;
 import ch.sama.sql.dbo.IType;
 
 import java.util.regex.Matcher;
@@ -24,7 +24,7 @@ public class TYPE {
     public static final NVarcharType NVARCHAR_TYPE = new NVarcharType();
     public static final NVarcharType NVARCHAR_MAX_TYPE = new NVarcharType(-1);
     public static final TextType TEXT_TYPE = new TextType();
-    public static final CustomType NO_TYPE = new CustomType("none");
+    public static final GenericType NO_TYPE = new GenericType("none");
 
     public static CharType CHAR_TYPE(int max) {
         return new CharType(max);
@@ -38,8 +38,8 @@ public class TYPE {
         return new NVarcharType(max);
     }
     
-    public static CustomType CUSTOM_TYPE(String name) {
-        return new CustomType(name);
+    public static GenericType CUSTOM_TYPE(String name) {
+        return new GenericType(name);
     }
     
     public static IType fromString(String type) {

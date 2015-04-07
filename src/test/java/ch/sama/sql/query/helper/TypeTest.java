@@ -1,6 +1,6 @@
 package ch.sama.sql.query.helper;
 
-import ch.sama.sql.dbo.CustomType;
+import ch.sama.sql.dbo.GenericType;
 import ch.sama.sql.dbo.IType;
 import ch.sama.sql.dialect.tsql.type.*;
 import org.junit.Test;
@@ -219,9 +219,9 @@ public class TypeTest {
     public void noType() {
         IType type = TYPE.fromString("none");
         
-        assertEquals(CustomType.class, type.getClass());
+        assertEquals(GenericType.class, type.getClass());
         
-        CustomType cType = (CustomType) type;
+        GenericType cType = (GenericType) type;
         
         assertEquals("none", cType.getName());
     }

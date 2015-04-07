@@ -15,10 +15,6 @@ public class MySqlWhereQuery extends WhereQuery {
         this.factory = factory;
     }
 
-    public MySqlLimitQuery limit(int start, int stop) {
-        return factory.limit(this, start, stop);
-    }
-
     @Override
     public MySqlQuery union() {
         return factory.query(this);
@@ -27,5 +23,13 @@ public class MySqlWhereQuery extends WhereQuery {
     @Override
     public MySqlOrderQuery order(IOrder... o) {
         return factory.order(this, o);
+    }
+
+    public MySqlLimitQuery limit(int limit) {
+        return factory.limit(this, limit);
+    }
+
+    public MySqlLimitQuery limit(int start, int stop) {
+        return factory.limit(this, start, stop);
     }
 }

@@ -35,4 +35,12 @@ public class MySqlJoinQueryFinal extends JoinQueryFinal {
     public MySqlQuery union() {
         return factory.query(this);
     }
+
+    public MySqlLimitQuery limit(int limit) {
+        return factory.limit(this, limit);
+    }
+
+    public MySqlLimitQuery limit(int start, int stop) {
+        return factory.limit(this, start, stop);
+    }
 }

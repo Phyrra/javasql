@@ -1,10 +1,6 @@
 package ch.sama.sql.dialect.mysql;
 
 import ch.sama.sql.dialect.mysql.query.*;
-import ch.sama.sql.dialect.tsql.TSqlQueryRenderer;
-import ch.sama.sql.dialect.tsql.query.TSqlCteQuery;
-import ch.sama.sql.dialect.tsql.query.TSqlQuery;
-import ch.sama.sql.dialect.tsql.query.TSqlSelectQuery;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.base.JoinQuery;
 import ch.sama.sql.query.helper.Source;
@@ -63,5 +59,9 @@ public class MySqlQueryFactory extends QueryFactory {
 
     public MySqlLimitQuery limit(IQuery parent, int start, int stop) {
         return new MySqlLimitQuery(this, parent, start, stop);
+    }
+
+    public MySqlLimitQuery limit(IQuery parent, int limit) {
+        return new MySqlLimitQuery(this, parent, limit);
     }
 }

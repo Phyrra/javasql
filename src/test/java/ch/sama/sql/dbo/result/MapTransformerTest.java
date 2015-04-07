@@ -1,25 +1,24 @@
 package ch.sama.sql.dbo.result;
 
 import ch.sama.sql.dbo.connection.QueryExecutor;
+import ch.sama.sql.dialect.sqlite.SqLiteQueryBuilder;
+import ch.sama.sql.dialect.sqlite.SqLiteValueFactory;
+import ch.sama.sql.dialect.sqlite.connection.SQLiteConnection;
 import ch.sama.sql.query.helper.Value;
-import ch.sama.sql.dialect.tsql.TSqlQueryBuilder;
-import ch.sama.sql.dialect.tsql.TSqlValueFactory;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 public class MapTransformerTest {
-    private static final TSqlQueryBuilder sql = new TSqlQueryBuilder();
-    private static final TSqlValueFactory value = sql.value();
+    private static final SqLiteQueryBuilder sql = new SqLiteQueryBuilder();
+    private static final SqLiteValueFactory value = sql.value();
 
     private QueryExecutor<MapResultList> executor;
 
     @Before
     public void loadExecutor() {
-        // Does not the TSqlQueryFactory I know.. comparable enough though
-
-        SQLiteConnection connection = new SQLiteConnection(":memory:");
+        SQLiteConnection connection = new SQLiteConnection();
         executor = new QueryExecutor<MapResultList>(connection, new MapTransformer());
     }
 

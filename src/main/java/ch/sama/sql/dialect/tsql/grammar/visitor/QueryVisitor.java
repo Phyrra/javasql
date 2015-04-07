@@ -2,10 +2,10 @@ package ch.sama.sql.dialect.tsql.grammar.visitor;
 
 import ch.sama.sql.dialect.tsql.TSqlQueryBuilder;
 import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
-import ch.sama.sql.dialect.tsql.TSqlQueryRenderer;
 import ch.sama.sql.dialect.tsql.grammar.antlr.SqlBaseVisitor;
 import ch.sama.sql.dialect.tsql.grammar.antlr.SqlParser;
-import ch.sama.sql.query.base.*;
+import ch.sama.sql.query.base.IQuery;
+import ch.sama.sql.query.base.JoinQuery;
 import ch.sama.sql.query.helper.Source;
 import ch.sama.sql.query.helper.Value;
 import ch.sama.sql.query.helper.condition.ICondition;
@@ -15,7 +15,6 @@ import java.util.List;
 
 public class QueryVisitor extends SqlBaseVisitor<IQuery> {
     private TSqlQueryBuilder builder;
-    private TSqlQueryRenderer renderer;
     private TSqlQueryFactory factory;
 
     private ValueVisitor valueVisitor;
@@ -28,7 +27,6 @@ public class QueryVisitor extends SqlBaseVisitor<IQuery> {
 
     public QueryVisitor(TSqlQueryBuilder builder) {
         this.builder = builder;
-        this.renderer = builder.renderer();
         this.factory = builder.factory();
 
         this.valueVisitor = new ValueVisitor(builder);

@@ -4,14 +4,14 @@ import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.ISchema;
 import ch.sama.sql.dbo.IType;
 import ch.sama.sql.dbo.Table;
-import ch.sama.sql.query.base.IQueryFactory;
+import ch.sama.sql.query.base.IQueryBuilder;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class ClassGenerator<T extends IQueryFactory> {
+public class ClassGenerator<T extends IQueryBuilder> {
     private ISchema schema;
     private Class<T> type;
 
@@ -25,23 +25,6 @@ public class ClassGenerator<T extends IQueryFactory> {
     }
 
     public void generate(String srcFolder, String pkg, ITableFilter filter) throws IOException {
-        BufferedWriter type = createClassFile(srcFolder, pkg, "GenericType");
-
-        type.write("package " + pkg + ";\n\n");
-        type.write("import ch.sama.sql.dbo.IType;\n\n");
-        type.write("public class GenericType implements IType {\n");
-        type.write("\tprivate String type;\n\n");
-        type.write("\tpublic GenericType(String type) {\n");
-        type.write("\t\tthis.type = type;\n");
-        type.write("\t}\n\n");
-        type.write("\t@Override\n");
-        type.write("\tpublic String getString() {\n");
-        type.write("\t\treturn type;\n");
-        type.write("\t}\n");
-        type.write("}");
-
-        type.close();
-
         BufferedWriter tables = createClassFile(srcFolder, pkg, "Tables");
 
         tables.write("package " + pkg + ";\n\n");
@@ -98,7 +81,7 @@ public class ClassGenerator<T extends IQueryFactory> {
         writer.write("import java.util.List;\n");
         writer.write("import ch.sama.sql.dbo.Table;\n");
         writer.write("import ch.sama.sql.dbo.Field;\n");
-        writer.write("import " + pkg + ".GenericType;\n\n");
+        writer.write("import ch.sama.sql.dbo.GenericType;\n\n");
         writer.write("public class " + tableClassName + " extends Table {\n");
         writer.write("\tpublic " + tableClassName + "(String schema, String table) {\n");
         writer.write("\t\tsuper(schema, table);\n");
@@ -161,7 +144,6 @@ public class ClassGenerator<T extends IQueryFactory> {
         writer.write("package " + sPkg + ";\n\n");
         writer.write("import " + pkg + ".Tables;\n");
         writer.write("import ch.sama.sql.dbo.Table;\n");
-        writer.write("import ch.sama.sql.query.base.IQueryFactory;\n");
         writer.write("import ch.sama.sql.query.base.IQueryRenderer;\n");
         writer.write("import ch.sama.sql.query.base.IValueFactory;\n");
         writer.write("import ch.sama.sql.query.helper.Source;\n");
@@ -169,12 +151,12 @@ public class ClassGenerator<T extends IQueryFactory> {
         writer.write("import " + type.getName() + ";\n\n");
 
         writer.write("public class " + sourceClassName + " extends Source {\n");
-        writer.write("\tprivate static final IQueryFactory fac = new " + type.getSimpleName() + "();\n");
-        writer.write("\tprivate static final IValueFactory value = fac.value();\n");
-        writer.write("\tprivate static final IQueryRenderer renderer = fac.renderer();\n\n");
+        writer.write("\tprivate static final " + type.getSimpleName() + " builder = new " + type.getSimpleName() + "();\n");
+        writer.write("\tprivate static final IValueFactory value = builder.value();\n");
+        writer.write("\tprivate static final IQueryRenderer renderer = builder.renderer();\n\n");
 
         writer.write("\tpublic " + sourceClassName + "(Table table) {\n");
-        writer.write("\t\tsuper(table, table.getString(renderer));\n");
+        writer.write("\t\tsuper(table, renderer.render(table));\n");
         writer.write("\t}\n\n");
 
         for (Field field : table.getColumns()) {

@@ -10,9 +10,6 @@ import ch.sama.sql.query.exception.UnknownValueException;
 import ch.sama.sql.query.helper.Function;
 import ch.sama.sql.query.helper.Value;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 public abstract class ValueFactory implements IValueFactory {
     private IQueryRenderer renderer;
 

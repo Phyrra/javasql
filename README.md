@@ -9,7 +9,7 @@ Currently there is only an implementation of Microsoft's T-SQL available.
 The project is based on [Gradle](https://gradle.org/). Install it and call
 
     gradle jar
-
+    
 ## Usage ##
 
 To use the library copy the *.jar file into your library folder. When using gradle, use
@@ -20,15 +20,28 @@ To use the library copy the *.jar file into your library folder. When using grad
 
 If not, use your IDE of choice to bring the *.jar into your build path.
 
-Alternatively, simply check out the entirety of the source code into your project.
+### Dependencies ###
+
+The core of the library (generation of SQL) does not depend on anything but standard java.
+
+You may use any class that implements the IConnection interface, or generate your own DB query functions, using only the generated SQL strings.
+
+There are no data base drivers shipped with this library, to use the DBConnection class, you need to provide a driver matching your database.
+
+    dependencies {
+        compile group: 'net.sourceforge.jtds', name: 'jtds', version: '1.3.1' // Microsoft SQL Server (TSql)
+        compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.6' // MySql
+        compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.8.7' // SQLite
+        ..
+    }
 
 ## QuickStart ##
 
-To get started, create a query factory of your choice. From this the value- and source factory can be derived.
+To get started, create a query builder of your choice. From this the value- and source factory can be derived.
 
-    IQueryFactory fac = new TSqlQueryFactory();
-    IValueFactory value = fac.value();
-    ISourceFactory source = fac.source();
+    TSqlQueryBuilder builder = new TSqlQueryBuilder();
+    TSqlValueFactory value = builder.value();
+    TSqlSourceFactory source = builder.source();
 
 It's all SQL from there..
 
@@ -51,13 +64,13 @@ There is an interface for the IQueryExecutor but it is not required.
 
 There is an (experimental) possibility to create classes from a database connection (or from an SQL schema file).
 
-    JtdsConnection connection = new JtdsConnection(link, user, password);
-
-    IQueryExecutor<MapResult> executor = new TSqlExecutor<MapResult>(connection, new MapTransformer());
+    TSqlConnection connection = new TSqlConnection(link, user, password);
+    
+    QueryExecutor<MapResultList> executor = new QueryExecutor<MapResultList>(connection, new MapTransformer());
     ISchema schema = new TSqlSchema(executor, table -> true);
-        
-    new ClassGenerator<TSqlQueryFactory>(schema, TSqlQueryFactory.class)
-        .generate("src/main/java", "ch.sama.project.generated");
+    
+    new ClassGenerator<TSqlQueryBuilder>(schema, TSqlQueryBuilder.class)
+            .generate("src/main/java", "ch.project.generated");
 
 The generated sources can then be used in a query.
 

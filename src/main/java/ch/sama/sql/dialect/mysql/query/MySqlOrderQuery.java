@@ -14,6 +14,10 @@ public class MySqlOrderQuery extends OrderQuery {
         this.factory = factory;
     }
 
+    public MySqlLimitQuery limit(int limit) {
+        return factory.limit(this, limit);
+    }
+
     public MySqlLimitQuery limit(int start, int stop) {
         return factory.limit(this, start, stop);
     }

@@ -16,10 +16,6 @@ public class MySqlFromQuery extends FromQuery {
         this.factory = factory;
     }
 
-    public MySqlLimitQuery limit(int start, int stop) {
-        return factory.limit(this, start, stop);
-    }
-
     @Override
     public MySqlJoinQuery join(Source s) {
         return factory.join(this, s);
@@ -38,5 +34,13 @@ public class MySqlFromQuery extends FromQuery {
     @Override
     public MySqlQuery union() {
         return factory.query(this);
+    }
+
+    public MySqlLimitQuery limit(int limit) {
+        return factory.limit(this, limit);
+    }
+
+    public MySqlLimitQuery limit(int start, int stop) {
+        return factory.limit(this, start, stop);
     }
 }
