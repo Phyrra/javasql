@@ -370,8 +370,10 @@ public class TSqlMerger {
         }
     }
 
-    public static final String NORM_DATE = "^[0-9]{2}\\.[0-9]{2}\\.[0-9]{4}$";
-    public static final String ISO_DATE = "^[0-9]{4}-[0-9]{2}-[0-9]{2}$";
+    public static final String NORM_DATE = "^\\d{1,2}\\.\\d{1,2}\\.\\d{4}$";
+    public static final String NORM_DATE_TIME = "^\\d{1,2}\\.\\d{1,2}\\.\\d{4}\\s\\d{2}:\\d{2}(:\\d{2})?$";
+    public static final String ISO_DATE = "^\\d{4}-\\d{2}-\\d{2}$";
+    public static final String ISO_DATE_TIME = "^\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}(:\\d{2})?$";
     public static final String INT = "^\\d+$";
     public static final String FLOAT = "^(\\d+\\.\\d*|\\d*\\.\\d+)$";
     
@@ -394,6 +396,18 @@ public class TSqlMerger {
     
     public Pair value(Field f, Value v) {
         return new Pair(f, v);
+    }
+
+    private String[] getDateParts(String s) {
+        String[] parts = s.split("\\.");
+
+        for (int i = 0; i < parts.length; ++i) {
+            if (parts[i].length() < 2) {
+                parts[i] = "0" + parts[i];
+            }
+        }
+
+        return parts;
     }
 
     /**
@@ -465,14 +479,31 @@ public class TSqlMerger {
             if (s.matches(NORM_DATE)) {
                 f.setDataType(TYPE.DATETIME_TYPE);
                 
-                String[] parts = s.split("\\.");
+                String[] parts = getDateParts(s);
                 
                 return new Pair(
                         f,
                         value.function(
                                 "CONVERT",
                                 value.type(TYPE.DATETIME_TYPE),
-                                value.string(parts[2] + "-" + parts[1] + "-" + parts[0] + " 00:00:00.000"),
+                                value.string(parts[2] + "-" + parts[1] + "-" + parts[0] + " 00:00:00"),
+                                value.numeric(21)
+                        )
+                );
+            }
+
+            if (s.matches(NORM_DATE_TIME)) {
+                f.setDataType(TYPE.DATETIME_TYPE);
+
+                String[] dt = s.split(" ");
+                String[] parts = getDateParts(dt[0]);
+
+                return new Pair(
+                        f,
+                        value.function(
+                                "CONVERT",
+                                value.type(TYPE.DATETIME_TYPE),
+                                value.string(parts[2] + "-" + parts[1] + "-" + parts[0] + " " + dt[1]),
                                 value.numeric(21)
                         )
                 );
@@ -486,7 +517,21 @@ public class TSqlMerger {
                         value.function(
                                 "CONVERT",
                                 value.type(TYPE.DATETIME_TYPE),
-                                value.string(s + " 00:00:00.000"),
+                                value.string(s + " 00:00:00"),
+                                value.numeric(21)
+                        )
+                );
+            }
+
+            if (s.matches(ISO_DATE_TIME)) {
+                f.setDataType(TYPE.DATETIME_TYPE);
+
+                return new Pair(
+                        f,
+                        value.function(
+                                "CONVERT",
+                                value.type(TYPE.DATETIME_TYPE),
+                                value.string(s),
                                 value.numeric(21)
                         )
                 );

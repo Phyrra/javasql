@@ -231,12 +231,50 @@ public class MergeTest {
 
     @Test
     public void guessNormDateString() {
-        assertEquals(DatetimeType.class, m.value("FIELD", "14.02.2015").getField().getDataType().getClass());
+        TSqlMerger.Pair p = m.value("FIELD", "14.02.2015");
+
+        assertEquals(DatetimeType.class, p.getField().getDataType().getClass());
+        assertEquals("CONVERT(datetime, '2015-02-14 00:00:00', 21)", p.getValue().getValue());
+    }
+
+    @Test
+    public void guessNormDateStringIncomplete() {
+        TSqlMerger.Pair p = m.value("FIELD", "8.4.2015");
+
+        assertEquals(DatetimeType.class, p.getField().getDataType().getClass());
+        assertEquals("CONVERT(datetime, '2015-04-08 00:00:00', 21)", p.getValue().getValue());
+    }
+
+    @Test
+    public void guessNormDateTimeString() {
+        TSqlMerger.Pair p = m.value("FIELD", "08.04.2015 16:32:00");
+
+        assertEquals(DatetimeType.class, p.getField().getDataType().getClass());
+        assertEquals("CONVERT(datetime, '2015-04-08 16:32:00', 21)", p.getValue().getValue());
+    }
+
+    @Test
+    public void guessNormDateTimeStringIncomplete() {
+        TSqlMerger.Pair p = m.value("FIELD", "8.4.2015 16:40:00");
+
+        assertEquals(DatetimeType.class, p.getField().getDataType().getClass());
+        assertEquals("CONVERT(datetime, '2015-04-08 16:40:00', 21)", p.getValue().getValue());
     }
 
     @Test
     public void guessIsoDateString() {
-        assertEquals(DatetimeType.class, m.value("FIELD", "2015-02-14").getField().getDataType().getClass());
+        TSqlMerger.Pair p = m.value("FIELD", "2015-02-14");
+
+        assertEquals(DatetimeType.class, p.getField().getDataType().getClass());
+        assertEquals("CONVERT(datetime, '2015-02-14 00:00:00', 21)", p.getValue().getValue());
+    }
+
+    @Test
+    public void guessIsoDateTimeString() {
+        TSqlMerger.Pair p = m.value("FIELD", "2015-02-14 16:38:00");
+
+        assertEquals(DatetimeType.class, p.getField().getDataType().getClass());
+        assertEquals("CONVERT(datetime, '2015-02-14 16:38:00', 21)", p.getValue().getValue());
     }
 
     @Test
