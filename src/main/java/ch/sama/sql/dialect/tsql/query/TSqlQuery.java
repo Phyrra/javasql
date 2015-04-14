@@ -1,31 +1,31 @@
 package ch.sama.sql.dialect.tsql.query;
 
-import ch.sama.sql.query.helper.Value;
+import ch.sama.sql.dialect.tsql.TSqlQueryRenderer;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.base.Query;
-import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
+import ch.sama.sql.query.helper.Value;
 
 public class TSqlQuery extends Query {
-    private TSqlQueryFactory factory;
+    private TSqlQueryRenderer renderer;
 
-    public TSqlQuery(TSqlQueryFactory factory) {
-        super(factory);
+    public TSqlQuery(TSqlQueryRenderer renderer) {
+        super(renderer);
 
-        this.factory = factory;
+        this.renderer = renderer;
     }
 
-    public TSqlQuery(TSqlQueryFactory factory, IQuery parent) {
-        super(factory, parent);
+    public TSqlQuery(TSqlQueryRenderer renderer, IQuery parent) {
+        super(renderer, parent);
 
-        this.factory = factory;
+        this.renderer = renderer;
     }
 
     @Override
     public TSqlSelectQuery select(Value... v) {
-        return factory.select(this, v);
+        return new TSqlSelectQuery(renderer, this, v);
     }
 
     public TSqlCteQuery with(String alias) {
-        return factory.with(this, alias);
+        return new TSqlCteQuery(renderer, this, alias);
     }
 }

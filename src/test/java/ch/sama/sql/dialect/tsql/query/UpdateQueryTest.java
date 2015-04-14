@@ -4,7 +4,7 @@ import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.Value;
-import ch.sama.sql.dialect.tsql.TSqlQueryBuilder;
+import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
 import ch.sama.sql.dialect.tsql.TSqlSourceFactory;
 import ch.sama.sql.dialect.tsql.TSqlValueFactory;
 import org.junit.Test;
@@ -12,7 +12,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class UpdateQueryTest {
-    private static final TSqlQueryBuilder sql = new TSqlQueryBuilder();
+    private static final TSqlQueryFactory sql = new TSqlQueryFactory();
     private static final TSqlValueFactory value = sql.value();
     private static final TSqlSourceFactory source = sql.source();
     

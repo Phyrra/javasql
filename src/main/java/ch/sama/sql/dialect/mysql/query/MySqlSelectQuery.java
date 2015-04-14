@@ -1,6 +1,6 @@
 package ch.sama.sql.dialect.mysql.query;
 
-import ch.sama.sql.dialect.mysql.MySqlQueryFactory;
+import ch.sama.sql.dialect.mysql.MySqlQueryRenderer;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.base.SelectQuery;
 import ch.sama.sql.query.helper.Source;
@@ -8,26 +8,26 @@ import ch.sama.sql.query.helper.Value;
 import ch.sama.sql.query.helper.condition.ICondition;
 
 public class MySqlSelectQuery extends SelectQuery {
-    private MySqlQueryFactory factory;
+    private MySqlQueryRenderer renderer;
 
-    public MySqlSelectQuery(MySqlQueryFactory factory, IQuery parent, Value[] v) {
-        super(factory, parent, v);
+    public MySqlSelectQuery(MySqlQueryRenderer renderer, IQuery parent, Value[] v) {
+        super(renderer, parent, v);
 
-        this.factory = factory;
+        this.renderer = renderer;
     }
 
     @Override
     public MySqlFromQuery from(Source... s) {
-        return factory.from(this, s);
+        return new MySqlFromQuery(renderer, this, s);
     }
 
     @Override
     public MySqlQuery union() {
-        return factory.query(this);
+        return new MySqlQuery(renderer, this);
     }
 
     @Override
     public MySqlWhereQuery where(ICondition c) {
-        return factory.where(this, c);
+        return new MySqlWhereQuery(renderer, this, c);
     }
 }

@@ -1,7 +1,9 @@
-package ch.sama.sql.dbo;
+package ch.sama.sql.dialect.tsql;
 
+import ch.sama.sql.dbo.Field;
+import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.exception.IllegalIdentifierException;
-import ch.sama.sql.dialect.tsql.TSqlQueryBuilder;
+import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
 import ch.sama.sql.dialect.tsql.TSqlQueryRenderer;
 import org.junit.Test;
 
@@ -10,7 +12,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 public class TableTest {
-    private static final TSqlQueryBuilder sql = new TSqlQueryBuilder();
+    private static final TSqlQueryFactory sql = new TSqlQueryFactory();
     private static final TSqlQueryRenderer renderer = sql.renderer();
 
     @Test

@@ -1,24 +1,24 @@
 package ch.sama.sql.dialect.mysql.query;
 
-import ch.sama.sql.dialect.mysql.MySqlQueryFactory;
+import ch.sama.sql.dialect.mysql.MySqlQueryRenderer;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.base.OrderQuery;
 import ch.sama.sql.query.helper.order.IOrder;
 
 public class MySqlOrderQuery extends OrderQuery {
-    private MySqlQueryFactory factory;
+    private MySqlQueryRenderer renderer;
 
-    public MySqlOrderQuery(MySqlQueryFactory factory, IQuery parent, IOrder[] orders) {
-        super(factory, parent, orders);
+    public MySqlOrderQuery(MySqlQueryRenderer renderer, IQuery parent, IOrder[] orders) {
+        super(renderer, parent, orders);
 
-        this.factory = factory;
+        this.renderer = renderer;
     }
 
     public MySqlLimitQuery limit(int limit) {
-        return factory.limit(this, limit);
+        return new MySqlLimitQuery(renderer, this, limit);
     }
 
     public MySqlLimitQuery limit(int start, int stop) {
-        return factory.limit(this, start, stop);
+        return new MySqlLimitQuery(renderer, this, start, stop);
     }
 }

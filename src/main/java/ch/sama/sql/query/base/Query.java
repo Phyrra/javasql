@@ -4,15 +4,15 @@ import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.helper.Value;
 
 public class Query implements IQuery {
-    private IQueryFactory factory;
+    private IQueryRenderer renderer;
     private IQuery parent;
 
-	public Query(IQueryFactory factory) {
-        this.factory = factory;
+	public Query(IQueryRenderer renderer) {
+        this.renderer = renderer;
     }
 
-    public Query(IQueryFactory factory, IQuery parent) {
-        this.factory = factory;
+    public Query(IQueryRenderer renderer, IQuery parent) {
+        this.renderer = renderer;
         this.parent = parent;
     }
 
@@ -23,7 +23,7 @@ public class Query implements IQuery {
 
     @Override
     public String getSql() {
-        return factory.renderer().render(this);
+        return renderer.render(this);
     }
 
     @Override
@@ -33,19 +33,19 @@ public class Query implements IQuery {
     }
 		
 	public SelectQuery select(Value... v) {
-        return factory.select(this, v);
+        return new SelectQuery(renderer, this, v);
 	}
 
     public InsertQuery insert() {
-        return factory.insert(this);
+        return new InsertQuery(renderer, this);
     }
     
     public DeleteQuery delete() {
-        return factory.delete(this);
+        return new DeleteQuery(renderer, this);
     }
     
     public UpdateQuery update(Table table) {
-        return factory.update(this, table);
+        return new UpdateQuery(renderer, this, table);
     }
 
     public UpdateQuery update(String table) {

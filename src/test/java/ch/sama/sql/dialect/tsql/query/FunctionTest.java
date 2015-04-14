@@ -5,7 +5,7 @@ import ch.sama.sql.query.exception.IllegalIdentifierException;
 import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.Order;
 import ch.sama.sql.dialect.tsql.TSqlFunctionFactory;
-import ch.sama.sql.dialect.tsql.TSqlQueryBuilder;
+import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
 import ch.sama.sql.dialect.tsql.TSqlQueryRenderer;
 import ch.sama.sql.dialect.tsql.TSqlValueFactory;
 import org.junit.Test;
@@ -13,7 +13,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class FunctionTest {
-    private static final TSqlQueryBuilder fac = new TSqlQueryBuilder();
+    private static final TSqlQueryFactory fac = new TSqlQueryFactory();
     private static final TSqlValueFactory value = fac.value();
     private static final TSqlQueryRenderer renderer = fac.renderer();
 	private static final TSqlFunctionFactory function = new TSqlFunctionFactory();

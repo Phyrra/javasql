@@ -2,7 +2,7 @@ package ch.sama.sql.query.helper;
 
 import ch.sama.sql.query.helper.condition.ICondition;
 import ch.sama.sql.dialect.tsql.TSqlConditionRenderer;
-import ch.sama.sql.dialect.tsql.TSqlQueryBuilder;
+import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
 import ch.sama.sql.dialect.tsql.TSqlValueFactory;
 import org.junit.Test;
 
@@ -12,7 +12,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 public class ConditionTest {
-    private static final TSqlQueryBuilder sql = new TSqlQueryBuilder();
+    private static final TSqlQueryFactory sql = new TSqlQueryFactory();
     private static final TSqlValueFactory value = sql.value();
     private static final TSqlConditionRenderer condition = sql.condition();
 	

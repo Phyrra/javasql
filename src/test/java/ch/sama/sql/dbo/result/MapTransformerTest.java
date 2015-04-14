@@ -1,7 +1,7 @@
 package ch.sama.sql.dbo.result;
 
 import ch.sama.sql.dbo.connection.QueryExecutor;
-import ch.sama.sql.dialect.sqlite.SqLiteQueryBuilder;
+import ch.sama.sql.dialect.sqlite.SqLiteQueryFactory;
 import ch.sama.sql.dialect.sqlite.SqLiteValueFactory;
 import ch.sama.sql.dialect.sqlite.connection.SQLiteConnection;
 import ch.sama.sql.query.helper.Value;
@@ -11,7 +11,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class MapTransformerTest {
-    private static final SqLiteQueryBuilder sql = new SqLiteQueryBuilder();
+    private static final SqLiteQueryFactory sql = new SqLiteQueryFactory();
     private static final SqLiteValueFactory value = sql.value();
 
     private QueryExecutor<MapResultList> executor;

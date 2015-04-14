@@ -22,7 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TSqlSchema implements ISchema {
-    private static final TSqlQueryBuilder sql = new TSqlQueryBuilder();
+    private static final TSqlQueryFactory sql = new TSqlQueryFactory();
     private static final TSqlValueFactory value = sql.value();
     private static final TSqlSourceFactory source = sql.source();
     private static final TSqlQueryRenderer renderer = sql.renderer();

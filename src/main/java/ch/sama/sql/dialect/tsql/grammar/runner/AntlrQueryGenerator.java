@@ -1,20 +1,18 @@
 package ch.sama.sql.dialect.tsql.grammar.runner;
 
-import ch.sama.sql.dialect.tsql.TSqlQueryBuilder;
 import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
 import ch.sama.sql.dialect.tsql.grammar.antlr.SqlParser;
 import ch.sama.sql.dialect.tsql.grammar.exception.SqlGrammarException;
 import ch.sama.sql.dialect.tsql.grammar.helper.SqlParserBase;
 import ch.sama.sql.dialect.tsql.grammar.visitor.QueryVisitor;
 import ch.sama.sql.query.base.IQuery;
-import ch.sama.sql.query.base.IQueryFactory;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 
 public class AntlrQueryGenerator extends SqlParserBase {
-    private TSqlQueryBuilder builder;
+    private TSqlQueryFactory builder;
 
     public AntlrQueryGenerator() {
-        this.builder = new TSqlQueryBuilder();
+        this.builder = new TSqlQueryFactory();
     }
 
     public IQuery generate(String pattern) {

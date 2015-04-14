@@ -8,12 +8,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SelectQuery implements IQuery {
-    private IQueryFactory factory;
+    private IQueryRenderer renderer;
 	private IQuery parent;
 	private List<Value> values;
 
-    public SelectQuery(IQueryFactory factory, IQuery parent, Value[] v) {
-        this.factory = factory;
+    public SelectQuery(IQueryRenderer renderer, IQuery parent, Value[] v) {
+        this.renderer = renderer;
         this.parent = parent;
         this.values = Arrays.asList(v);
     }
@@ -25,7 +25,7 @@ public class SelectQuery implements IQuery {
 
     @Override
     public String getSql() {
-        return factory.renderer().render(this);
+        return renderer.render(this);
     }
 
     @Override
@@ -39,14 +39,14 @@ public class SelectQuery implements IQuery {
 	}
 	
 	public FromQuery from(Source... s) {
-        return factory.from(this, s);
+        return new FromQuery(renderer, this, s);
 	}
 
     public Query union() {
-        return factory.query(this);
+        return new Query(renderer, this);
     }
 
     public WhereQuery where(ICondition c) {
-        return factory.where(this, c);
+        return new WhereQuery(renderer, this, c);
     }
 }

@@ -1,8 +1,5 @@
 package ch.sama.sql.csv;
 
-import ch.sama.sql.csv.CSVFormat;
-import ch.sama.sql.csv.CSVReader;
-import ch.sama.sql.csv.CSVSet;
 import org.junit.Test;
 
 import java.io.IOException;

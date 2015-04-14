@@ -4,14 +4,14 @@ import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.ISchema;
 import ch.sama.sql.dbo.IType;
 import ch.sama.sql.dbo.Table;
-import ch.sama.sql.query.base.IQueryBuilder;
+import ch.sama.sql.query.base.IQueryFactory;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class ClassGenerator<T extends IQueryBuilder> {
+public class ClassGenerator<T extends IQueryFactory> {
     private ISchema schema;
     private Class<T> type;
 

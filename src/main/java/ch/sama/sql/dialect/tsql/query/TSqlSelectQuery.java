@@ -1,20 +1,20 @@
 package ch.sama.sql.dialect.tsql.query;
 
-import ch.sama.sql.query.exception.BadParameterException;
-import ch.sama.sql.query.helper.Value;
+import ch.sama.sql.dialect.tsql.TSqlQueryRenderer;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.base.SelectQuery;
-import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
+import ch.sama.sql.query.exception.BadParameterException;
+import ch.sama.sql.query.helper.Value;
 
 public class TSqlSelectQuery extends SelectQuery {
-    private TSqlQueryFactory factory;
+    private TSqlQueryRenderer renderer;
     private int top;
 
-    public TSqlSelectQuery(TSqlQueryFactory factory, IQuery parent, Value[] v) {
-        super(factory, parent, v);
+    public TSqlSelectQuery(TSqlQueryRenderer renderer, IQuery parent, Value[] v) {
+        super(renderer, parent, v);
 
         this.top = -1;
-        this.factory = factory;
+        this.renderer = renderer;
     }
 
     public TSqlSelectQuery top(int n) {
@@ -28,7 +28,7 @@ public class TSqlSelectQuery extends SelectQuery {
 
     @Override
     public String getSql() {
-        return factory.renderer().render(this);
+        return renderer.render(this);
     }
 
     public int getTop() {

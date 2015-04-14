@@ -1,11 +1,12 @@
 package ch.sama.sql.dialect.tsql.grammar.visitor;
 
-import ch.sama.sql.dialect.tsql.TSqlQueryBuilder;
 import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
+import ch.sama.sql.dialect.tsql.TSqlQueryRenderer;
 import ch.sama.sql.dialect.tsql.grammar.antlr.SqlBaseVisitor;
 import ch.sama.sql.dialect.tsql.grammar.antlr.SqlParser;
-import ch.sama.sql.query.base.IQuery;
-import ch.sama.sql.query.base.JoinQuery;
+import ch.sama.sql.dialect.tsql.query.TSqlQuery;
+import ch.sama.sql.dialect.tsql.query.TSqlSelectQuery;
+import ch.sama.sql.query.base.*;
 import ch.sama.sql.query.helper.Source;
 import ch.sama.sql.query.helper.Value;
 import ch.sama.sql.query.helper.condition.ICondition;
@@ -14,8 +15,7 @@ import ch.sama.sql.query.helper.order.IOrder;
 import java.util.List;
 
 public class QueryVisitor extends SqlBaseVisitor<IQuery> {
-    private TSqlQueryBuilder builder;
-    private TSqlQueryFactory factory;
+    private TSqlQueryRenderer renderer;
 
     private ValueVisitor valueVisitor;
     private ValueListVisitor valueListVisitor;
@@ -25,13 +25,12 @@ public class QueryVisitor extends SqlBaseVisitor<IQuery> {
     private ConditionVisitor conditionVisitor;
     private OrderListVisitor orderListVisitor;
 
-    public QueryVisitor(TSqlQueryBuilder builder) {
-        this.builder = builder;
-        this.factory = builder.factory();
+    public QueryVisitor(TSqlQueryFactory factory) {
+        this.renderer = factory.renderer();
 
-        this.valueVisitor = new ValueVisitor(builder);
+        this.valueVisitor = new ValueVisitor(factory.value());
         this.valueListVisitor = new ValueListVisitor(valueVisitor);
-        this.sourceVisitor = new SourceVisitor(builder, this);
+        this.sourceVisitor = new SourceVisitor(factory.source(), this);
         this.sourceListVisitor = new SourceListVisitor(sourceVisitor);
 
         this.conditionVisitor = new ConditionVisitor(valueVisitor);
@@ -89,7 +88,7 @@ public class QueryVisitor extends SqlBaseVisitor<IQuery> {
 
     @Override
     public IQuery visitDataStatement(SqlParser.DataStatementContext ctx) {
-        IQuery base = builder.query();
+        IQuery base = new TSqlQuery(renderer);
 
         IQuery union = visit(ctx.unionStatement());
 
@@ -127,7 +126,7 @@ public class QueryVisitor extends SqlBaseVisitor<IQuery> {
         if (ctx.unionStatement() != null) {
             IQuery union = visit(ctx.unionStatement());
 
-            IQuery query = builder.query();
+            IQuery query = new TSqlQuery(renderer);
             chain(statement, query);
             chain(query, union);
         }
@@ -138,7 +137,9 @@ public class QueryVisitor extends SqlBaseVisitor<IQuery> {
     @Override
     public IQuery visitCteStatement(SqlParser.CteStatementContext ctx) {
         String alias = ctx.sqlIdentifier().Identifier().getText();
-        return builder.query().with(alias).as(visit(ctx.statement()));
+
+        TSqlQuery base = new TSqlQuery(renderer);
+        return base.with(alias).as(visit(ctx.statement()));
     }
 
     @Override
@@ -168,21 +169,21 @@ public class QueryVisitor extends SqlBaseVisitor<IQuery> {
     public IQuery visitSelectStatement(SqlParser.SelectStatementContext ctx) {
         Value[] values = getValueList(ctx.valueList());
 
-        return factory.select(null, values);
+        return new TSqlSelectQuery(renderer, null, values);
     }
 
     @Override
     public IQuery visitFromStatement(SqlParser.FromStatementContext ctx) {
         Source[] sources = getSourceList(ctx.sourceList());
 
-        return factory.from(null, sources);
+        return new FromQuery(renderer, null, sources);
     }
 
     @Override
     public IQuery visitJoinStatement(SqlParser.JoinStatementContext ctx) {
         Source source = getSource(ctx.source());
 
-        JoinQuery query = factory.join(null, source);
+        JoinQuery query = new JoinQuery(renderer, null, source);
 
         ICondition condition = getCondition(ctx.condition());
 
@@ -211,13 +212,13 @@ public class QueryVisitor extends SqlBaseVisitor<IQuery> {
     public IQuery visitWhereStatement(SqlParser.WhereStatementContext ctx) {
         ICondition condition = getCondition(ctx.condition());
 
-        return factory.where(null, condition);
+        return new WhereQuery(renderer, null, condition);
     }
 
     @Override
     public IQuery visitOrderStatement(SqlParser.OrderStatementContext ctx) {
         IOrder[] orders = getOrderList(ctx.orderList());
 
-        return factory.order(null, orders);
+        return new OrderQuery(renderer, null, orders);
     }
 }

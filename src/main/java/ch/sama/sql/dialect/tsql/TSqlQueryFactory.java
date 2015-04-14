@@ -1,14 +1,24 @@
 package ch.sama.sql.dialect.tsql;
 
-import ch.sama.sql.query.helper.Value;
-import ch.sama.sql.query.base.*;
-import ch.sama.sql.query.standard.QueryFactory;
-import ch.sama.sql.dialect.tsql.query.TSqlCteQuery;
+import ch.sama.sql.query.base.IQueryFactory;
 import ch.sama.sql.dialect.tsql.query.TSqlQuery;
-import ch.sama.sql.dialect.tsql.query.TSqlSelectQuery;
 
-public class TSqlQueryFactory extends QueryFactory {
+public class TSqlQueryFactory implements IQueryFactory {
+    private static final TSqlValueFactory value = new TSqlValueFactory();
+    private static final TSqlSourceFactory source = new TSqlSourceFactory();
     private static final TSqlQueryRenderer renderer = new TSqlQueryRenderer();
+    private static final TSqlConditionRenderer condition = new TSqlConditionRenderer();
+    private static final TSqlOrderRenderer order = new TSqlOrderRenderer();
+
+    @Override
+    public TSqlValueFactory value() {
+        return value;
+    }
+
+    @Override
+    public TSqlSourceFactory source() {
+        return source;
+    }
 
     @Override
     public TSqlQueryRenderer renderer() {
@@ -16,21 +26,17 @@ public class TSqlQueryFactory extends QueryFactory {
     }
 
     @Override
+    public TSqlConditionRenderer condition() {
+        return condition;
+    }
+
+    @Override
+    public TSqlOrderRenderer order() {
+        return order;
+    }
+
+    @Override
     public TSqlQuery query() {
-        return new TSqlQuery(this);
-    }
-
-    @Override
-    public TSqlQuery query(IQuery parent) {
-        return new TSqlQuery(this, parent);
-    }
-
-    @Override
-    public TSqlSelectQuery select(IQuery parent, Value[] v) {
-        return new TSqlSelectQuery(this, parent, v);
-    }
-
-    public TSqlCteQuery with(IQuery parent, String name) {
-        return new TSqlCteQuery(this, parent, name);
+        return new TSqlQuery(renderer);
     }
 }

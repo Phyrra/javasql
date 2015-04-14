@@ -32,7 +32,7 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
 
-task generate() {
+task antlrGenerate << {
     description = 'Generates Java sources from ANTLR4 grammars'
 
     def srcFolder = 'src/main/java'
@@ -51,6 +51,10 @@ task generate() {
             }
         }
     }
+}
+
+compileJava {
+    dependsOn antlrGenerate
 }
 
 /*

@@ -5,12 +5,12 @@ import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.helper.Value;
 
 public class UpdateQuery implements IQuery {
-    private IQueryFactory factory;
+    private IQueryRenderer renderer;
 	private IQuery parent;
     private Table table;
 
-    public UpdateQuery(IQueryFactory factory, IQuery parent, Table table) {
-        this.factory = factory;
+    public UpdateQuery(IQueryRenderer renderer, IQuery parent, Table table) {
+        this.renderer = renderer;
         this.parent = parent;
         this.table = table;
     }
@@ -22,7 +22,7 @@ public class UpdateQuery implements IQuery {
 
     @Override
     public String getSql() {
-        return factory.renderer().render(this);
+        return renderer.render(this);
     }
 
     @Override
@@ -36,7 +36,7 @@ public class UpdateQuery implements IQuery {
     }
 	
 	public UpdateQueryIM set(Field field, Value value) {
-        return factory.updateField(this, field, value);
+        return new UpdateQueryIM(renderer, this, field, value);
 	}
     
     public UpdateQueryIM set(String field, Value value) {

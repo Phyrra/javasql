@@ -5,12 +5,12 @@ import ch.sama.sql.query.helper.condition.ICondition;
 import ch.sama.sql.query.helper.order.IOrder;
 
 public class JoinQueryFinal implements IQuery {
-    private IQueryFactory factory;
+    private IQueryRenderer renderer;
 	private JoinQuery parent;
 	private ICondition condition;
 
-	public JoinQueryFinal(IQueryFactory factory, JoinQuery parent, ICondition condition) {
-        this.factory = factory;
+	public JoinQueryFinal(IQueryRenderer renderer, JoinQuery parent, ICondition condition) {
+        this.renderer = renderer;
 		this.parent = parent;
         this.condition = condition;
 	}
@@ -22,7 +22,7 @@ public class JoinQueryFinal implements IQuery {
 
     @Override
     public String getSql() {
-        return factory.renderer().render(this);
+        return renderer.render(this);
     }
 
     @Override
@@ -39,18 +39,18 @@ public class JoinQueryFinal implements IQuery {
 	}
 	
 	public JoinQuery join(Source source) {
-		return factory.join(this, source);
+		return new JoinQuery(renderer, this, source);
 	}
 	
-	public OrderQuery order(IOrder... order) {
-		return factory.order(this, order);
+	public OrderQuery order(IOrder... o) {
+		return new OrderQuery(renderer, this, o);
 	}
 	
 	public WhereQuery where(ICondition condition) {
-		return factory.where(this, condition);
+		return new WhereQuery(renderer, this, condition);
 	}
 
     public Query union() {
-		return factory.query(this);
+		return new Query(renderer, this);
     }
 }

@@ -1,35 +1,35 @@
 package ch.sama.sql.dialect.mysql.query;
 
-import ch.sama.sql.dialect.mysql.MySqlQueryFactory;
+import ch.sama.sql.dialect.mysql.MySqlQueryRenderer;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.base.WhereQuery;
 import ch.sama.sql.query.helper.condition.ICondition;
 import ch.sama.sql.query.helper.order.IOrder;
 
 public class MySqlWhereQuery extends WhereQuery {
-    private MySqlQueryFactory factory;
+    private MySqlQueryRenderer renderer;
 
-    public MySqlWhereQuery(MySqlQueryFactory factory, IQuery parent, ICondition condition) {
-        super(factory, parent, condition);
+    public MySqlWhereQuery(MySqlQueryRenderer renderer, IQuery parent, ICondition condition) {
+        super(renderer, parent, condition);
 
-        this.factory = factory;
+        this.renderer = renderer;
     }
 
     @Override
     public MySqlQuery union() {
-        return factory.query(this);
+        return new MySqlQuery(renderer, this);
     }
 
     @Override
     public MySqlOrderQuery order(IOrder... o) {
-        return factory.order(this, o);
+        return new MySqlOrderQuery(renderer, this, o);
     }
 
     public MySqlLimitQuery limit(int limit) {
-        return factory.limit(this, limit);
+        return new MySqlLimitQuery(renderer, this, limit);
     }
 
     public MySqlLimitQuery limit(int start, int stop) {
-        return factory.limit(this, start, stop);
+        return new MySqlLimitQuery(renderer, this, start, stop);
     }
 }

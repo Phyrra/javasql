@@ -1,20 +1,20 @@
 package ch.sama.sql.dialect.tsql.query;
 
 import ch.sama.sql.dbo.Table;
+import ch.sama.sql.dialect.tsql.TSqlQueryRenderer;
 import ch.sama.sql.query.base.DeleteQuery;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.base.InsertQuery;
 import ch.sama.sql.query.base.UpdateQuery;
 import ch.sama.sql.query.helper.Value;
-import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
 
 public class TSqlCteQueryFinal implements IQuery {
-    private TSqlQueryFactory factory;
+    private TSqlQueryRenderer renderer;
     private TSqlCteQuery parent;
     private IQuery query;
 
-    public TSqlCteQueryFinal(TSqlQueryFactory factory, TSqlCteQuery parent, IQuery query) {
-        this.factory = factory;
+    public TSqlCteQueryFinal(TSqlQueryRenderer renderer, TSqlCteQuery parent, IQuery query) {
+        this.renderer = renderer;
         this.parent = parent;
         this.query = query;
     }
@@ -26,7 +26,7 @@ public class TSqlCteQueryFinal implements IQuery {
 
     @Override
     public String getSql() {
-        return factory.renderer().render(this);
+        return renderer.render(this);
     }
 
     @Override
@@ -43,23 +43,23 @@ public class TSqlCteQueryFinal implements IQuery {
     }
 
     public TSqlCteQuery with(String name) {
-        return factory.with(this, name);
+        return new TSqlCteQuery(renderer, this, name);
     }
 
     public TSqlSelectQuery select(Value... v) {
-        return factory.select(this, v);
+        return new TSqlSelectQuery(renderer, this, v);
     }
 
     public InsertQuery insert() {
-        return factory.insert(this);
+        return new InsertQuery(renderer, this);
     }
 
     public DeleteQuery delete() {
-        return factory.delete(this);
+        return new DeleteQuery(renderer, this);
     }
 
     public UpdateQuery update(Table table) {
-        return factory.update(this, table);
+        return new UpdateQuery(renderer, this, table);
     }
 
     public UpdateQuery update(String table) {

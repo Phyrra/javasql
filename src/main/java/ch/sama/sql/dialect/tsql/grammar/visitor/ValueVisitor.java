@@ -1,15 +1,12 @@
 package ch.sama.sql.dialect.tsql.grammar.visitor;
 
 import ch.sama.sql.dbo.Table;
-import ch.sama.sql.dialect.tsql.TSqlQueryBuilder;
 import ch.sama.sql.dialect.tsql.TSqlValueFactory;
 import ch.sama.sql.dialect.tsql.grammar.antlr.SqlBaseVisitor;
 import ch.sama.sql.dialect.tsql.grammar.antlr.SqlParser;
 import ch.sama.sql.dialect.tsql.grammar.helper.StringGetter;
-import ch.sama.sql.query.base.IQueryFactory;
-import ch.sama.sql.query.base.IValueFactory;
-import ch.sama.sql.query.helper.Value;
 import ch.sama.sql.dialect.tsql.type.TYPE;
+import ch.sama.sql.query.helper.Value;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +15,8 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
     private TSqlValueFactory value;
     private ValueListVisitor listVisitor;
 
-    public ValueVisitor(TSqlQueryBuilder fac) {
-        value = fac.value();
+    public ValueVisitor(TSqlValueFactory value) {
+        this.value = value;
         listVisitor = new ValueListVisitor(this);
     }
 

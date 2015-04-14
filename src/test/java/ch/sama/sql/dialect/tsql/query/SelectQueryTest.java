@@ -1,13 +1,13 @@
 package ch.sama.sql.dialect.tsql.query;
 
-import ch.sama.sql.dialect.tsql.TSqlQueryBuilder;
+import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
 import ch.sama.sql.dialect.tsql.TSqlValueFactory;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class SelectQueryTest {
-    private static final TSqlQueryBuilder sql = new TSqlQueryBuilder();
+    private static final TSqlQueryFactory sql = new TSqlQueryFactory();
     private static final TSqlValueFactory value = sql.value();
 	
 	@Test

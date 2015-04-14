@@ -1,12 +1,9 @@
 package ch.sama.sql.dialect.tsql.grammar.visitor;
 
-import ch.sama.sql.dialect.tsql.TSqlQueryBuilder;
 import ch.sama.sql.dialect.tsql.TSqlSourceFactory;
 import ch.sama.sql.dialect.tsql.grammar.antlr.SqlBaseVisitor;
 import ch.sama.sql.dialect.tsql.grammar.antlr.SqlParser;
 import ch.sama.sql.query.base.IQuery;
-import ch.sama.sql.query.base.IQueryFactory;
-import ch.sama.sql.query.base.ISourceFactory;
 import ch.sama.sql.query.helper.Source;
 
 import java.util.List;
@@ -15,8 +12,8 @@ class SourceVisitor extends SqlBaseVisitor<Source> {
     private TSqlSourceFactory source;
     private QueryVisitor visitor;
 
-    public SourceVisitor(TSqlQueryBuilder fac, QueryVisitor visitor) {
-        this.source = fac.source();
+    public SourceVisitor(TSqlSourceFactory source, QueryVisitor visitor) {
+        this.source = source;
         this.visitor = visitor;
     }
 

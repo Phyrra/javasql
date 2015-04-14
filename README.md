@@ -35,6 +35,17 @@ There are no data base drivers shipped with this library, to use the DBConnectio
         ..
     }
 
+The grammar depends on Antlr4. Add these lines to your built script:
+
+    configurations {
+        antlr4
+    }
+
+    dependencies {
+        compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.3'
+        antlr4 group: 'org.antlr', name: 'antlr4', version: '4.3'
+    }
+
 ## QuickStart ##
 
 To get started, create a query builder of your choice. From this the value- and source factory can be derived.

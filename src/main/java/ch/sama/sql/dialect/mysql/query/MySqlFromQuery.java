@@ -1,6 +1,6 @@
 package ch.sama.sql.dialect.mysql.query;
 
-import ch.sama.sql.dialect.mysql.MySqlQueryFactory;
+import ch.sama.sql.dialect.mysql.MySqlQueryRenderer;
 import ch.sama.sql.query.base.FromQuery;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.helper.Source;
@@ -8,39 +8,39 @@ import ch.sama.sql.query.helper.condition.ICondition;
 import ch.sama.sql.query.helper.order.IOrder;
 
 public class MySqlFromQuery extends FromQuery {
-    private MySqlQueryFactory factory;
+    private MySqlQueryRenderer renderer;
 
-    public MySqlFromQuery(MySqlQueryFactory factory, IQuery parent, Source[] sources) {
-        super(factory, parent, sources);
+    public MySqlFromQuery(MySqlQueryRenderer renderer, IQuery parent, Source[] sources) {
+        super(renderer, parent, sources);
 
-        this.factory = factory;
+        this.renderer = renderer;
     }
 
     @Override
     public MySqlJoinQuery join(Source s) {
-        return factory.join(this, s);
+        return new MySqlJoinQuery(renderer, this, s);
     }
 
     @Override
     public MySqlOrderQuery order(IOrder... o) {
-        return factory.order(this, o);
+        return new MySqlOrderQuery(renderer, this, o);
     }
 
     @Override
     public MySqlWhereQuery where(ICondition c) {
-        return factory.where(this, c);
+        return new MySqlWhereQuery(renderer, this, c);
     }
 
     @Override
     public MySqlQuery union() {
-        return factory.query(this);
+        return new MySqlQuery(renderer, this);
     }
 
     public MySqlLimitQuery limit(int limit) {
-        return factory.limit(this, limit);
+        return new MySqlLimitQuery(renderer, this, limit);
     }
 
     public MySqlLimitQuery limit(int start, int stop) {
-        return factory.limit(this, start, stop);
+        return new MySqlLimitQuery(renderer, this, start, stop);
     }
 }

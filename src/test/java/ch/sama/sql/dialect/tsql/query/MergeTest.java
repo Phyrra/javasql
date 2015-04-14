@@ -5,7 +5,7 @@ import ch.sama.sql.csv.CSVSet;
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.query.exception.BadParameterException;
 import ch.sama.sql.dialect.tsql.TSqlMerger;
-import ch.sama.sql.dialect.tsql.TSqlQueryBuilder;
+import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
 import ch.sama.sql.dialect.tsql.TSqlValueFactory;
 import ch.sama.sql.dialect.tsql.type.*;
 import org.junit.Test;
@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 
 public class MergeTest {
     private static final TSqlMerger m = new TSqlMerger();
-    private static final TSqlValueFactory value = new TSqlQueryBuilder().value();
+    private static final TSqlValueFactory value = new TSqlQueryFactory().value();
     
     @Test
     public void oneRowOneValueOneMatchNoOmit() {

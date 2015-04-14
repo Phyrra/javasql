@@ -417,7 +417,7 @@ public class TSqlMerger {
      * @return field-value pair
      */
     public Pair value(String field, Object o) {
-        TSqlValueFactory value = new TSqlQueryBuilder().value();
+        TSqlValueFactory value = new TSqlQueryFactory().value();
         Field f = new Field(field);
         
         if (o == null) {

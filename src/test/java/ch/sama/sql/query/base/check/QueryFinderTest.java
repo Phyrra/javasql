@@ -7,7 +7,7 @@ import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.Function;
 import ch.sama.sql.query.helper.Source;
 import ch.sama.sql.query.helper.Value;
-import ch.sama.sql.dialect.tsql.TSqlQueryBuilder;
+import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
 import ch.sama.sql.dialect.tsql.TSqlSourceFactory;
 import ch.sama.sql.dialect.tsql.TSqlValueFactory;
 import ch.sama.sql.dialect.tsql.query.TSqlCteQuery;
@@ -19,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 
 public class QueryFinderTest {
     private static final QueryFinder finder = new QueryFinder();
-    private static final TSqlQueryBuilder sql = new TSqlQueryBuilder();
+    private static final TSqlQueryFactory sql = new TSqlQueryFactory();
     private static final TSqlSourceFactory source = sql.source();
     private static final TSqlValueFactory value = sql.value();
 

@@ -6,7 +6,7 @@ import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.exception.BadSqlException;
 import ch.sama.sql.query.exception.ObjectNotFoundException;
-import ch.sama.sql.dialect.tsql.TSqlQueryBuilder;
+import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
 import ch.sama.sql.dialect.tsql.TSqlQueryRenderer;
 import ch.sama.sql.dialect.tsql.TSqlSchema;
 import org.junit.Test;
@@ -14,7 +14,7 @@ import org.junit.Test;
 import java.util.List;
 
 public class SchemaTest {
-    private static final TSqlQueryBuilder sql = new TSqlQueryBuilder();
+    private static final TSqlQueryFactory sql = new TSqlQueryFactory();
     private static final TSqlQueryRenderer renderer = sql.renderer();
 
     // Table

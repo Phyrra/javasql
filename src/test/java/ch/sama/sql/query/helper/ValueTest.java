@@ -3,7 +3,7 @@ package ch.sama.sql.query.helper;
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.exception.IllegalIdentifierException;
-import ch.sama.sql.dialect.tsql.TSqlQueryBuilder;
+import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
 import ch.sama.sql.dialect.tsql.TSqlQueryRenderer;
 import ch.sama.sql.dialect.tsql.TSqlValueFactory;
 import ch.sama.sql.dialect.tsql.type.TYPE;
@@ -15,7 +15,7 @@ import java.util.Date;
 import static org.junit.Assert.assertEquals;
 
 public class ValueTest {
-    private static final TSqlQueryBuilder sql = new TSqlQueryBuilder();
+    private static final TSqlQueryFactory sql = new TSqlQueryFactory();
     private static final TSqlQueryRenderer renderer = sql.renderer();
     private static final TSqlValueFactory value = sql.value();
 
