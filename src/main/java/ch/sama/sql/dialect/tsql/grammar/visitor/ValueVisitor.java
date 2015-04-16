@@ -12,11 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 class ValueVisitor extends SqlBaseVisitor<Value> {
-    private TSqlValueFactory value;
+    private TSqlValueFactory valueFactory;
     private ValueListVisitor listVisitor;
 
     public ValueVisitor(TSqlValueFactory value) {
-        this.value = value;
+        this.valueFactory = value;
         listVisitor = new ValueListVisitor(this);
     }
 
@@ -27,7 +27,7 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
 
     @Override
     public Value visitAllFields(SqlParser.AllFieldsContext ctx) {
-        return value.value(Value.VALUE.ALL);
+        return valueFactory.value(Value.VALUE.ALL);
     }
 
     @Override
@@ -35,9 +35,9 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
         List<SqlParser.SqlIdentifierContext> identifiers = ctx.table().sqlIdentifier();
         
         if (identifiers.size() > 1) {
-            return value.table(new Table(identifiers.get(0).Identifier().getText(), identifiers.get(1).Identifier().getText()));
+            return valueFactory.table(new Table(identifiers.get(0).Identifier().getText(), identifiers.get(1).Identifier().getText()));
         } else {
-            return value.table(new Table(identifiers.get(0).Identifier().getText()));
+            return valueFactory.table(new Table(identifiers.get(0).Identifier().getText()));
         }
     }
     
@@ -53,17 +53,17 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
     
     @Override
     public Value visitIntType(SqlParser.IntTypeContext ctx) {
-        return value.type(TYPE.INT_TYPE);
+        return valueFactory.type(TYPE.INT_TYPE);
     }
     
     @Override
     public Value visitFloatType(SqlParser.FloatTypeContext ctx) {
-        return value.type(TYPE.FLOAT_TYPE);
+        return valueFactory.type(TYPE.FLOAT_TYPE);
     }
     
     @Override
     public Value visitDatetimeType(SqlParser.DatetimeTypeContext ctx) {
-        return value.type(TYPE.DATETIME_TYPE);
+        return valueFactory.type(TYPE.DATETIME_TYPE);
     }
     
     @Override
@@ -75,17 +75,17 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
     public Value visitVarcharTypeIntMax(SqlParser.VarcharTypeIntMaxContext ctx) {
         int max = Integer.parseInt(ctx.IntegerConstant().getText());
         
-        return value.type(TYPE.VARCHAR_TYPE(max));
+        return valueFactory.type(TYPE.VARCHAR_TYPE(max));
     }
     
     @Override
     public Value visitVarcharTypeMax(SqlParser.VarcharTypeMaxContext ctx) {
-        return value.type(TYPE.VARCHAR_MAX_TYPE);
+        return valueFactory.type(TYPE.VARCHAR_MAX_TYPE);
     }
     
     @Override
     public Value visitVarcharTypeNoMax(SqlParser.VarcharTypeNoMaxContext ctx) {
-        return value.type(TYPE.VARCHAR_TYPE);
+        return valueFactory.type(TYPE.VARCHAR_TYPE);
     }
 
     @Override
@@ -101,7 +101,7 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
             Value lhs = visit(ctx.additiveExpression());
             String op = ctx.additiveOperator().getText();
 
-            return value.combine(op, lhs, rhs);
+            return valueFactory.combine(op, lhs, rhs);
         }
 
         return rhs;
@@ -115,7 +115,7 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
             Value lhs = visit(ctx.multiplicativeExpression());
             String op = ctx.multiplicativeOperator().getText();
 
-            return value.combine(op, lhs, rhs);
+            return valueFactory.combine(op, lhs, rhs);
         }
 
         return rhs;
@@ -129,7 +129,7 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
             String op = ctx.negateOperator().getText();
 
             // TODO: Some sort of "combine"?
-            return value.plain(op + val.getValue());
+            return valueFactory.plain(op + val.getValue());
         }
 
         return val;
@@ -144,7 +144,7 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
     public Value visitParExpression(SqlParser.ParExpressionContext ctx) {
         Value val = visit(ctx.expression());
         
-        return value.bracket(val);
+        return valueFactory.bracket(val);
     }
 
     @Override
@@ -163,7 +163,7 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
     @Override
     public Value visitField(SqlParser.FieldContext ctx) {
         String field = ctx.sqlIdentifier().Identifier().getText();
-        return value.field(field);
+        return valueFactory.field(field);
     }
 
     @Override
@@ -179,13 +179,13 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
         
         String field = ctx.sqlIdentifier().Identifier().getText();
         
-        return value.field(table, field);
+        return valueFactory.field(table, field);
     }
 
     @Override
     public Value visitStringValue(SqlParser.StringValueContext ctx) {
         String s = StringGetter.get(ctx.StringLiteral());
-        return value.string(s);
+        return valueFactory.string(s);
     }
 
     @Override
@@ -197,14 +197,14 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
     public Value visitIntegerValue(SqlParser.IntegerValueContext ctx) {
         int i = Integer.parseInt(ctx.IntegerConstant().getText());
         
-        return value.numeric(i);
+        return valueFactory.numeric(i);
     }
     
     @Override
     public Value visitFloatingValue(SqlParser.FloatingValueContext ctx) {
         double d = Double.parseDouble(ctx.FloatingConstant().getText());
         
-        return value.numeric(d);
+        return valueFactory.numeric(d);
     }
 
     @Override
@@ -218,6 +218,6 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
             params = listVisitor.visit(ctx.argumentList());
         }
 
-        return value.function(fnc, params.toArray(new Value[params.size()]));
+        return valueFactory.function(fnc, params.toArray(new Value[params.size()]));
     }
 }

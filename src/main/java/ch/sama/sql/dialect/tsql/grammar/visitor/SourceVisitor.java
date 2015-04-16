@@ -9,12 +9,12 @@ import ch.sama.sql.query.helper.Source;
 import java.util.List;
 
 class SourceVisitor extends SqlBaseVisitor<Source> {
-    private TSqlSourceFactory source;
-    private QueryVisitor visitor;
+    private QueryVisitor queryVisitor;
+    private TSqlSourceFactory sourceVisitor;
 
-    public SourceVisitor(TSqlSourceFactory source, QueryVisitor visitor) {
-        this.source = source;
-        this.visitor = visitor;
+    public SourceVisitor(QueryVisitor query, TSqlSourceFactory source) {
+        this.queryVisitor = query;
+        this.sourceVisitor = source;
     }
 
     @Override
@@ -40,17 +40,17 @@ class SourceVisitor extends SqlBaseVisitor<Source> {
         List<SqlParser.SqlIdentifierContext> identifiers = ctx.table().sqlIdentifier();
         
         if (identifiers.size() > 1) {
-            return source.table(identifiers.get(0).Identifier().getText(), identifiers.get(1).Identifier().getText());
+            return sourceVisitor.table(identifiers.get(0).Identifier().getText(), identifiers.get(1).Identifier().getText());
         } else {
-            return source.table(identifiers.get(0).Identifier().getText());
+            return sourceVisitor.table(identifiers.get(0).Identifier().getText());
         }
     }
 
     @Override
     public Source visitAliasedStatement(SqlParser.AliasedStatementContext ctx) {
-        IQuery query = visitor.visit(ctx.statement());
+        IQuery query = queryVisitor.visit(ctx.statement());
         String alias = ctx.sqlIdentifier().Identifier().getText();
 
-        return source.query(query).as(alias);
+        return sourceVisitor.query(query).as(alias);
     }
 }

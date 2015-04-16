@@ -39,6 +39,7 @@ Is : [iI][sS] ;
 With : [wW][iI][tT][hH] ;
 Union : [uU][nN][iI][oO][nN] ;
 All : [aA][lL][lL] ;
+In : [iI][nN] ;
 
 Int : [iI][nN][tT] ;
 Float : [fF][lL][oO][aA][tT] ;
@@ -371,11 +372,14 @@ comparativeCondition
     : equalCondition
     | unequalCondition
     | lessCondition
-    | lessThanCondition
+    | lessEqualCondition
     | greaterCondition
-    | greaterThanCondition
+    | greaterEqualCondition
     | likeCondition
     | isNullCondition
+    | isNotNullCondition
+    | inCondition
+    | notInCondition
     ;
 
 equalCondition
@@ -390,7 +394,7 @@ lessCondition
     : expression '<' expression
     ;
 
-lessThanCondition
+lessEqualCondition
     : expression '<=' expression
     ;
 
@@ -398,7 +402,7 @@ greaterCondition
     : expression '>' expression
     ;
 
-greaterThanCondition
+greaterEqualCondition
     : expression '>=' expression
     ;
 
@@ -408,6 +412,18 @@ likeCondition
 
 isNullCondition
     : expression Is Null
+    ;
+
+isNotNullCondition
+    : expression Is Not Null
+    ;
+
+inCondition
+    : expression In '(' statement ')'
+    ;
+
+notInCondition
+    : expression Not In '(' statement ')'
     ;
 
 expression
