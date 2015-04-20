@@ -118,12 +118,20 @@ public class Field {
         isPrimaryKey = true;
     }
 
+    public void unsetAsPrimaryKey() {
+        isPrimaryKey = false;
+    }
+
     public boolean isPrimaryKey() {
         return isPrimaryKey;
     }
 
     public void setAutoIncrement() {
         isAutoIncrement = true;
+    }
+
+    public void removeAutoIncrement() {
+        isAutoIncrement = false;
     }
 
     public boolean isAutoIncrement() {
