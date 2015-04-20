@@ -75,7 +75,7 @@ There is an (experimental) possibility to create classes from a database connect
     QueryExecutor<MapResultList> executor = new QueryExecutor<MapResultList>(connection, new MapTransformer());
     ISchema schema = new TSqlSchema(executor, table -> true);
     
-    new ClassGenerator<TSqlQueryBuilder>(schema, TSqlQueryBuilder.class)
+    new ClassGenerator<TSqlQueryFactory>(schema, TSqlQueryFactory.class)
             .generate("src/main/java", "ch.project.generated");
 
 The generated sources can then be used in a query.
