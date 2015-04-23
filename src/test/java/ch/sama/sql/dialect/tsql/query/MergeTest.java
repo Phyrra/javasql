@@ -282,6 +282,29 @@ public class MergeTest {
         assertEquals("varchar(MAX)", m.value("FIELD", "Hello").getField().getDataType().getString());
     }
 
+    @Test
+    public void guessFieldStringDate() {
+        Field f = new Field("FIELD").chainType(TYPE.VARCHAR_MAX_TYPE);
+
+        assertEquals("'2015-02-14'", m.value(f, "2015-02-14").getValue().getValue());
+    }
+
+    @Test
+    public void guessFieldBoolean() {
+        Field f = new Field("FIELD").chainType(TYPE.BIT_TYPE);
+
+        assertEquals("1", m.value(f, true).getValue().getValue());
+        assertEquals("1", m.value(f, 1).getValue().getValue());
+    }
+
+    @Test
+    public void guessFieldNumeric() {
+        Field f = new Field("FIELD").chainType(TYPE.INT_TYPE);
+
+        assertEquals("1", m.value(f, 1).getValue().getValue());
+        assertEquals("1", m.value(f, 1.5).getValue().getValue());
+    }
+
     @Test (expected = BadParameterException.class)
     public void wrongGuess() {
         m.value("FIELD", new Object());
