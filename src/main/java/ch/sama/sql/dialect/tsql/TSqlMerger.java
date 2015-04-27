@@ -459,7 +459,8 @@ public class TSqlMerger {
             }
         }
 
-        return value(f.getName(), o);
+        Pair pair = value(f.getName(), o);
+        return new Pair(f, pair.getValue());
     }
 
     private String[] getDateParts(String s) {
