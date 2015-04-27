@@ -434,14 +434,14 @@ public class TSqlMerger {
         }
 
         if (TYPE.isEqualType(type, TYPE.BIT_TYPE)) {
-            if (s.equals("0")) {
+            if (s.equals("0") || s.equals("0.0")) {
                 return new Pair(f, valueFactory.bool(false));
-            } else if (s.equals("1")) {
+            } else if (s.equals("1") || s.equals("1.0")) {
                 return new Pair(f, valueFactory.bool(true));
             } else if (s.matches("(?i)true|false")) {
                 return new Pair(f, valueFactory.bool(Boolean.parseBoolean(s)));
             } else {
-                throw new BadSqlException("Expected Double, got: " + s + " (" + o.getClass().getSimpleName() + ")");
+                throw new BadSqlException("Expected Boolean, got: " + s + " (" + o.getClass().getSimpleName() + ")");
             }
         }
 
