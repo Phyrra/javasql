@@ -5,17 +5,14 @@ import ch.sama.sql.query.base.check.Identifier;
 import ch.sama.sql.query.exception.IllegalIdentifierException;
 import ch.sama.sql.query.exception.ObjectNotFoundException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Table {
     private String schema;
 	private String table;
 
-    private Map<String, Field> columns = new HashMap<String, Field>();
+    private Map<String, Field> columns = new LinkedHashMap<String, Field>();
 
 	public Table(String table) {
         if (!Identifier.test(table)) {
