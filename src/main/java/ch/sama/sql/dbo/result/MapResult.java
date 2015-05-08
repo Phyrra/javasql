@@ -54,6 +54,14 @@ public class MapResult {
         return getAs(key, Integer.class);
     }
 
+    public Long getAsLong(String key) {
+        return getAs(key, Long.class);
+    }
+
+    public Short getAsShort(String key) {
+        return getAs(key, Short.class);
+    }
+
     public Double getAsDouble(String key) {
         return getAs(key, Double.class);
     }

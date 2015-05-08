@@ -3,6 +3,7 @@ package ch.sama.sql.dbo.result;
 import ch.sama.sql.query.exception.BadSqlException;
 
 import java.io.BufferedReader;
+import java.math.BigInteger;
 import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -45,6 +46,10 @@ class TransformerHelper {
             }
 
             return builder.toString();
+        } else if (o instanceof BigInteger) {
+            BigInteger bi = (BigInteger) o;
+
+            return bi.longValue();
         } else {
             return o;
         }
