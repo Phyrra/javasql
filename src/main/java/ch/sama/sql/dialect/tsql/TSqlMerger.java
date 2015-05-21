@@ -375,8 +375,8 @@ public class TSqlMerger {
     public static final String NORM_DATE_TIME = "^\\d{1,2}\\.\\d{1,2}\\.\\d{4}\\s\\d{2}:\\d{2}(:\\d{2})?$";
     public static final String ISO_DATE = "^\\d{4}-\\d{2}-\\d{2}$";
     public static final String ISO_DATE_TIME = "^\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}(:\\d{2})?$";
-    public static final String INT = "^\\d+$";
-    public static final String FLOAT = "^(\\d+\\.\\d*|\\d*\\.\\d+)$";
+    public static final String INT = "^-?\\d+$";
+    public static final String FLOAT = "^-?(\\d+\\.\\d*|\\d*\\.\\d+)$";
 
     private static final TSqlValueFactory valueFactory = new TSqlValueFactory();
     

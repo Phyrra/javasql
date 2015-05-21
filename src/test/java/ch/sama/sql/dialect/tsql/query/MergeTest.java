@@ -225,8 +225,18 @@ public class MergeTest {
     }
 
     @Test
+    public void guessNegativeIntString() {
+        assertEquals(IntType.class, m.value("FIELD", "-1").getField().getDataType().getClass());
+    }
+
+    @Test
     public void guessFloatString() {
         assertEquals(FloatType.class, m.value("FIELD", "1.23").getField().getDataType().getClass());
+    }
+
+    @Test
+    public void guessNegativeFloatString() {
+        assertEquals(FloatType.class, m.value("FIELD", "-1.23").getField().getDataType().getClass());
     }
 
     @Test
