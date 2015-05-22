@@ -10,6 +10,8 @@ import ch.sama.sql.query.base.IQueryRenderer;
 import ch.sama.sql.query.exception.BadParameterException;
 import ch.sama.sql.query.exception.BadSqlException;
 import ch.sama.sql.query.helper.Value;
+import ch.sama.sql.query.helper.pattern.Dates;
+import ch.sama.sql.query.helper.pattern.Numerics;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -371,13 +373,6 @@ public class TSqlMerger {
         }
     }
 
-    public static final String NORM_DATE = "^\\d{1,2}\\.\\d{1,2}\\.\\d{4}$";
-    public static final String NORM_DATE_TIME = "^\\d{1,2}\\.\\d{1,2}\\.\\d{4}\\s\\d{2}:\\d{2}(:\\d{2})?$";
-    public static final String ISO_DATE = "^\\d{4}-\\d{2}-\\d{2}$";
-    public static final String ISO_DATE_TIME = "^\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}(:\\d{2})?$";
-    public static final String INT = "^-?\\d+$";
-    public static final String FLOAT = "^-?(\\d+\\.\\d*|\\d*\\.\\d+)$";
-
     private static final TSqlValueFactory valueFactory = new TSqlValueFactory();
     
     public TSqlMerger() { }
@@ -414,9 +409,9 @@ public class TSqlMerger {
         }
 
         if (TYPE.isEqualType(type, TYPE.INT_TYPE)) {
-            if (s.matches(INT)) {
+            if (Numerics.isInteger(s)) {
                 return new Pair(f, valueFactory.numeric(Integer.parseInt(s)));
-            } else if (s.matches(FLOAT)) {
+            } else if (Numerics.isFloat(s)) {
                 return new Pair(f, valueFactory.numeric((int) Double.parseDouble(s)));
             } else {
                 throw new BadSqlException("Expected Int, got: " + s + " (" + o.getClass().getSimpleName() + ")");
@@ -424,9 +419,9 @@ public class TSqlMerger {
         }
 
         if (TYPE.isEqualType(type, TYPE.FLOAT_TYPE)) {
-            if (s.matches(INT)) {
+            if (Numerics.isInteger(s)) {
                 return new Pair(f, valueFactory.numeric(Integer.parseInt(s)));
-            } else if (s.matches(FLOAT)) {
+            } else if (Numerics.isFloat(s)) {
                 return new Pair(f, valueFactory.numeric(Double.parseDouble(s)));
             } else {
                 throw new BadSqlException("Expected Double, got: " + s + " (" + o.getClass().getSimpleName() + ")");
@@ -446,13 +441,13 @@ public class TSqlMerger {
         }
 
         if (TYPE.isEqualType(type, TYPE.DATETIME_TYPE)) {
-            if (s.matches(NORM_DATE)) {
+            if (Dates.isEuropeanDate(s)) {
                 return normDate(f, s);
-            } else if (s.matches(NORM_DATE_TIME)) {
+            } else if (Dates.isEuropeanDateTime(s)) {
                 return normDateTime(f, s);
-            } else if (s.matches(ISO_DATE)) {
+            } else if (Dates.isIsoDate(s)) {
                 return isoDate(f, s);
-            } else if (s.matches(ISO_DATE_TIME)) {
+            } else if (Dates.isIsoDateTime(s)) {
                 return isoDateTime(f, s);
             } else {
                 throw new BadSqlException("Expected Date, got: " + s + " (" + o.getClass().getSimpleName() + ")");
@@ -463,42 +458,25 @@ public class TSqlMerger {
         return new Pair(f, pair.getValue());
     }
 
-    private String[] getDateParts(String s) {
-        String[] parts = s.split("\\.");
-
-        for (int i = 0; i < parts.length; ++i) {
-            if (parts[i].length() < 2) {
-                parts[i] = "0" + parts[i];
-            }
-        }
-
-        return parts;
-    }
-
     private Pair normDate(Field f, String s) {
-        String[] parts = getDateParts(s);
-
         return new Pair(
                 f,
                 valueFactory.function(
                         "CONVERT",
                         valueFactory.type(TYPE.DATETIME_TYPE),
-                        valueFactory.string(parts[2] + "-" + parts[1] + "-" + parts[0] + " 00:00:00"),
+                        valueFactory.string(Dates.europeanToIsoDateTime(s)),
                         valueFactory.numeric(21)
                 )
         );
     }
 
     private Pair normDateTime(Field f, String s) {
-        String[] dt = s.split(" ");
-        String[] parts = getDateParts(dt[0]);
-
         return new Pair(
                 f,
                 valueFactory.function(
                         "CONVERT",
                         valueFactory.type(TYPE.DATETIME_TYPE),
-                        valueFactory.string(parts[2] + "-" + parts[1] + "-" + parts[0] + " " + dt[1]),
+                        valueFactory.string(Dates.europeanToIsoDateTime(s)),
                         valueFactory.numeric(21)
                 )
         );
@@ -583,32 +561,32 @@ public class TSqlMerger {
                 return new Pair(f, valueFactory.value(Value.VALUE.NULL));
             }
             
-            if (s.matches(INT)) {
+            if (Numerics.isInteger(s)) {
                 f.setDataType(TYPE.INT_TYPE);
                 return new Pair(f, valueFactory.numeric(Integer.parseInt(s)));
             }
             
-            if (s.matches(FLOAT)) {
+            if (Numerics.isFloat(s)) {
                 f.setDataType(TYPE.FLOAT_TYPE);
                 return new Pair(f, valueFactory.numeric(Double.parseDouble(s)));
             }
             
-            if (s.matches(NORM_DATE)) {
+            if (Dates.isEuropeanDate(s)) {
                 f.setDataType(TYPE.DATETIME_TYPE);
                 return normDate(f, s);
             }
 
-            if (s.matches(NORM_DATE_TIME)) {
+            if (Dates.isEuropeanDateTime(s)) {
                 f.setDataType(TYPE.DATETIME_TYPE);
                 return normDateTime(f, s);
             }
             
-            if (s.matches(ISO_DATE)) {
+            if (Dates.isIsoDate(s)) {
                 f.setDataType(TYPE.DATETIME_TYPE);
                 return isoDate(f, s);
             }
 
-            if (s.matches(ISO_DATE_TIME)) {
+            if (Dates.isIsoDateTime(s)) {
                 f.setDataType(TYPE.DATETIME_TYPE);
                 return isoDateTime(f, s);
             }
