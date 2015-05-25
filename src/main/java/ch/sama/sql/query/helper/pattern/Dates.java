@@ -2,115 +2,97 @@ package ch.sama.sql.query.helper.pattern;
 
 import ch.sama.sql.query.exception.BadParameterException;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class Dates {
-    private static final String D_EU = "([1-9]|0[1-9]|[1-9][0-9])";
-    private static final String EU = D_EU + "\\." + D_EU + "\\.\\d{4}";
+    private static SimpleDateFormat createSDF(String pattern) {
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+        sdf.setLenient(false);
 
-    private static final String D_ISO = "(0[1-9]|[1-9][0-9])";
-    private static final String ISO = "\\d{4}-" + D_ISO + "-" + D_ISO;
-
-    public static final String EU_DATE = "^" + EU + "$";
-    public static final String EU_DATE_TIME = "^" + EU + "\\s\\d{2}:\\d{2}(:\\d{2})?$";
-    public static final String ISO_DATE = "^" + ISO + "$";
-    public static final String ISO_DATE_TIME = "^" + ISO + "\\s\\d{2}:\\d{2}(:\\d{2})?$";
-
-    public static boolean isEuropeanDate(String s) {
-        return s != null && s.matches(EU_DATE);
+        return sdf;
     }
 
-    public static boolean isEuropeanDateTime(String s) {
-        return s != null && s.matches(EU_DATE_TIME);
-    }
+    public static final SimpleDateFormat[] GER_DATE = { createSDF("dd.MM.yyyy") };
+    public static final SimpleDateFormat[] GER_DATE_TIME = { createSDF("dd.MM.yyyy HH:mm:ss"), createSDF("dd.MM.yyyy HH:mm") };
 
-    public static boolean isIsoDate(String s) {
-        return s != null && s.matches(ISO_DATE);
-    }
+    public static final SimpleDateFormat[] ISO_DATE = { createSDF("yyyy-MM-dd") };
+    public static final SimpleDateFormat[] ISO_DATE_TIME = { createSDF("yyyy-MM-dd HH:mm:ss"), createSDF("yyyy-MM-dd HH:mm") };
 
-    public static boolean isIsoDateTime(String s) {
-        return s != null && s.matches(ISO_DATE_TIME);
-    }
+    private static Date parse(String s, SimpleDateFormat[] accepted) {
+        for (SimpleDateFormat sdf : accepted) {
+            Date d;
 
-    private static String[] getEuropeanDateParts(String s) {
-        String[] parts = s.split("\\.");
+            try {
+                d = sdf.parse(s);
+            } catch (ParseException e) {
+                d = null;
+            }
 
-        for (int i = 0; i < 2; ++i) {
-            if (parts[i].length() < 2) {
-                parts[i] = "0" + parts[i];
+            if (d != null) {
+                return d;
             }
         }
 
-        return parts;
+        return null;
     }
 
-    private static String[] getIsoDateParts(String s) {
-        return s.split("-");
+    private static boolean isDate(String s, SimpleDateFormat[] accepted) {
+        return s != null && parse(s, accepted) != null;
     }
 
-    private static String getTime(String s) {
-        if (s == null || s.length() == 0) {
-            return "00:00:00";
-        } else if (s.matches("^\\d{2}:\\d{2}")) {
-            return s + ":00";
-        } else {
-            return s;
-        }
+    public static boolean isGerDate(String s) {
+        return isDate(s, GER_DATE);
     }
 
-    public static String europeanToIsoDate(String s) {
-        if (isEuropeanDate(s)) {
-            String[] parts = getEuropeanDateParts(s);
-
-            return parts[2] + "-" + parts[1] + "-" + parts[0];
-        } else if (isEuropeanDateTime(s)) {
-            String[] parts = getEuropeanDateParts(s.split(" ")[0]);
-
-            return parts[2] + "-" + parts[1] + "-" + parts[0];
-        } else {
-            throw new BadParameterException("Bad date format: " + s);
-        }
+    public static boolean isGerDateTime(String s) {
+        return isDate(s, GER_DATE_TIME);
     }
 
-    public static String europeanToIsoDateTime(String s) {
-        if (isEuropeanDate(s)) {
-            String[] parts = getEuropeanDateParts(s);
-
-            return parts[2] + "-" + parts[1] + "-" + parts[0] + " " + getTime(null);
-        } else if (isEuropeanDateTime(s)) {
-            String[] dt = s.split(" ");
-            String[] parts = getEuropeanDateParts(dt[0]);
-
-            return parts[2] + "-" + parts[1] + "-" + parts[0] + " " + getTime(dt[1]);
-        } else {
-            throw new BadParameterException("Bad date format: " + s);
-        }
+    public static boolean isIsoDate(String s) {
+        return isDate(s, ISO_DATE);
     }
 
-    public static String isoToEuropeanDate(String s) {
-        if (isIsoDate(s)) {
-            String[] parts = getIsoDateParts(s);
+    public static boolean isIsoDateTime(String s) {
+        return isDate(s, ISO_DATE_TIME);
+    }
 
-            return parts[2] + "." + parts[1] + "." + parts[0];
+    public static boolean isKnownDate(String s) {
+        return isGerDate(s) || isGerDateTime(s) || isIsoDate(s) || isIsoDateTime(s);
+    }
+
+    private static SimpleDateFormat[] getFormat(String s) {
+        if (isGerDateTime(s)) {
+            return GER_DATE_TIME;
+        } else if (isGerDate(s)) {
+            return GER_DATE;
         } else if (isIsoDateTime(s)) {
-            String[] parts = getIsoDateParts(s.split(" ")[0]);
-
-            return parts[2] + "." + parts[1] + "." + parts[0];
+            return ISO_DATE_TIME;
+        } else if (isIsoDate(s)) {
+            return ISO_DATE;
         } else {
             throw new BadParameterException("Bad date format: " + s);
         }
     }
 
-    public static String isoToEuropeanDateTime(String s) {
-        if (isIsoDate(s)) {
-            String[] parts = getIsoDateParts(s);
+    public static String convertDate(String s, SimpleDateFormat dst) {
+        return dst.format(parse(s, getFormat(s)));
+    }
 
-            return parts[2] + "." + parts[1] + "." + parts[0] + " " + getTime(null);
-        } else if (isIsoDateTime(s)) {
-            String[] dt = s.split(" ");
-            String[] parts = getIsoDateParts(dt[0]);
+    public static String toIsoDate(String s) {
+        return convertDate(s, ISO_DATE[0]);
+    }
 
-            return parts[2] + "." + parts[1] + "." + parts[0] + " " + getTime(dt[1]);
-        } else {
-            throw new BadParameterException("Bad date format: " + s);
-        }
+    public static String toIsoDateTime(String s) {
+        return convertDate(s, ISO_DATE_TIME[0]);
+    }
+
+    public static String toGerDate(String s) {
+        return convertDate(s, GER_DATE[0]);
+    }
+
+    public static String toGerDateTime(String s) {
+        return convertDate(s, GER_DATE_TIME[0]);
     }
 }

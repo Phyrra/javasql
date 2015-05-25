@@ -441,14 +441,8 @@ public class TSqlMerger {
         }
 
         if (TYPE.isEqualType(type, TYPE.DATETIME_TYPE)) {
-            if (Dates.isEuropeanDate(s)) {
-                return normDate(f, s);
-            } else if (Dates.isEuropeanDateTime(s)) {
-                return normDateTime(f, s);
-            } else if (Dates.isIsoDate(s)) {
-                return isoDate(f, s);
-            } else if (Dates.isIsoDateTime(s)) {
-                return isoDateTime(f, s);
+            if (Dates.isKnownDate(s)) {
+                return datePair(f, s);
             } else {
                 throw new BadSqlException("Expected Date, got: " + s + " (" + o.getClass().getSimpleName() + ")");
             }
@@ -458,49 +452,13 @@ public class TSqlMerger {
         return new Pair(f, pair.getValue());
     }
 
-    private Pair normDate(Field f, String s) {
+    private Pair datePair(Field f, String s) {
         return new Pair(
                 f,
                 valueFactory.function(
                         "CONVERT",
                         valueFactory.type(TYPE.DATETIME_TYPE),
-                        valueFactory.string(Dates.europeanToIsoDateTime(s)),
-                        valueFactory.numeric(21)
-                )
-        );
-    }
-
-    private Pair normDateTime(Field f, String s) {
-        return new Pair(
-                f,
-                valueFactory.function(
-                        "CONVERT",
-                        valueFactory.type(TYPE.DATETIME_TYPE),
-                        valueFactory.string(Dates.europeanToIsoDateTime(s)),
-                        valueFactory.numeric(21)
-                )
-        );
-    }
-
-    private Pair isoDate(Field f, String s) {
-        return new Pair(
-                f,
-                valueFactory.function(
-                        "CONVERT",
-                        valueFactory.type(TYPE.DATETIME_TYPE),
-                        valueFactory.string(s + " 00:00:00"),
-                        valueFactory.numeric(21)
-                )
-        );
-    }
-
-    private Pair isoDateTime(Field f, String s) {
-        return new Pair(
-                f,
-                valueFactory.function(
-                        "CONVERT",
-                        valueFactory.type(TYPE.DATETIME_TYPE),
-                        valueFactory.string(s),
+                        valueFactory.string(Dates.toIsoDateTime(s)),
                         valueFactory.numeric(21)
                 )
         );
@@ -571,24 +529,9 @@ public class TSqlMerger {
                 return new Pair(f, valueFactory.numeric(Double.parseDouble(s)));
             }
             
-            if (Dates.isEuropeanDate(s)) {
+            if (Dates.isKnownDate(s)) {
                 f.setDataType(TYPE.DATETIME_TYPE);
-                return normDate(f, s);
-            }
-
-            if (Dates.isEuropeanDateTime(s)) {
-                f.setDataType(TYPE.DATETIME_TYPE);
-                return normDateTime(f, s);
-            }
-            
-            if (Dates.isIsoDate(s)) {
-                f.setDataType(TYPE.DATETIME_TYPE);
-                return isoDate(f, s);
-            }
-
-            if (Dates.isIsoDateTime(s)) {
-                f.setDataType(TYPE.DATETIME_TYPE);
-                return isoDateTime(f, s);
+                return datePair(f, s);
             }
             
             f.setDataType(TYPE.VARCHAR_MAX_TYPE);
