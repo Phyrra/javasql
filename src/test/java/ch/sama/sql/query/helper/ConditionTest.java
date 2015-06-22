@@ -1,9 +1,10 @@
 package ch.sama.sql.query.helper;
 
-import ch.sama.sql.query.helper.condition.ICondition;
 import ch.sama.sql.dialect.tsql.TSqlConditionRenderer;
 import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
 import ch.sama.sql.dialect.tsql.TSqlValueFactory;
+import ch.sama.sql.dialect.tsql.condition.TSqlCondition;
+import ch.sama.sql.query.helper.condition.ICondition;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -125,7 +126,7 @@ public class ConditionTest {
         values.add(value.numeric(2));
         values.add(value.numeric(3));
         
-        ICondition c = Condition.in(value.numeric(1), values);
+        ICondition c = TSqlCondition.in(value.numeric(1), values);
         assertEquals("1 IN (\n1, 2, 3\n)", c.render(condition));
     }
     
@@ -133,5 +134,17 @@ public class ConditionTest {
     public void isNull() {
         ICondition c = Condition.isNull(value.field("FIELD"));
         assertEquals("[FIELD] IS NULL", c.render(condition));
+    }
+
+    @Test
+    public void isNotNull() {
+        ICondition c = TSqlCondition.notNull(value.field("FIELD"));
+        assertEquals("[FIELD] IS NOT NULL", c.render(condition));
+    }
+
+    @Test
+    public void between() {
+        ICondition c = TSqlCondition.between(value.numeric(1), value.numeric(10));
+        assertEquals("BETWEEN 1 AND 10", c.render(condition));
     }
 }
