@@ -398,7 +398,7 @@ public class TSqlMerger {
 
     public Pair value(Field f, Object o) {
         if (o == null) {
-            return new Pair(f, valueFactory.value(Value.VALUE.NULL));
+            return new Pair(f, TSqlValueFactory.NULL);
         }
 
         IType type = f.getDataType();
@@ -475,7 +475,7 @@ public class TSqlMerger {
         
         if (o == null) {
             f.setDataType(TYPE.NO_TYPE);
-            return new Pair(f, valueFactory.value(Value.VALUE.NULL));
+            return new Pair(f, TSqlValueFactory.NULL);
         }
 
         if (o instanceof Boolean) {
@@ -516,7 +516,7 @@ public class TSqlMerger {
             
             if (s.length() == 0 || s.toLowerCase().equals("null")) {
                 f.setDataType(TYPE.NO_TYPE);
-                return new Pair(f, valueFactory.value(Value.VALUE.NULL));
+                return new Pair(f, TSqlValueFactory.NULL);
             }
             
             if (Numerics.isInteger(s)) {

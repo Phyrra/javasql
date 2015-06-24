@@ -72,7 +72,17 @@ public class ValueTest {
     public void tableField() {
         assertEquals("[dbo].[TABLE].[FIELD]", renderer.render(value.field(new Table("dbo", "TABLE"), "FIELD")));
     }
-	
+
+	@Test
+    public void table() {
+        assertEquals("[dbo].[TABLE].*", renderer.render(value.table(new Table("dbo", "TABLE"))));
+    }
+
+    @Test
+    public void stringTable() {
+        assertEquals("[TABLE].*", renderer.render(value.table("TABLE")));
+    }
+
 	@Test
 	public void withAlias() {
 		assertEquals("[FIELD] AS [ALIAS]", renderer.render(value.field("FIELD").as("ALIAS")));
@@ -99,17 +109,17 @@ public class ValueTest {
 	
 	@Test
 	public void function() {
-		assertEquals("COUNT(*) AS [_COUNT]", renderer.render(value.function("COUNT", value.value(Value.ALL)).as("_COUNT")));
+		assertEquals("COUNT(*) AS [_COUNT]", renderer.render(value.function("COUNT", TSqlValueFactory.ALL).as("_COUNT")));
 	}
 
 	@Test
 	public void nullValue() {
-		assertEquals("NULL", renderer.render(value.value(Value.NULL)));
+		assertEquals("NULL", renderer.render(TSqlValueFactory.NULL));
 	}
 
 	@Test
 	public void allValue() {
-		assertEquals("*", renderer.render(value.value(Value.ALL)));
+		assertEquals("*", renderer.render(TSqlValueFactory.ALL));
 	}
 	
 	@Test

@@ -2,15 +2,16 @@ package ch.sama.sql.query.base.check;
 
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
-import ch.sama.sql.query.base.*;
-import ch.sama.sql.query.helper.Condition;
-import ch.sama.sql.query.helper.Function;
-import ch.sama.sql.query.helper.Source;
-import ch.sama.sql.query.helper.Value;
 import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
 import ch.sama.sql.dialect.tsql.TSqlSourceFactory;
 import ch.sama.sql.dialect.tsql.TSqlValueFactory;
 import ch.sama.sql.dialect.tsql.query.TSqlCteQuery;
+import ch.sama.sql.query.base.IQuery;
+import ch.sama.sql.query.base.JoinQuery;
+import ch.sama.sql.query.base.SelectQuery;
+import ch.sama.sql.query.helper.Condition;
+import ch.sama.sql.query.helper.Function;
+import ch.sama.sql.query.helper.Source;
 import org.junit.Test;
 
 import java.util.List;
@@ -42,7 +43,7 @@ public class QueryFinderTest {
     @Test
     public void getJoins() {
         IQuery query = sql.query()
-                .select(value.value(Value.ALL))
+                .select(TSqlValueFactory.ALL)
                 .from(source.table("T"))
                 .join(source.table("A")).on(Condition.eq(value.numeric(1), value.numeric(1)))
                 .join(source.table("B")).on(Condition.eq(value.numeric(1), value.numeric(1)));

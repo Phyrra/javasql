@@ -2,7 +2,6 @@ package ch.sama.sql.dialect.tsql.query;
 
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
-import ch.sama.sql.query.helper.Value;
 import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
 import ch.sama.sql.dialect.tsql.TSqlSourceFactory;
 import ch.sama.sql.dialect.tsql.TSqlValueFactory;
@@ -100,7 +99,7 @@ public class InsertQueryTest {
                         .insert()
                         .into(new Table("TABLE2"))
                         .columns("F1", "F2")
-                        .select(value.value(Value.VALUE.ALL))
+                        .select(TSqlValueFactory.ALL)
                         .from(source.table("CTE"))
                 .getSql()
         );

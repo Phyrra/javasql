@@ -2,11 +2,10 @@ package ch.sama.sql.dialect.tsql.query;
 
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
-import ch.sama.sql.query.helper.Condition;
-import ch.sama.sql.query.helper.Value;
 import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
 import ch.sama.sql.dialect.tsql.TSqlSourceFactory;
 import ch.sama.sql.dialect.tsql.TSqlValueFactory;
+import ch.sama.sql.query.helper.Condition;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -110,7 +109,7 @@ public class UpdateQueryTest {
                                 "FIELD2",
                                 value.query(
                                         sql.query()
-                                                .select(value.value(Value.VALUE.ALL))
+                                                .select(TSqlValueFactory.ALL)
                                                 .from(source.table("CTE"))
                                 )
                         )

@@ -4,7 +4,6 @@ import ch.sama.sql.dbo.connection.QueryExecutor;
 import ch.sama.sql.dialect.sqlite.SqLiteQueryFactory;
 import ch.sama.sql.dialect.sqlite.SqLiteValueFactory;
 import ch.sama.sql.dialect.sqlite.connection.SQLiteConnection;
-import ch.sama.sql.query.helper.Value;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -86,7 +85,7 @@ public class MapTransformerTest {
     public void nothing() {
         MapResult result = executor.query(
                 sql.query()
-                        .select(value.value(Value.VALUE.NULL).as("f1"))
+                        .select(SqLiteValueFactory.NULL.as("f1"))
                 .getSql()
         ).get(0);
 

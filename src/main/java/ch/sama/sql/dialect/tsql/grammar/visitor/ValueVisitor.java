@@ -27,7 +27,7 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
 
     @Override
     public Value visitAllFields(SqlParser.AllFieldsContext ctx) {
-        return valueFactory.value(Value.VALUE.ALL);
+        return TSqlValueFactory.ALL;
     }
 
     @Override

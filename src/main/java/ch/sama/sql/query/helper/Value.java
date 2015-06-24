@@ -5,14 +5,6 @@ import ch.sama.sql.query.base.check.Identifier;
 import ch.sama.sql.query.exception.IllegalIdentifierException;
 
 public class Value {
-    public enum VALUE {
-        ALL,
-        NULL
-    }
-
-    public static final VALUE ALL = VALUE.ALL;
-    public static final VALUE NULL = VALUE.NULL;
-
     private Object source;
     private String value;
     private String alias;

@@ -6,15 +6,22 @@ import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.base.IQueryRenderer;
 import ch.sama.sql.query.base.IValueFactory;
-import ch.sama.sql.query.exception.UnknownValueException;
 import ch.sama.sql.query.helper.Function;
 import ch.sama.sql.query.helper.Value;
 
 public abstract class ValueFactory implements IValueFactory {
     private IQueryRenderer renderer;
 
+    public static Value ALL = new Value("*");
+    public static Value NULL = new Value("NULL");
+
     public ValueFactory(IQueryRenderer renderer) {
         this.renderer = renderer;
+    }
+
+    @Override
+    public Value plain(String s) {
+        return new Value(s);
     }
 
     @Override
@@ -38,8 +45,13 @@ public abstract class ValueFactory implements IValueFactory {
     }
 
     @Override
-    public Value plain(String s) {
-        return new Value(s);
+    public Value table(Table table) {
+        return new Value(table, renderer.render(table) + ".*");
+    }
+
+    @Override
+    public Value table(String table) {
+        return table(new Table(table));
     }
 
     @Override
@@ -84,18 +96,6 @@ public abstract class ValueFactory implements IValueFactory {
     @Override
     public Value query(IQuery query) {
         return new Value(query, "(\n" + query.getSql() + "\n)");
-    }
-
-    @Override
-    public Value value(Value.VALUE value) {
-        switch (value) {
-            case NULL:
-                return new Value(value, "NULL");
-            case ALL:
-                return new Value(value, "*");
-            default:
-                throw new UnknownValueException("Caused by: " + value);
-        }
     }
     
     @Override

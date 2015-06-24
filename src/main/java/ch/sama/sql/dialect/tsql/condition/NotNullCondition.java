@@ -4,7 +4,7 @@ import ch.sama.sql.query.helper.Value;
 import ch.sama.sql.query.helper.condition.CustomCondition;
 import ch.sama.sql.query.helper.condition.IConditionRenderer;
 
-public class NotNullCondition extends CustomCondition {
+class NotNullCondition extends CustomCondition {
     private Value value;
 
     public NotNullCondition(Value value) {

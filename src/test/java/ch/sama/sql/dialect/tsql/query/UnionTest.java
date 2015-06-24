@@ -1,11 +1,10 @@
 package ch.sama.sql.dialect.tsql.query;
 
-import ch.sama.sql.query.helper.Condition;
-import ch.sama.sql.query.helper.Value;
-import ch.sama.sql.query.helper.condition.ICondition;
 import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
 import ch.sama.sql.dialect.tsql.TSqlSourceFactory;
 import ch.sama.sql.dialect.tsql.TSqlValueFactory;
+import ch.sama.sql.query.helper.Condition;
+import ch.sama.sql.query.helper.condition.ICondition;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -44,8 +43,8 @@ public class UnionTest {
         assertEquals(
                 "SELECT *\nFROM [TABLE1]\nWHERE [FIELD] = 1 UNION ALL\nSELECT *\nFROM [TABLE2]\nWHERE [FIELD] = 1",
                 sql.query()
-                        .select(value.value(Value.ALL)).from(source.table("TABLE1")).where(c).union()
-                        .select(value.value(Value.ALL)).from(source.table("TABLE2")).where(c)
+                        .select(TSqlValueFactory.ALL).from(source.table("TABLE1")).where(c).union()
+                        .select(TSqlValueFactory.ALL).from(source.table("TABLE2")).where(c)
                 .getSql()
         );
     }
@@ -57,8 +56,8 @@ public class UnionTest {
         assertEquals(
                 "SELECT *\nFROM [TABLE1]\nJOIN [TABLE2] ON 1 = 1 UNION ALL\nSELECT *\nFROM [TABLE3]",
                 sql.query()
-                        .select(value.value(Value.ALL)).from(source.table("TABLE1")).join(source.table("TABLE2")).on(c).union()
-                        .select(value.value(Value.ALL)).from(source.table("TABLE3"))
+                        .select(TSqlValueFactory.ALL).from(source.table("TABLE1")).join(source.table("TABLE2")).on(c).union()
+                        .select(TSqlValueFactory.ALL).from(source.table("TABLE3"))
                 .getSql()
         );
     }
