@@ -24,7 +24,7 @@ public class MergeTest {
         f.setDataType(TYPE.INT_TYPE);
         
         assertEquals(
-                "DECLARE @table TABLE (\nFIELD int\n);\nINSERT INTO @table\nSELECT 1;\nMERGE INTO [TABLE] AS [old]\nUSING @table AS [new] ON (\n[old].[FIELD] = [new].[FIELD]\n)\nWHEN MATCHED THEN\nUPDATE SET [FIELD] = [new].[FIELD]\nWHEN NOT MATCHED BY TARGET THEN\nINSERT ([FIELD]) VALUES ([new].[FIELD])\nOUTPUT INSERTED.[FIELD];",
+                "DECLARE @table TABLE (\nFIELD int\n);\nINSERT INTO @table\nSELECT 1;\nMERGE INTO [TABLE] AS [old]\nUSING @table AS [new] ON (\n[old].[FIELD] = [new].[FIELD]\n)\nWHEN MATCHED THEN\nUPDATE SET [FIELD] = [new].[FIELD]\nWHEN NOT MATCHED BY TARGET THEN\nINSERT ([FIELD]) VALUES ([new].[FIELD]);",
                 m.merge("TABLE")
                         .values(
                                 m.row(m.value(f, value.numeric(1)))
@@ -44,7 +44,7 @@ public class MergeTest {
         f2.setDataType(TYPE.INT_TYPE);
         
         assertEquals(
-                "DECLARE @table TABLE (\nFIELD1 int,\nFIELD2 int\n);\nINSERT INTO @table\nSELECT 1, 2;\nMERGE INTO [TABLE] AS [old]\nUSING @table AS [new] ON (\n[old].[FIELD1] = [new].[FIELD1]\n)\nWHEN MATCHED THEN\nUPDATE SET [FIELD1] = [new].[FIELD1], [FIELD2] = [new].[FIELD2]\nWHEN NOT MATCHED BY TARGET THEN\nINSERT ([FIELD1], [FIELD2]) VALUES ([new].[FIELD1], [new].[FIELD2])\nOUTPUT INSERTED.[FIELD1], INSERTED.[FIELD2];",
+                "DECLARE @table TABLE (\nFIELD1 int,\nFIELD2 int\n);\nINSERT INTO @table\nSELECT 1, 2;\nMERGE INTO [TABLE] AS [old]\nUSING @table AS [new] ON (\n[old].[FIELD1] = [new].[FIELD1]\n)\nWHEN MATCHED THEN\nUPDATE SET [FIELD1] = [new].[FIELD1], [FIELD2] = [new].[FIELD2]\nWHEN NOT MATCHED BY TARGET THEN\nINSERT ([FIELD1], [FIELD2]) VALUES ([new].[FIELD1], [new].[FIELD2]);",
                 m.merge("TABLE")
                         .values(
                                 m.row(m.value(f1, value.numeric(1)), m.value(f2, value.numeric(2)))
@@ -64,7 +64,7 @@ public class MergeTest {
         f2.setDataType(TYPE.INT_TYPE);
 
         assertEquals(
-                "DECLARE @table TABLE (\nFIELD1 int,\nFIELD2 int\n);\nINSERT INTO @table\nSELECT 1, 2;\nMERGE INTO [TABLE] AS [old]\nUSING @table AS [new] ON (\n[old].[FIELD1] = [new].[FIELD1] AND [old].[FIELD2] = [new].[FIELD2]\n)\nWHEN MATCHED THEN\nUPDATE SET [FIELD1] = [new].[FIELD1], [FIELD2] = [new].[FIELD2]\nWHEN NOT MATCHED BY TARGET THEN\nINSERT ([FIELD1], [FIELD2]) VALUES ([new].[FIELD1], [new].[FIELD2])\nOUTPUT INSERTED.[FIELD1], INSERTED.[FIELD2];",
+                "DECLARE @table TABLE (\nFIELD1 int,\nFIELD2 int\n);\nINSERT INTO @table\nSELECT 1, 2;\nMERGE INTO [TABLE] AS [old]\nUSING @table AS [new] ON (\n[old].[FIELD1] = [new].[FIELD1] AND [old].[FIELD2] = [new].[FIELD2]\n)\nWHEN MATCHED THEN\nUPDATE SET [FIELD1] = [new].[FIELD1], [FIELD2] = [new].[FIELD2]\nWHEN NOT MATCHED BY TARGET THEN\nINSERT ([FIELD1], [FIELD2]) VALUES ([new].[FIELD1], [new].[FIELD2]);",
                 m.merge("TABLE")
                         .values(
                                 m.row(m.value(f1, value.numeric(1)), m.value(f2, value.numeric(2)))
@@ -84,7 +84,7 @@ public class MergeTest {
         f2.setDataType(TYPE.INT_TYPE);
 
         assertEquals(
-                "DECLARE @table TABLE (\nFIELD1 int,\nFIELD2 int\n);\nINSERT INTO @table\nSELECT 1, 2;\nMERGE INTO [TABLE] AS [old]\nUSING @table AS [new] ON (\n[old].[FIELD1] = [new].[FIELD1]\n)\nWHEN MATCHED THEN\nUPDATE SET [FIELD2] = [new].[FIELD2]\nWHEN NOT MATCHED BY TARGET THEN\nINSERT ([FIELD2]) VALUES ([new].[FIELD2])\nOUTPUT INSERTED.[FIELD1], INSERTED.[FIELD2];",
+                "DECLARE @table TABLE (\nFIELD1 int,\nFIELD2 int\n);\nINSERT INTO @table\nSELECT 1, 2;\nMERGE INTO [TABLE] AS [old]\nUSING @table AS [new] ON (\n[old].[FIELD1] = [new].[FIELD1]\n)\nWHEN MATCHED THEN\nUPDATE SET [FIELD2] = [new].[FIELD2]\nWHEN NOT MATCHED BY TARGET THEN\nINSERT ([FIELD2]) VALUES ([new].[FIELD2]);",
                 m.merge("TABLE")
                         .values(
                                 m.row(m.value(f1, value.numeric(1)), m.value(f2, value.numeric(2)))
@@ -107,7 +107,7 @@ public class MergeTest {
         f3.setDataType(TYPE.INT_TYPE);
 
         assertEquals(
-                "DECLARE @table TABLE (\nFIELD1 int,\nFIELD2 int,\nFIELD3 int\n);\nINSERT INTO @table\nSELECT 1, 2, 3;\nMERGE INTO [TABLE] AS [old]\nUSING @table AS [new] ON (\n[old].[FIELD1] = [new].[FIELD1]\n)\nWHEN MATCHED THEN\nUPDATE SET [FIELD3] = [new].[FIELD3]\nWHEN NOT MATCHED BY TARGET THEN\nINSERT ([FIELD3]) VALUES ([new].[FIELD3])\nOUTPUT INSERTED.[FIELD1], INSERTED.[FIELD2], INSERTED.[FIELD3];",
+                "DECLARE @table TABLE (\nFIELD1 int,\nFIELD2 int,\nFIELD3 int\n);\nINSERT INTO @table\nSELECT 1, 2, 3;\nMERGE INTO [TABLE] AS [old]\nUSING @table AS [new] ON (\n[old].[FIELD1] = [new].[FIELD1]\n)\nWHEN MATCHED THEN\nUPDATE SET [FIELD3] = [new].[FIELD3]\nWHEN NOT MATCHED BY TARGET THEN\nINSERT ([FIELD3]) VALUES ([new].[FIELD3]);",
                 m.merge("TABLE")
                         .values(
                                 m.row(m.value(f1, value.numeric(1)), m.value(f2, value.numeric(2)), m.value(f3, value.numeric(3)))
@@ -124,7 +124,7 @@ public class MergeTest {
         f.setDataType(TYPE.INT_TYPE);
 
         assertEquals(
-                "DECLARE @table TABLE (\nFIELD int\n);\nINSERT INTO @table\nSELECT 1 UNION ALL\nSELECT 2;\nMERGE INTO [TABLE] AS [old]\nUSING @table AS [new] ON (\n[old].[FIELD] = [new].[FIELD]\n)\nWHEN MATCHED THEN\nUPDATE SET [FIELD] = [new].[FIELD]\nWHEN NOT MATCHED BY TARGET THEN\nINSERT ([FIELD]) VALUES ([new].[FIELD])\nOUTPUT INSERTED.[FIELD];",
+                "DECLARE @table TABLE (\nFIELD int\n);\nINSERT INTO @table\nSELECT 1 UNION ALL\nSELECT 2;\nMERGE INTO [TABLE] AS [old]\nUSING @table AS [new] ON (\n[old].[FIELD] = [new].[FIELD]\n)\nWHEN MATCHED THEN\nUPDATE SET [FIELD] = [new].[FIELD]\nWHEN NOT MATCHED BY TARGET THEN\nINSERT ([FIELD]) VALUES ([new].[FIELD]);",
                 m.merge("TABLE")
                         .values(
                                 m.row(m.value(f, value.numeric(1))),
@@ -313,7 +313,7 @@ public class MergeTest {
     @Test
     public void fillGuessHoles() {
         assertEquals(
-                "DECLARE @table TABLE (\nFIELD1 float,\nFIELD2 bit,\nFIELD3 varchar(MAX)\n);\nINSERT INTO @table\nSELECT NULL, NULL, 'Hello' UNION ALL\nSELECT 1.23, NULL, NULL;\nMERGE INTO [TABLE] AS [old]\nUSING @table AS [new] ON (\n[old].[FIELD1] = [new].[FIELD1]\n)\nWHEN MATCHED THEN\nUPDATE SET [FIELD1] = [new].[FIELD1], [FIELD2] = [new].[FIELD2], [FIELD3] = [new].[FIELD3]\nWHEN NOT MATCHED BY TARGET THEN\nINSERT ([FIELD1], [FIELD2], [FIELD3]) VALUES ([new].[FIELD1], [new].[FIELD2], [new].[FIELD3])\nOUTPUT INSERTED.[FIELD1], INSERTED.[FIELD2], INSERTED.[FIELD3];",
+                "DECLARE @table TABLE (\nFIELD1 float,\nFIELD2 bit,\nFIELD3 varchar(MAX)\n);\nINSERT INTO @table\nSELECT NULL, NULL, 'Hello' UNION ALL\nSELECT 1.23, NULL, NULL;\nMERGE INTO [TABLE] AS [old]\nUSING @table AS [new] ON (\n[old].[FIELD1] = [new].[FIELD1]\n)\nWHEN MATCHED THEN\nUPDATE SET [FIELD1] = [new].[FIELD1], [FIELD2] = [new].[FIELD2], [FIELD3] = [new].[FIELD3]\nWHEN NOT MATCHED BY TARGET THEN\nINSERT ([FIELD1], [FIELD2], [FIELD3]) VALUES ([new].[FIELD1], [new].[FIELD2], [new].[FIELD3]);",
                 m.merge("TABLE")
                         .values(
                                 m.row(m.value("FIELD1", null), m.value("FIELD2", null), m.value("FIELD3", "Hello")),
@@ -345,7 +345,7 @@ public class MergeTest {
         data.add(new CSVRow(new String[] { "1", "value", "" }));
 
         assertEquals(
-                "DECLARE @table TABLE (\nFIELD1 int,\nFIELD2 varchar(MAX),\nFIELD3 bit\n);\nINSERT INTO @table\nSELECT 1, 'value', NULL;\nMERGE INTO [TABLE] AS [old]\nUSING @table AS [new] ON (\n[old].[FIELD1] = [new].[FIELD1]\n)\nWHEN MATCHED THEN\nUPDATE SET [FIELD2] = [new].[FIELD2], [FIELD3] = [new].[FIELD3]\nWHEN NOT MATCHED BY TARGET THEN\nINSERT ([FIELD2], [FIELD3]) VALUES ([new].[FIELD2], [new].[FIELD3])\nOUTPUT INSERTED.[FIELD1], INSERTED.[FIELD2], INSERTED.[FIELD3];",
+                "DECLARE @table TABLE (\nFIELD1 int,\nFIELD2 varchar(MAX),\nFIELD3 bit\n);\nINSERT INTO @table\nSELECT 1, 'value', NULL;\nMERGE INTO [TABLE] AS [old]\nUSING @table AS [new] ON (\n[old].[FIELD1] = [new].[FIELD1]\n)\nWHEN MATCHED THEN\nUPDATE SET [FIELD2] = [new].[FIELD2], [FIELD3] = [new].[FIELD3]\nWHEN NOT MATCHED BY TARGET THEN\nINSERT ([FIELD2], [FIELD3]) VALUES ([new].[FIELD2], [new].[FIELD3]);",
                 m.merge("TABLE")
                         .values(data)
                         .matching("FIELD1")

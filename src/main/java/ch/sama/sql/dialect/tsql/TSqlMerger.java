@@ -352,22 +352,7 @@ public class TSqlMerger {
                 }
             }
             
-            builder.append(")\n");
-            builder.append("OUTPUT ");
-
-            prefix = "";
-            for (Pair pair : fields) {
-                String name = pair.getField().getName();
-                
-                builder.append(prefix);
-                builder.append("INSERTED.[");
-                builder.append(name);
-                builder.append("]");
-
-                prefix = ", ";
-            }
-            
-            builder.append(";");
+            builder.append(");");
             
             return builder.toString();
         }
