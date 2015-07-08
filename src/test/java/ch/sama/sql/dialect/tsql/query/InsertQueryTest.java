@@ -75,7 +75,7 @@ public class InsertQueryTest {
     }
     
     @Test
-    public void insertValues() {
+    public void insertSelect() {
         assertEquals(
                 "INSERT INTO [TABLE] ([FIELD1], [FIELD2])\nSELECT 1, 2",
                 sql.query()
@@ -101,6 +101,31 @@ public class InsertQueryTest {
                         .columns("F1", "F2")
                         .select(TSqlValueFactory.ALL)
                         .from(source.table("CTE"))
+                .getSql()
+        );
+    }
+
+    @Test
+    public void insertOutput() {
+        assertEquals(
+                "INSERT INTO [TABLE] ([FIELD1], [FIELD2])\nOUTPUT [INSERTED].*\nSELECT 'A', 'B'",
+                sql.query()
+                        .insert().into("TABLE")
+                        .columns("FIELD1", "FIELD2")
+                        .output(value.table("INSERTED"))
+                        .select(value.string("A"), value.string("B"))
+                .getSql()
+        );
+    }
+
+    @Test
+    public void insertValues() {
+        assertEquals(
+                "INSERT INTO [TABLE] ([FIELD1], [FIELD2])\nVALUES ('A', 'B')",
+                sql.query()
+                        .insert().into("TABLE")
+                        .columns("FIELD1", "FIELD2")
+                        .values(value.string("A"), value.string("B"))
                 .getSql()
         );
     }

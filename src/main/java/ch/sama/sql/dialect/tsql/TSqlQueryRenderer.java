@@ -1,5 +1,6 @@
 package ch.sama.sql.dialect.tsql;
 
+import ch.sama.sql.dialect.tsql.query.TSqlInsertQueryOutput;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.helper.Value;
 import ch.sama.sql.query.helper.condition.ICondition;
@@ -77,6 +78,25 @@ public class TSqlQueryRenderer extends QueryRenderer {
         builder.append(" AS (\n");
         builder.append(query.getQuery().getSql());
         builder.append("\n)");
+
+        return builder.toString();
+    }
+
+    public String render(TSqlInsertQueryOutput query) {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(query.getParent().getSql());
+
+        builder.append("\n");
+        builder.append("OUTPUT ");
+
+        String prefix = "";
+        for (Value v : query.getValues()) {
+            builder.append(prefix);
+            builder.append(render(v));
+
+            prefix = ", ";
+        }
 
         return builder.toString();
     }

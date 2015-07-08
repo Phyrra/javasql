@@ -25,6 +25,11 @@ public class TSqlQuery extends Query {
         return new TSqlSelectQuery(renderer, this, v);
     }
 
+    @Override
+    public TSqlInsertQuery insert() {
+        return new TSqlInsertQuery(renderer, this);
+    }
+
     public TSqlCteQuery with(String alias) {
         return new TSqlCteQuery(renderer, this, alias);
     }

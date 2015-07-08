@@ -258,6 +258,26 @@ public abstract class QueryRenderer implements IQueryRenderer {
     }
 
     @Override
+    public String render(InsertQueryValues query) {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(query.getParent().getSql());
+        builder.append("\nVALUES (");
+
+        String prefix = "";
+        for (Value v : query.getValues()) {
+            builder.append(prefix);
+            builder.append(v.getValue());
+
+            prefix = ", ";
+        }
+
+        builder.append(")");
+
+        return builder.toString();
+    }
+
+    @Override
     public String render(UpdateQuery query) {
         StringBuilder builder = new StringBuilder();
 

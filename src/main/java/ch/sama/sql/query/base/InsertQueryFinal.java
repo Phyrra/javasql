@@ -44,4 +44,8 @@ public class InsertQueryFinal implements IQuery {
     public SelectQuery select(Value... values) {
         return new SelectQuery(renderer, this, values);
     }
+
+    public InsertQueryValues values(Value... values) {
+        return new InsertQueryValues(renderer, this, values);
+    }
 }

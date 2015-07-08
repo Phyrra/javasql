@@ -22,6 +22,7 @@ public interface IQueryRenderer {
     public String render(InsertQuery query);
     public String render(InsertQueryIM query);
     public String render(InsertQueryFinal query);
+    public String render(InsertQueryValues query);
     public String render(UpdateQuery query);
     public String render(UpdateQueryIM query);
     public String render(UpdateQueryFinal query);
