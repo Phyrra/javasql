@@ -6,8 +6,8 @@ import ch.sama.sql.dbo.ISchema;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dbo.connection.IQueryExecutor;
 import ch.sama.sql.dbo.generator.ITableFilter;
-import ch.sama.sql.dbo.result.MapResult;
-import ch.sama.sql.dbo.result.MapResultList;
+import ch.sama.sql.dbo.result.map.MapResult;
+import ch.sama.sql.dbo.result.map.MapResultList;
 import ch.sama.sql.query.exception.ObjectNotFoundException;
 import ch.sama.sql.query.helper.Condition;
 

@@ -1,4 +1,4 @@
-package ch.sama.sql.dbo.result;
+package ch.sama.sql.dbo.result.map;
 
 import java.util.Date;
 import java.util.LinkedHashMap;

@@ -1,7 +1,9 @@
-package ch.sama.sql.dbo.result;
+package ch.sama.sql.dbo.result.csv;
 
 import ch.sama.sql.csv.CSVRow;
 import ch.sama.sql.csv.CSVSet;
+import ch.sama.sql.dbo.result.IResultSetTransformer;
+import ch.sama.sql.dbo.result.TransformerHelper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

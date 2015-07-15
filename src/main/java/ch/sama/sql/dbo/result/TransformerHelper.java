@@ -9,8 +9,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
-class TransformerHelper {
-    static String[] getColumnNames(ResultSet set) throws SQLException {
+public class TransformerHelper {
+    public static String[] getColumnNames(ResultSet set) throws SQLException {
         ResultSetMetaData meta = set.getMetaData();
 
         int colCount = meta.getColumnCount();
@@ -23,7 +23,7 @@ class TransformerHelper {
         return colNames;
     }
 
-    static Object defaultTransform(Object o) {
+    public static Object defaultTransform(Object o) {
         if (o instanceof Clob) {
             Clob clob = (Clob) o;
 
