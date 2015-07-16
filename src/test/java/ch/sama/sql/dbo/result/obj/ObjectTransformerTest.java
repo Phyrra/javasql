@@ -1,8 +1,6 @@
 package ch.sama.sql.dbo.result.obj;
 
 import ch.sama.sql.dbo.connection.QueryExecutor;
-import ch.sama.sql.dbo.result.map.MapResultList;
-import ch.sama.sql.dbo.result.map.MapTransformer;
 import ch.sama.sql.dialect.sqlite.SqLiteQueryFactory;
 import ch.sama.sql.dialect.sqlite.SqLiteValueFactory;
 import ch.sama.sql.dialect.sqlite.connection.SQLiteConnection;

@@ -11,7 +11,6 @@ public class TestObject {
     @Column(name = "dValue")
     private double doubleVal;
 
-    /*
     public void setStringVal(String s) {
         stringVal = s;
     }
@@ -20,10 +19,9 @@ public class TestObject {
         intVal = i;
     }
 
-    public void setFloatVal(float f) {
-        floatVal = f;
+    public void setDoubleVal(double f) {
+        doubleVal = f;
     }
-    */
 
     public String getStringVal() {
         return stringVal;

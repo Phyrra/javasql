@@ -1,14 +1,13 @@
 package ch.sama.sql.dbo.result.map;
 
 import ch.sama.sql.dbo.connection.QueryExecutor;
-import ch.sama.sql.dbo.result.map.MapResult;
-import ch.sama.sql.dbo.result.map.MapResultList;
-import ch.sama.sql.dbo.result.map.MapTransformer;
 import ch.sama.sql.dialect.sqlite.SqLiteQueryFactory;
 import ch.sama.sql.dialect.sqlite.SqLiteValueFactory;
 import ch.sama.sql.dialect.sqlite.connection.SQLiteConnection;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -16,17 +15,17 @@ public class MapTransformerTest {
     private static final SqLiteQueryFactory sql = new SqLiteQueryFactory();
     private static final SqLiteValueFactory value = sql.value();
 
-    private QueryExecutor<MapResultList> executor;
+    private QueryExecutor<List<MapResult>> executor;
 
     @Before
     public void loadExecutor() {
         SQLiteConnection connection = new SQLiteConnection();
-        executor = new QueryExecutor<MapResultList>(connection, new MapTransformer());
+        executor = new QueryExecutor<List<MapResult>>(connection, new MapTransformer());
     }
 
     @Test
     public void oneResult() {
-        MapResultList results = executor.query(
+        List<MapResult> results = executor.query(
                 sql.query()
                         .select(value.numeric(1))
                 .getSql()
@@ -37,7 +36,7 @@ public class MapTransformerTest {
 
     @Test
     public void multiResult() {
-        MapResultList results = executor.query(
+        List<MapResult> results = executor.query(
                 sql.query()
                         .select(value.numeric(1))
                         .union()

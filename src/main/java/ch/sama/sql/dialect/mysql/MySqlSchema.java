@@ -7,7 +7,6 @@ import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dbo.connection.IQueryExecutor;
 import ch.sama.sql.dbo.generator.ITableFilter;
 import ch.sama.sql.dbo.result.map.MapResult;
-import ch.sama.sql.dbo.result.map.MapResultList;
 import ch.sama.sql.query.exception.ObjectNotFoundException;
 import ch.sama.sql.query.helper.Condition;
 
@@ -24,18 +23,18 @@ public class MySqlSchema implements ISchema {
 
     private Map<String, Table> tables;
 
-    public MySqlSchema(String db, IQueryExecutor<MapResultList> executor) {
+    public MySqlSchema(String db, IQueryExecutor<List<MapResult>> executor) {
         loadSchema(db, executor, table -> true);
     }
 
-    public MySqlSchema(String db, IQueryExecutor<MapResultList> executor, ITableFilter filter) {
+    public MySqlSchema(String db, IQueryExecutor<List<MapResult>> executor, ITableFilter filter) {
         loadSchema(db, executor, filter);
     }
 
-    private void loadSchema(String db, IQueryExecutor<MapResultList> executor, ITableFilter filter) {
+    private void loadSchema(String db, IQueryExecutor<List<MapResult>> executor, ITableFilter filter) {
         tables = new HashMap<String, Table>();
 
-        MapResultList result = executor.query(
+        List<MapResult> result = executor.query(
                 sql.query()
                         .select(
                                 value.field("TABLE_SCHEMA"),
@@ -59,7 +58,7 @@ public class MySqlSchema implements ISchema {
             Table t = new Table(schema, table);
             tables.put(table, t);
 
-            MapResultList columns = executor.query(
+            List<MapResult> columns = executor.query(
                     sql.query()
                             .select(
                                     value.field("COLUMN_NAME"),

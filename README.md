@@ -72,7 +72,7 @@ There is an (experimental) possibility to create classes from a database connect
 
     TSqlConnection connection = new TSqlConnection(link, user, password);
     
-    QueryExecutor<MapResultList> executor = new QueryExecutor<MapResultList>(connection, new MapTransformer());
+    QueryExecutor<List<MapResult>> executor = new QueryExecutor<List<MapResult>>(connection, new MapTransformer());
     ISchema schema = new TSqlSchema(executor, table -> true);
     
     new ClassGenerator<TSqlQueryFactory>(schema, TSqlQueryFactory.class)

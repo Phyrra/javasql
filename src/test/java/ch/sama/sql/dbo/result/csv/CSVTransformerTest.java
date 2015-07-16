@@ -3,7 +3,6 @@ package ch.sama.sql.dbo.result.csv;
 import ch.sama.sql.csv.CSVSet;
 import ch.sama.sql.csv.CSVWriter;
 import ch.sama.sql.dbo.connection.QueryExecutor;
-import ch.sama.sql.dbo.result.csv.CSVTransformer;
 import ch.sama.sql.dialect.sqlite.SqLiteQueryFactory;
 import ch.sama.sql.dialect.sqlite.SqLiteValueFactory;
 import ch.sama.sql.dialect.sqlite.connection.SQLiteConnection;
