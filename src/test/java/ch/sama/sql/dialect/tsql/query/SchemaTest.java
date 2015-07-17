@@ -1,17 +1,17 @@
 package ch.sama.sql.dialect.tsql.query;
 
-import static org.junit.Assert.*;
-
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
-import ch.sama.sql.query.exception.BadSqlException;
-import ch.sama.sql.query.exception.ObjectNotFoundException;
 import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
 import ch.sama.sql.dialect.tsql.TSqlQueryRenderer;
 import ch.sama.sql.dialect.tsql.TSqlSchema;
+import ch.sama.sql.query.exception.BadSqlException;
+import ch.sama.sql.query.exception.ObjectNotFoundException;
 import org.junit.Test;
 
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 public class SchemaTest {
     private static final TSqlQueryFactory sql = new TSqlQueryFactory();
@@ -21,7 +21,7 @@ public class SchemaTest {
 
     @Test
     public void tableNameAndSchema() {
-        List<Table> list = new TSqlSchema("CREATE TABLE [dbo].[tblTable](").getTables();
+        List<Table> list = new TSqlSchema("CREATE TABLE [dbo].[tblTable](\n)").getTables();
 
         assertEquals(1, list.size());
         assertEquals("[dbo].[tblTable]", renderer.render(list.get(0)));
@@ -29,7 +29,7 @@ public class SchemaTest {
 
     @Test
     public void tableNameOnly() {
-        List<Table> list = new TSqlSchema("CREATE TABLE [tblTable](").getTables();
+        List<Table> list = new TSqlSchema("CREATE TABLE [tblTable](\n)").getTables();
 
         assertEquals(1, list.size());
         assertEquals("[tblTable]", renderer.render(list.get(0)));

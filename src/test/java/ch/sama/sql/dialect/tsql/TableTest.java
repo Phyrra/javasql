@@ -3,8 +3,6 @@ package ch.sama.sql.dialect.tsql;
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.exception.IllegalIdentifierException;
-import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
-import ch.sama.sql.dialect.tsql.TSqlQueryRenderer;
 import org.junit.Test;
 
 import java.util.List;

@@ -1,5 +1,8 @@
 package ch.sama.sql.dbo.result.obj;
 
+import ch.sama.sql.jpa.Column;
+import ch.sama.sql.jpa.Entity;
+
 @Entity
 public class TestObject {
     @Column(name = "sValue")

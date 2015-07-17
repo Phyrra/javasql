@@ -2,6 +2,7 @@ package ch.sama.sql.dbo.result.obj;
 
 import ch.sama.sql.dbo.result.IResultSetTransformer;
 import ch.sama.sql.dbo.result.TransformerHelper;
+import ch.sama.sql.jpa.Entity;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,7 +16,6 @@ public class ObjectTransformer<T> implements IResultSetTransformer<List<T>> {
         this.clazz = clazz;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<T> transform(ResultSet resultSet) throws SQLException {
         if (!clazz.isAnnotationPresent(Entity.class)) {

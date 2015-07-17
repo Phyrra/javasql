@@ -28,7 +28,7 @@ public class FieldTest {
 	
 	@Test (expected = IllegalIdentifierException.class)
 	public void badField() {
-		new Field("'");		
+		new Field("'");
 	}
 	
 	@Test (expected = IllegalIdentifierException.class)

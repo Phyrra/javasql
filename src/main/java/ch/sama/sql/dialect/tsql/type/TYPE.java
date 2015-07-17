@@ -110,4 +110,25 @@ public class TYPE {
     public static boolean isEqualType(IType t1, IType t2) {
         return t1.getClass().equals(t2.getClass());
     }
+
+    public static IType fromClass(Class clazz) {
+        String name = clazz.getSimpleName().toLowerCase();
+
+        switch (name) {
+            case "string":
+                return VARCHAR_MAX_TYPE;
+            case "double":
+            case "float":
+                return FLOAT_TYPE;
+            case "int":
+            case "long":
+                return INT_TYPE;
+            case "boolean":
+                return BIT_TYPE;
+            case "date":
+                return DATETIME_TYPE;
+        }
+
+        return null;
+    }
 }

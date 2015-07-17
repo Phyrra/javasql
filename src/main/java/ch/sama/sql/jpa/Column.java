@@ -1,4 +1,4 @@
-package ch.sama.sql.dbo.result.obj;
+package ch.sama.sql.jpa;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,4 +9,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface Column {
     public String name();
+    public boolean nullable() default true;
 }

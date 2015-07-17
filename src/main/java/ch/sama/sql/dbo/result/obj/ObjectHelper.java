@@ -1,5 +1,7 @@
 package ch.sama.sql.dbo.result.obj;
 
+import ch.sama.sql.jpa.Column;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;

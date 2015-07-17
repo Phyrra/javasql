@@ -4,7 +4,6 @@ import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dialect.tsql.TSqlQueryRenderer;
 import ch.sama.sql.query.base.InsertQuery;
-import ch.sama.sql.query.base.InsertQueryFinal;
 import ch.sama.sql.query.base.InsertQueryIM;
 
 public class TSqlInsertQueryIM extends InsertQueryIM {
