@@ -112,4 +112,24 @@ public class FunctionTest {
                 )
         );
     }
+
+    @Test
+    public void minValue() {
+        assertEquals(
+                "(CASE\nWHEN [FIELD1] < [FIELD2] THEN [FIELD1]\nELSE [FIELD2]\nEND)",
+                renderer.render(
+                        function.min(value.field("FIELD1"), value.field("FIELD2"))
+                )
+        );
+    }
+
+    @Test
+    public void maxValue() {
+        assertEquals(
+                "(CASE\nWHEN [FIELD1] > [FIELD2] THEN [FIELD1]\nELSE [FIELD2]\nEND)",
+                renderer.render(
+                        function.max(value.field("FIELD1"), value.field("FIELD2"))
+                )
+        );
+    }
 }

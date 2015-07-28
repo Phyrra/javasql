@@ -1,6 +1,7 @@
 package ch.sama.sql.dialect.tsql;
 
 import ch.sama.sql.query.exception.BadParameterException;
+import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.Function;
 import ch.sama.sql.query.helper.Value;
 import ch.sama.sql.query.helper.condition.ICondition;
@@ -170,6 +171,20 @@ public class TSqlFunctionFactory {
         builder.append(")");
         
         return new Value(null, builder.toString());
+    }
+
+    public Value min(Value v1, Value v2) {
+        return caseWhen(
+                whenThen(Condition.lt(v1, v2), v1),
+                otherwise(v2)
+        );
+    }
+
+    public Value max(Value v1, Value v2) {
+        return caseWhen(
+                whenThen(Condition.gt(v1, v2), v1),
+                otherwise(v2)
+        );
     }
     
     // extend at leisure
