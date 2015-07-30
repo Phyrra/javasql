@@ -1,14 +1,11 @@
 package ch.sama.sql.dialect.tsql;
 
-import ch.sama.sql.dialect.tsql.query.TSqlInsertQueryOutput;
+import ch.sama.sql.dialect.tsql.query.*;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.helper.Value;
 import ch.sama.sql.query.helper.condition.ICondition;
 import ch.sama.sql.query.helper.order.IOrder;
 import ch.sama.sql.query.standard.QueryRenderer;
-import ch.sama.sql.dialect.tsql.query.TSqlCteQuery;
-import ch.sama.sql.dialect.tsql.query.TSqlCteQueryFinal;
-import ch.sama.sql.dialect.tsql.query.TSqlSelectQuery;
 
 public class TSqlQueryRenderer extends QueryRenderer {
     private static final TSqlConditionRenderer conditionRenderer = new TSqlConditionRenderer();
@@ -32,7 +29,7 @@ public class TSqlQueryRenderer extends QueryRenderer {
     public String render(TSqlSelectQuery query) {
         StringBuilder builder = new StringBuilder();
 
-        appendIfExists(builder, query);
+        prependParentIfExists(builder, query);
 
         builder.append("SELECT ");
 
@@ -97,6 +94,29 @@ public class TSqlQueryRenderer extends QueryRenderer {
 
             prefix = ", ";
         }
+
+        return builder.toString();
+    }
+
+    public String render(TSqlIfQuery query) {
+        StringBuilder builder = new StringBuilder();
+
+        prependParentIfExists(builder, query);
+
+        builder.append("IF (\n");
+        builder.append(render(query.getCondition()));
+        builder.append("\n)\n");
+        builder.append(query.getQuery().getSql());
+
+        return builder.toString();
+    }
+
+    public String render(TSqlElseQuery query) {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(query.getParent().getSql());
+        builder.append("\nELSE\n");
+        builder.append(query.getQuery().getSql());
 
         return builder.toString();
     }

@@ -13,7 +13,7 @@ import ch.sama.sql.dialect.tsql.query.TSqlSelectQuery;
 import java.util.List;
 
 public abstract class QueryRenderer implements IQueryRenderer {
-    protected void appendIfExists(StringBuilder builder, IQuery query) {
+    protected void prependParentIfExists(StringBuilder builder, IQuery query) {
         IQuery parent = query.getParent();
         if (parent != null) {
             String parentQuery = parent.getSql();
@@ -38,7 +38,7 @@ public abstract class QueryRenderer implements IQueryRenderer {
     public String render(SelectQuery query) {
         StringBuilder builder = new StringBuilder();
 
-        appendIfExists(builder, query);
+        prependParentIfExists(builder, query);
 
         builder.append("SELECT ");
 
@@ -56,7 +56,7 @@ public abstract class QueryRenderer implements IQueryRenderer {
     public String render(TSqlSelectQuery query) {
         StringBuilder builder = new StringBuilder();
 
-        appendIfExists(builder, query);
+        prependParentIfExists(builder, query);
 
         builder.append("SELECT ");
 
@@ -81,7 +81,7 @@ public abstract class QueryRenderer implements IQueryRenderer {
     public String render(FromQuery query) {
         StringBuilder builder = new StringBuilder();
 
-        appendIfExists(builder, query);
+        prependParentIfExists(builder, query);
 
         builder.append("FROM ");
 
@@ -186,7 +186,7 @@ public abstract class QueryRenderer implements IQueryRenderer {
     public String render(DeleteQuery query) {
         StringBuilder builder = new StringBuilder();
 
-        appendIfExists(builder, query);
+        prependParentIfExists(builder, query);
 
         return builder.toString();
     }
@@ -219,7 +219,7 @@ public abstract class QueryRenderer implements IQueryRenderer {
     public String render(InsertQuery query) {
         StringBuilder builder = new StringBuilder();
 
-        appendIfExists(builder, query);
+        prependParentIfExists(builder, query);
 
         return builder.toString();
     }
@@ -281,7 +281,7 @@ public abstract class QueryRenderer implements IQueryRenderer {
     public String render(UpdateQuery query) {
         StringBuilder builder = new StringBuilder();
 
-        appendIfExists(builder, query);
+        prependParentIfExists(builder, query);
 
         builder.append("UPDATE ");
         builder.append(render(query.getTable()));

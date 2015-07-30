@@ -4,6 +4,7 @@ import ch.sama.sql.dialect.tsql.TSqlQueryRenderer;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.base.Query;
 import ch.sama.sql.query.helper.Value;
+import ch.sama.sql.query.helper.condition.ICondition;
 
 public class TSqlQuery extends Query {
     private TSqlQueryRenderer renderer;
@@ -32,5 +33,9 @@ public class TSqlQuery extends Query {
 
     public TSqlCteQuery with(String alias) {
         return new TSqlCteQuery(renderer, this, alias);
+    }
+
+    public TSqlIfQuery doif(ICondition condition, IQuery query) {
+        return new TSqlIfQuery(renderer, this, condition, query);
     }
 }
