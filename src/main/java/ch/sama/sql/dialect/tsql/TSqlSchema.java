@@ -316,7 +316,7 @@ public class TSqlSchema implements ISchema {
                             int idx2 = line.lastIndexOf(")");
 
                             String defaultValue = line.substring(idx1, idx2 + 1);
-                            field.setDefaultValue(new Value(null, defaultValue));
+                            field.setDefaultValue(new Value(defaultValue));
                         }
 
                         table.addColumn(field); // if this does invoke NPE something went wrong

@@ -1,5 +1,6 @@
 package ch.sama.sql.dialect.tsql;
 
+import ch.sama.sql.dbo.IType;
 import ch.sama.sql.query.exception.BadParameterException;
 import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.Function;
@@ -113,7 +114,7 @@ public class TSqlFunctionFactory {
 
         builder.append("\nEND)");
 
-        return new Value(null, builder.toString());
+        return new Value(builder.toString());
     }
 
     public Value caseWhen(WhenThen... wts) {
@@ -125,7 +126,7 @@ public class TSqlFunctionFactory {
 
         builder.append("\nEND)");
 
-        return new Value(null, builder.toString());
+        return new Value(builder.toString());
     }
     
     public List<Value> valueList(Value... value) {
@@ -170,7 +171,7 @@ public class TSqlFunctionFactory {
         
         builder.append(")");
         
-        return new Value(null, builder.toString());
+        return new Value(builder.toString());
     }
 
     public Value min(Value v1, Value v2) {
@@ -185,6 +186,10 @@ public class TSqlFunctionFactory {
                 whenThen(Condition.gt(v1, v2), v1),
                 otherwise(v2)
         );
+    }
+
+    public Value cast(Value v, IType t) {
+        return new Value("CAST(" + v.getValue() + " AS " + t.getString() + ")");
     }
     
     // extend at leisure
