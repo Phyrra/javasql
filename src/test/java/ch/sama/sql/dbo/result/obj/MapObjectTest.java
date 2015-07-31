@@ -1,5 +1,6 @@
 package ch.sama.sql.dbo.result.obj;
 
+import ch.sama.sql.jpa.JpaUtil;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -17,7 +18,8 @@ public class MapObjectTest {
         map.put("iValue", 1);
         map.put("dValue", 1.1);
 
-        TestObject obj = ObjectHelper.mapToObject(map, TestObject.class);
+        JpaUtil<TestObject> util = new JpaUtil<TestObject>(TestObject.class);
+        TestObject obj = util.toObject(map);
 
         assertEquals("string", obj.getStringVal());
         assertEquals(1, obj.getIntVal());
@@ -31,7 +33,8 @@ public class MapObjectTest {
         obj.setIntVal(1);
         obj.setDoubleVal(1.1);
 
-        Map<String, Object> map = ObjectHelper.objectToMap(obj);
+        JpaUtil<TestObject> util = new JpaUtil<TestObject>(TestObject.class);
+        Map<String, Object> map = util.toMap(obj);
 
         assertEquals("string", map.get("sValue"));
         assertEquals(1, map.get("iValue"));
