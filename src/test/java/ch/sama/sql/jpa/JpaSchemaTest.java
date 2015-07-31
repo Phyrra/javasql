@@ -1,6 +1,7 @@
 package ch.sama.sql.jpa;
 
-import ch.sama.sql.dialect.tsql.TSqlSchemaBuilder;
+import ch.sama.sql.dialect.tsql.TSqlSchemaRenderer;
+import ch.sama.sql.query.exception.BadSqlException;
 import org.junit.Test;
 
 import java.util.Date;
@@ -31,7 +32,7 @@ public class JpaSchemaTest {
     public void classToType() {
         assertEquals(
                 "CREATE TABLE [Table1] (\n\t[COLUMN1] [varchar](MAX) NULL,\n\t[COLUMN2] [float] NULL,\n\t[COLUMN3] [int] NULL,\n\t[COLUMN4] [bit] NULL,\n\t[COLUMN5] [datetime] NULL\n)",
-                TSqlSchemaBuilder.getTableSchema(Table1.class)
+                TSqlSchemaRenderer.getTableSchema(Table1.class)
         );
     }
 
@@ -48,7 +49,7 @@ public class JpaSchemaTest {
     public void nullable() {
         assertEquals(
                 "CREATE TABLE [Table2] (\n\t[COLUMN1] [varchar](MAX) NULL,\n\t[COLUMN2] [varchar](MAX) NOT NULL\n)",
-                TSqlSchemaBuilder.getTableSchema(Table2.class)
+                TSqlSchemaRenderer.getTableSchema(Table2.class)
         );
     }
 
@@ -64,7 +65,7 @@ public class JpaSchemaTest {
     public void autoIncrementPrimary() {
         assertEquals(
                 "CREATE TABLE [Table3] (\n\t[P_KEY] [int] IDENTITY(1,1) NOT NULL,\n\tCONSTRAINT [PK_Table3] PRIMARY KEY CLUSTERED (\n\t\t[P_KEY] ASC\n\t)\n) ON [PRIMARY]",
-                TSqlSchemaBuilder.getTableSchema(Table3.class)
+                TSqlSchemaRenderer.getTableSchema(Table3.class)
         );
     }
 
@@ -75,7 +76,7 @@ public class JpaSchemaTest {
 
     @Test(expected = JpaException.class)
     public void notAnnotated() {
-        TSqlSchemaBuilder.getTableSchema(Table4.class);
+        TSqlSchemaRenderer.getTableSchema(Table4.class);
     }
 
     @Entity(name = "tblTable5")
@@ -88,7 +89,7 @@ public class JpaSchemaTest {
     public void definedTableName() {
         assertEquals(
                 "CREATE TABLE [tblTable5] (\n\t[COLUMN] [varchar](MAX) NULL\n)",
-                TSqlSchemaBuilder.getTableSchema(Table5.class)
+                TSqlSchemaRenderer.getTableSchema(Table5.class)
         );
     }
 
@@ -99,9 +100,9 @@ public class JpaSchemaTest {
         private double d;
     }
 
-    @Test(expected = JpaException.class)
+    @Test(expected = BadSqlException.class)
     public void autoIncrOnDouble() {
-        TSqlSchemaBuilder.getTableSchema(Table6.class);
+        TSqlSchemaRenderer.getTableSchema(Table6.class);
     }
 
     @Entity
@@ -110,8 +111,8 @@ public class JpaSchemaTest {
         private List<String> list;
     }
 
-    @Test(expected = JpaException.class)
+    @Test(expected = BadSqlException.class)
     public void unknownType() {
-        TSqlSchemaBuilder.getTableSchema(Table7.class);
+        TSqlSchemaRenderer.getTableSchema(Table7.class);
     }
 }

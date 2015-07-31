@@ -5,13 +5,13 @@ import ch.sama.sql.dbo.IType;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dialect.tsql.type.TYPE;
 import ch.sama.sql.jpa.*;
+import ch.sama.sql.query.exception.BadSqlException;
 import ch.sama.sql.query.helper.Value;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class TSqlSchemaBuilder {
-    private static String renderTable(Table t) {
+public class TSqlSchemaRenderer {
+    private static String renderTableName(Table t) {
         String schema = t.getSchema();
         if (schema == null) {
             return "[" + t.getName() + "]";
@@ -20,14 +20,14 @@ public class TSqlSchemaBuilder {
         }
     }
 
-    public static String getTableSchema(Table table) {
+    public static String getTableSchema(Table table) throws BadSqlException {
         // TODO: Ignores FK constraints
 
         StringBuilder builder = new StringBuilder();
         String prefix = "";
 
         builder.append("CREATE TABLE ");
-        builder.append(renderTable(table));
+        builder.append(renderTableName(table));
         builder.append(" (\n");
 
         for (Field field : table.getColumns()) {
@@ -65,11 +65,15 @@ public class TSqlSchemaBuilder {
     private static String getColumnSchema(Field field) {
         StringBuilder builder = new StringBuilder();
 
+        String colName = field.getName();
+
         builder.append("[");
-        builder.append(field.getName());
+        builder.append(colName);
         builder.append("] [");
 
-        String dataType = field.getDataType().getString();
+        IType type = field.getDataType();
+
+        String dataType = type.getString();
         if (dataType.contains("(")) {
             int idx = dataType.indexOf("(");
 
@@ -82,6 +86,10 @@ public class TSqlSchemaBuilder {
         }
 
         if (field.isAutoIncrement()) {
+            if (!TYPE.isEqualType(type, TYPE.INT_TYPE)) {
+                throw new BadSqlException("AutoIncrement on non-integer column: " + colName);
+            }
+
             builder.append(" IDENTITY(1,1)");
         }
 
@@ -113,131 +121,63 @@ public class TSqlSchemaBuilder {
         return builder.toString();
     }
 
-    public static <T> String getTableSchema(Class<T> clazz) {
+    public static <T> String getTableSchema(Class<T> clazz) throws JpaException, BadSqlException {
         if (!clazz.isAnnotationPresent(Entity.class)) {
             throw new JpaException("Class must be annotated with @Entity");
         }
 
-        StringBuilder builder = new StringBuilder();
-        String prefix;
+        Entity entity = clazz.getAnnotation(Entity.class);
+        Table table;
 
-        String table = clazz.getAnnotation(Entity.class).name();
-        if ("".equals(table)) {
-            table = clazz.getSimpleName();
+        String name = entity.name();
+        if ("".equals(name)) {
+            name = clazz.getSimpleName();
         }
 
-        List<String> primaryKey = new ArrayList<String>();
+        String schema = entity.schema();
+        if ("".equals(schema)) {
+            table = new Table(name);
+        } else {
+            table = new Table(schema, name);
+        }
 
-        builder.append("CREATE TABLE [");
-        builder.append(table);
-        builder.append("] (\n");
-
-        prefix = "";
         for (java.lang.reflect.Field field : clazz.getDeclaredFields()) {
             if (field.isAnnotationPresent(Column.class)) {
-                builder.append(prefix);
-                builder.append("\t");
-
                 Column col = field.getAnnotation(Column.class);
                 String colName = col.name();
 
-                builder.append(getColumnSchema(field, table));
+                Field column = new Field(table, colName);
 
-                prefix = ",\n";
+                IType type = TYPE.fromClass(field.getType());
+                column.setDataType(type);
+
+                if (col.nullable()) {
+                    column.setNullable();
+                } else {
+                    column.setNotNullable();
+                }
+
+                if (field.isAnnotationPresent(AutoIncrement.class)) {
+                    if (!TYPE.isEqualType(type, TYPE.INT_TYPE)) {
+                        throw new BadSqlException("AutoIncrement on non-integer column: " + colName);
+                    }
+
+                    column.setAutoIncrement();
+                }
 
                 if (field.isAnnotationPresent(PrimaryKey.class)) {
-                    primaryKey.add(colName);
+                    column.setAsPrimaryKey();
                 }
+
+                if (field.isAnnotationPresent(Default.class)) {
+                    column.setDefaultValue(new Value(field.getAnnotation(Default.class).value()));
+                }
+
+                table.addColumn(column);
             }
         }
 
-        if (primaryKey.isEmpty()) {
-            builder.append("\n)");
-        } else {
-            builder.append(",\n\tCONSTRAINT [PK_");
-            builder.append(table);
-            builder.append("] PRIMARY KEY CLUSTERED (\n");
-
-            prefix = "";
-            for (String pKey : primaryKey) {
-                builder.append(prefix);
-                builder.append("\t\t[");
-                builder.append(pKey);
-                builder.append("] ASC");
-
-                prefix = ",\n";
-            }
-
-            builder.append("\n\t)\n) ON [PRIMARY]");
-        }
-
-        return builder.toString();
-    }
-
-    private static String getColumnSchema(java.lang.reflect.Field field, String table) {
-        StringBuilder builder = new StringBuilder();
-
-        Column col = field.getAnnotation(Column.class);
-        String colName = col.name();
-
-        builder.append("[");
-        builder.append(colName);
-        builder.append("] [");
-
-        Class fieldType = field.getType();
-        IType type = TYPE.fromClass(fieldType);
-        if (type == null) {
-            throw new JpaException("Unknown field type: " + fieldType.getSimpleName());
-        }
-
-        String dataType = type.getString();
-        if (dataType.contains("(")) {
-            int idx = dataType.indexOf("(");
-
-            builder.append(dataType.substring(0, idx));
-            builder.append("]");
-            builder.append(dataType.substring(idx));
-        } else {
-            builder.append(dataType);
-            builder.append("]");
-        }
-
-        boolean autoIncr = field.isAnnotationPresent(AutoIncrement.class);
-        if (autoIncr) {
-            if (!TYPE.isEqualType(type, TYPE.INT_TYPE)) {
-                throw new JpaException("AutoIncrement on non-integer column: " + colName);
-            }
-
-            builder.append(" IDENTITY(1,1)");
-        }
-
-        if (col.nullable()) {
-            builder.append(" NULL");
-        } else {
-            builder.append(" NOT NULL");
-        }
-
-        if (!autoIncr && field.isAnnotationPresent(Default.class)) {
-            Default def = field.getAnnotation(Default.class);
-
-            builder.append(" CONSTRAINT [DF_");
-            builder.append(table);
-            builder.append("_");
-            builder.append(colName);
-            builder.append("] DEFAULT ");
-
-            String defaultString = def.value();
-
-            if (!(defaultString.startsWith("(") && defaultString.endsWith(")"))) {
-                builder.append("(");
-                builder.append(defaultString);
-                builder.append(")");
-            } else {
-                builder.append(defaultString);
-            }
-        }
-
-        return builder.toString();
+        return getTableSchema(table);
     }
 
     public static String getSchemaDiff(TSqlSchema lhs, TSqlSchema rhs) {
@@ -270,7 +210,7 @@ public class TSqlSchemaBuilder {
                         if (!fr.compareTo(fl)) {
                             builder.append(prefix);
                             builder.append("ALTER TABLE ");
-                            builder.append(renderTable(tr));
+                            builder.append(renderTableName(tr));
                             builder.append(" ALTER COLUMN ");
                             builder.append(getColumnSchema(fr));
 
@@ -279,7 +219,7 @@ public class TSqlSchemaBuilder {
                     } else {
                         builder.append(prefix);
                         builder.append("ALTER TABLE [");
-                        builder.append(renderTable(tr));
+                        builder.append(renderTableName(tr));
                         builder.append(" ADD ");
                         builder.append(getColumnSchema(fr));
 

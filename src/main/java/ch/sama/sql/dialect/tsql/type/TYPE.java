@@ -2,6 +2,7 @@ package ch.sama.sql.dialect.tsql.type;
 
 import ch.sama.sql.dbo.GenericType;
 import ch.sama.sql.dbo.IType;
+import ch.sama.sql.query.exception.BadSqlException;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -129,6 +130,6 @@ public class TYPE {
                 return DATETIME_TYPE;
         }
 
-        return null;
+        throw new BadSqlException("Class cannot be converted to type");
     }
 }

@@ -2,7 +2,6 @@ package ch.sama.sql.dbo.result.obj;
 
 import ch.sama.sql.dbo.result.IResultSetTransformer;
 import ch.sama.sql.dbo.result.TransformerHelper;
-import ch.sama.sql.jpa.Entity;
 import ch.sama.sql.jpa.JpaException;
 import ch.sama.sql.jpa.JpaUtil;
 
@@ -21,10 +20,6 @@ public class ObjectTransformer<T> implements IResultSetTransformer<List<T>> {
 
     @Override
     public List<T> transform(ResultSet resultSet) throws SQLException, JpaException {
-        if (!clazz.isAnnotationPresent(Entity.class)) {
-            throw new JpaException("Object must be annotated with @Entity");
-        }
-
         List<T> result = new ArrayList<T>();
 
         String[] colNames = TransformerHelper.getColumnNames(resultSet);
