@@ -26,58 +26,43 @@ public class QueryExecutor<S> implements IQueryExecutor<S> {
         } catch (SQLException e) { }
     }
 
-    @Override
-    public void execute(String query) {
-        Statement statement;
+    private Statement createStatement() {
         try {
             Connection con = connection.open();
-            statement = con.createStatement();
-        } catch (Exception e) {
+            return con.createStatement();
+        } catch (SQLException e) {
             connection.close();
 
             throw new ConnectionException(e);
         }
+    }
+
+    @Override
+    public void execute(String query) {
+        Statement statement = createStatement();
 
         try {
             statement.executeUpdate(query);
         } catch (SQLException e) {
+            throw new BadSqlException(e);
+        } finally {
             closeStatement(statement);
             connection.close();
-
-            throw new BadSqlException(e);
         }
-
-        closeStatement(statement);
-        connection.close();
     }
 
     @Override
     public S query(String query) {
-        S result;
-
-        Statement statement;
-        try {
-            Connection con = connection.open();
-            statement = con.createStatement();
-        } catch (Exception e) {
-            connection.close();
-
-            throw new ConnectionException(e);
-        }
+        Statement statement = createStatement();
 
         try {
             ResultSet resultSet = statement.executeQuery(query);
-            result = transformer.transform(resultSet);
+            return transformer.transform(resultSet);
         } catch (SQLException e) {
+            throw new BadSqlException(e);
+        } finally {
             closeStatement(statement);
             connection.close();
-
-            throw new BadSqlException(e);
         }
-
-        closeStatement(statement);
-        connection.close();
-
-        return result;
     }
 }
