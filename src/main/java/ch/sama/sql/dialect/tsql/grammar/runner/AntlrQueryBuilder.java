@@ -8,10 +8,10 @@ import ch.sama.sql.dialect.tsql.grammar.visitor.QueryVisitor;
 import ch.sama.sql.query.base.IQuery;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 
-public class AntlrQueryGenerator extends SqlParserBase {
+public class AntlrQueryBuilder extends SqlParserBase {
     private TSqlQueryFactory builder;
 
-    public AntlrQueryGenerator() {
+    public AntlrQueryBuilder() {
         this.builder = new TSqlQueryFactory();
     }
 

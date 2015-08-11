@@ -7,7 +7,7 @@ import ch.sama.sql.dialect.tsql.grammar.visitor.PrintVisitor;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 
 public class AntlrSqlPrinter extends SqlParserBase {
-    public String run(String pattern) {
+    public String print(String pattern) {
         SqlParser parser = parse(pattern);
 
         PrintVisitor visitor = new PrintVisitor();

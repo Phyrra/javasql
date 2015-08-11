@@ -1,6 +1,6 @@
 package ch.sama.sql.dialect.tsql.grammar.visitor.query;
 
-import ch.sama.sql.dialect.tsql.grammar.runner.AntlrQueryGenerator;
+import ch.sama.sql.dialect.tsql.grammar.runner.AntlrQueryBuilder;
 import ch.sama.sql.dialect.tsql.grammar.visitor.TestBase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,30 +22,36 @@ public class TestRunner extends TestBase {
 
     private static String ONLY_ONE = null;
 
+    private String name;
     private File in;
     private File out;
 
-    public TestRunner(File in, File out) {
+    public TestRunner(String name, File in, File out) {
+        this.name = name;
         this.in = in;
         this.out = out;
     }
 
-    @Parameterized.Parameters
+    @Parameterized.Parameters (name = "{index}: {0}")
     public static Collection tests() {
         List<Object[]> files = new ArrayList<Object[]>();
 
         if (ONLY_ONE == null) {
             File dir = new File(PATH);
             for (File file : dir.listFiles()) {
-                if (file.getName().endsWith("." + ENDING)) {
+                String fileName = file.getName();
+
+                if (fileName.endsWith("." + ENDING)) {
                     files.add(new Object[]{
+                            fileName,
                             file,
-                            new File(PATH + "/" + file.getName() + "." + OUT)
+                            new File(PATH + "/" + fileName + "." + OUT)
                     });
                 }
             }
         } else {
             files.add(new Object[] {
+                    ONLY_ONE,
                     new File(PATH + "/" + ONLY_ONE),
                     new File(PATH + "/" + ONLY_ONE + "." + OUT)
             });
@@ -59,20 +65,9 @@ public class TestRunner extends TestBase {
         String result;
 
         try {
-            AntlrQueryGenerator generator = new AntlrQueryGenerator();
+            AntlrQueryBuilder builder = new AntlrQueryBuilder();
 
-            /*
-            IQuery test = generator.generate(readFile(in));
-            while (true) {
-                System.out.println(test);
-                test = test.getParent();
-                if (test == null) {
-                    break;
-                }
-            }
-            */
-
-            result = generator.generate(readFile(in)).getSql();
+            result = builder.generate(readFile(in)).getSql();
         }  catch (Exception e) {
             result = e.getClass().getName() + ": " + e.getMessage();
         }

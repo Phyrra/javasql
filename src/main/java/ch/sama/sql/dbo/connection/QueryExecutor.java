@@ -42,7 +42,7 @@ public class QueryExecutor<S> implements IQueryExecutor<S> {
         Statement statement = createStatement();
 
         try {
-            statement.executeUpdate(query);
+            statement.execute(query);
         } catch (SQLException e) {
             throw new BadSqlException(e);
         } finally {

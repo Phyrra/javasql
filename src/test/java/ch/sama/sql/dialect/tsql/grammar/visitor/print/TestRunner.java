@@ -22,30 +22,36 @@ public class TestRunner extends TestBase {
 
     private static String ONLY_ONE = null;
 
+    private String name;
     private File in;
     private File out;
 
-    public TestRunner(File in, File out) {
+    public TestRunner(String name, File in, File out) {
+        this.name = name;
         this.in = in;
         this.out = out;
     }
 
-    @Parameterized.Parameters
+    @Parameterized.Parameters (name = "{index}: {0}")
     public static Collection tests() {
         List<Object[]> files = new ArrayList<Object[]>();
 
         if (ONLY_ONE == null) {
             File dir = new File(PATH);
             for (File file : dir.listFiles()) {
-                if (file.getName().endsWith("." + ENDING)) {
+                String fileName = file.getName();
+
+                if (fileName.endsWith("." + ENDING)) {
                     files.add(new Object[]{
+                            fileName,
                             file,
-                            new File(PATH + "/" + file.getName() + "." + OUT)
+                            new File(PATH + "/" + fileName + "." + OUT)
                     });
                 }
             }
         } else {
             files.add(new Object[] {
+                    ONLY_ONE,
                     new File(PATH + "/" + ONLY_ONE),
                     new File(PATH + "/" + ONLY_ONE + "." + OUT)
             });
@@ -61,7 +67,7 @@ public class TestRunner extends TestBase {
         try {
             AntlrSqlPrinter printer = new AntlrSqlPrinter();
 
-            result = printer.run(readFile(in));
+            result = printer.print(readFile(in));
         }  catch (Exception e) {
             result = e.getClass().getName() + ": " + e.getMessage();
         }
