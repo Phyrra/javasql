@@ -27,6 +27,10 @@ public class TSqlSchema implements ISchema {
 
     private Map<String, Table> tables;
 
+    public TSqlSchema(Map<String, Table> tables) {
+        this.tables = tables;
+    }
+
     public TSqlSchema(IQueryExecutor<List<MapResult>> executor) {
         loadSchema(executor, table -> true);
     }
@@ -60,8 +64,7 @@ public class TSqlSchema implements ISchema {
 
             System.out.println("Creating table: " + table);
 
-            Table t = new Table(schema, table);
-            tables.put(table, t);
+            Table tbl = new Table(schema, table);
 
             List<MapResult> columns = executor.query(
                     sql.query()
@@ -100,7 +103,7 @@ public class TSqlSchema implements ISchema {
             );
 
             for (MapResult column : columns) {
-                Field f = new Field(t, column.getAsString("COLUMN_NAME"));
+                Field f = new Field(tbl, column.getAsString("COLUMN_NAME"));
 
                 String dataType = column.getAsString("DATA_TYPE");
                 Object maxLength = column.get("CHARACTER_MAXIMUM_LENGTH");
@@ -128,7 +131,7 @@ public class TSqlSchema implements ISchema {
                     f.setDefaultValue(value.plain(defaultValue));
                 }
 
-                t.addColumn(f);
+                tbl.addColumn(f);
 
                 if (column.getAsInt("IS_PKEY") == 1) {
                     f.setAsPrimaryKey();
@@ -138,6 +141,8 @@ public class TSqlSchema implements ISchema {
                     f.setAutoIncrement();
                 }
             }
+
+            addTable(tbl);
         }
     }
 
@@ -181,6 +186,10 @@ public class TSqlSchema implements ISchema {
         }
 
         parse(builder.toString());
+    }
+
+    private void addTable(Table table) {
+        tables.put(table.getName(), table);
     }
 
     @Override
@@ -249,7 +258,7 @@ public class TSqlSchema implements ISchema {
                     table = new Table(tableSchema, tableName);
                 }
 
-                tables.put(tableName, table);
+                addTable(table);
             } else if (line.startsWith("CONSTRAINT")) { // the only supported constraint is PRIMARY
                 currentBlock = PRIMARY_BLOCK;
             } else if (line.startsWith(")")) {
@@ -334,6 +343,10 @@ public class TSqlSchema implements ISchema {
                         }
                         if (i == 0) {
                             throw new BadSqlException("Schema error, no field name: " + line);
+                        }
+
+                        if (!table.hasColumn(fieldName)) {
+                            throw new BadSqlException("Primary key error, table has no " + fieldName);
                         }
 
                         table.getColumn(fieldName).setAsPrimaryKey();

@@ -43,7 +43,7 @@ public class QueryFinder {
 
     // TODO: This will not work with "SELECT *"
     // TODO: This will not work with "SELECT TABLE.*"
-    public<T> List<T> getSelected(IQuery src, Class<T> dst) {
+    public<T> List<T> getValues(IQuery src, Class<T> dst) {
         SelectQuery query = get(src, SelectQuery.class);
         List<Value> values = query.getValues();
 

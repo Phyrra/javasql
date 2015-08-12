@@ -15,7 +15,7 @@ public class AntlrQueryBuilder extends SqlParserBase {
         this.builder = new TSqlQueryFactory();
     }
 
-    public IQuery generate(String pattern) {
+    public IQuery build(String pattern) {
         SqlParser parser = parse(pattern);
 
         QueryVisitor visitor = new QueryVisitor(builder);

@@ -59,7 +59,7 @@ public class QueryFinderTest {
                 .select(value.field("FIELD1"), value.plain("A(FIELD1)"), value.field("FIELD2"), value.plain("B(FIELD2)"))
                 .from(source.table("TABLE"));
 
-        List<Field> fields = finder.getSelected(query, Field.class);
+        List<Field> fields = finder.getValues(query, Field.class);
 
         assertEquals(2, fields.size());
     }
@@ -70,7 +70,7 @@ public class QueryFinderTest {
                 .select(value.field("FIELD1"), value.function("A", value.field("FIELD1")), value.field("FIELD2"), value.function("B", value.field("FIELD2")), value.function("C", value.field("FIELD3")))
                 .from(source.table("TABLE"));
 
-        List<Function> functions = finder.getSelected(query, Function.class);
+        List<Function> functions = finder.getValues(query, Function.class);
 
         assertEquals(3, functions.size());
     }

@@ -67,7 +67,7 @@ public class TestRunner extends TestBase {
         try {
             AntlrQueryBuilder builder = new AntlrQueryBuilder();
 
-            result = builder.generate(readFile(in)).getSql();
+            result = builder.build(readFile(in)).getSql();
         }  catch (Exception e) {
             result = e.getClass().getName() + ": " + e.getMessage();
         }

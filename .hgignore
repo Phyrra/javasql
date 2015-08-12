@@ -8,3 +8,4 @@ gradlew
 gradlew.bat
 bin/*
 src/main/java/ch/sama/sql/dialect/tsql/grammar/antlr/*
+src/main/java/ch/sama/sql/generated/*
