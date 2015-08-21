@@ -73,4 +73,9 @@ public class UnionTest {
                 .getSql()
         );
     }
+
+    // TODO: Cannot do select.top.from.union.select.top
+    //  from erases TSql prefix
+
+    // TODO: delete.from.union.select makes no sense
 }

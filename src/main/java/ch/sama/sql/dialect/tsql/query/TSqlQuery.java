@@ -1,5 +1,6 @@
 package ch.sama.sql.dialect.tsql.query;
 
+import ch.sama.sql.dbo.IType;
 import ch.sama.sql.dialect.tsql.TSqlQueryRenderer;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.base.Query;
@@ -37,5 +38,9 @@ public class TSqlQuery extends Query {
 
     public TSqlIfQuery doif(ICondition condition, IQuery query) {
         return new TSqlIfQuery(renderer, this, condition, query);
+    }
+
+    public TSqlDeclareQuery declare(String variable, IType type, Value value) {
+        return new TSqlDeclareQuery(renderer, this, variable, type, value);
     }
 }

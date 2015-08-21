@@ -120,4 +120,24 @@ public class TSqlQueryRenderer extends QueryRenderer {
 
         return builder.toString();
     }
+
+    public String render(TSqlDeclareQuery query) {
+        StringBuilder builder = new StringBuilder();
+
+        prependParentIfExists(builder, query);
+
+        String var = query.getVariable();
+
+        builder.append("DECLARE @");
+        builder.append(var);
+        builder.append(" AS ");
+        builder.append(query.getType().getString());
+        builder.append("\nSET @");
+        builder.append(var);
+        builder.append(" = ");
+        builder.append(query.getValue().getValue());
+        builder.append(";");
+
+        return builder.toString();
+    }
 }

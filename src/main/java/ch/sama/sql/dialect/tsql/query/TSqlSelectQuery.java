@@ -38,4 +38,9 @@ public class TSqlSelectQuery extends SelectQuery {
     public boolean hasTop() {
         return top > 0;
     }
+
+    @Override
+    public TSqlQuery union() {
+        return new TSqlQuery(renderer, this);
+    }
 }
