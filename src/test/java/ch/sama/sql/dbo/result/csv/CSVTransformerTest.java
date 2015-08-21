@@ -39,12 +39,12 @@ public class CSVTransformerTest {
     public void multiResult() {
         CSVSet result = executor.query(
                 sql.query()
-                        .select(value.numeric(1))
-                        .union()
-                        .select(value.numeric(2))
-                        .union()
-                        .select(value.numeric(3))
-                .getSql()
+                        .union(
+                                sql.query().select(value.numeric(1)),
+                                sql.query().select(value.numeric(2)),
+                                sql.query().select(value.numeric(3))
+                        )
+                        .getSql()
         );
 
         assertEquals(3, result.size());
@@ -69,9 +69,10 @@ public class CSVTransformerTest {
     public void csvOutputMultiRow() {
         CSVSet result = executor.query(
                 sql.query()
-                        .select(value.string("1.1").as("f1"), value.string("1.2").as("f2"))
-                        .union()
-                        .select(value.string("2.1").as("f2"), value.string("2.2").as("f2"))
+                        .union(
+                                sql.query().select(value.string("1.1").as("f1"), value.string("1.2").as("f2")),
+                                sql.query().select(value.string("2.1").as("f2"), value.string("2.2").as("f2"))
+                        )
                 .getSql()
         );
 

@@ -58,6 +58,7 @@ public class TSqlQueryRenderer extends QueryRenderer {
             builder.append(parent.getSql());
             builder.append(", ");
         } else {
+            prependParentIfExists(builder, query);
             builder.append("WITH ");
         }
 

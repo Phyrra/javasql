@@ -37,8 +37,4 @@ public class WhereQuery implements IQuery {
 	public OrderQuery order(IOrder... o) {
         return new OrderQuery(renderer, this, o);
 	}
-
-    public Query union() {
-        return new Query(renderer, this);
-    }
 }

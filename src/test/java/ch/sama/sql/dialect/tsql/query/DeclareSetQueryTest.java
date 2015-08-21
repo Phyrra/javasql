@@ -27,7 +27,7 @@ public class DeclareSetQueryTest {
                 "DECLARE @VAR AS int\nSET @VAR = 1;",
                 sql.query()
                         .declare("VAR", TYPE.INT_TYPE, value.numeric(1))
-                .getSql()
+                        .getSql()
         );
     }
 
@@ -67,6 +67,51 @@ public class DeclareSetQueryTest {
                 sql.query()
                         .declare("VAR", TYPE.INT_TYPE, value.numeric(1))
                         .select(value.variable("VAR").as("I"))
+                .getSql()
+        );
+    }
+
+    @Test
+    public void cteAfterDeclare() {
+        assertEquals(
+                "DECLARE @VAR AS int\nSET @VAR = 1;\nWITH [cte] AS (\nSELECT @VAR AS [ID]\n)\nSELECT [ID]\nFROM [cte]",
+                sql.query()
+                        .declare("VAR", TYPE.INT_TYPE, value.numeric(1))
+                        .with("cte")
+                        .as(
+                                sql.query()
+                                        .select(value.variable("VAR").as("ID"))
+                        )
+                        .select(value.field("ID"))
+                        .from(source.table("cte"))
+                .getSql()
+        );
+    }
+
+    @Test
+    public void cteAfterCteAfterDeclare() {
+        assertEquals(
+                "DECLARE @VAR AS int\nSET @VAR = 1;\nWITH [cte1] AS (\nSELECT @VAR AS [ID]\n), [cte2] AS (\nSELECT @VAR AS [ID]\n)\nSELECT [ID]\nFROM [cte1]\nUNION ALL\nSELECT [ID]\nFROM [cte2]",
+                sql.query()
+                        .declare("VAR", TYPE.INT_TYPE, value.numeric(1))
+                        .with("cte1")
+                        .as(
+                                sql.query()
+                                        .select(value.variable("VAR").as("ID"))
+                        )
+                        .with("cte2")
+                        .as(
+                                sql.query()
+                                        .select(value.variable("VAR").as("ID"))
+                        )
+                        .union(
+                                sql.query()
+                                        .select(value.field("ID"))
+                                        .from(source.table("cte1")),
+                                sql.query()
+                                        .select(value.field("ID"))
+                                        .from(source.table("cte2"))
+                        )
                 .getSql()
         );
     }

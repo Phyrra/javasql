@@ -51,4 +51,8 @@ public class Query implements IQuery {
     public UpdateQuery update(String table) {
         return update(new Table(table));
     }
+
+    public UnionQuery union(IQuery... queries) {
+        return new UnionQuery(renderer, this, queries);
+    }
 }

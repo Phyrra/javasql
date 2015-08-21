@@ -49,8 +49,4 @@ public class FromQuery implements IQuery {
 	public WhereQuery where(ICondition condition) {
         return new WhereQuery(renderer, this, condition);
 	}
-
-    public Query union() {
-        return new Query(renderer, this);
-    }
 }

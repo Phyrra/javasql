@@ -31,11 +31,6 @@ public class MySqlJoinQueryFinal extends JoinQueryFinal {
         return new MySqlWhereQuery(renderer, this, c);
     }
 
-    @Override
-    public MySqlQuery union() {
-        return new MySqlQuery(renderer, this);
-    }
-
     public MySqlLimitQuery limit(int limit) {
         return new MySqlLimitQuery(renderer, this, limit);
     }

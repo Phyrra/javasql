@@ -42,10 +42,6 @@ public class SelectQuery implements IQuery {
         return new FromQuery(renderer, this, s);
 	}
 
-    public Query union() {
-        return new Query(renderer, this);
-    }
-
     public WhereQuery where(ICondition c) {
         return new WhereQuery(renderer, this, c);
     }

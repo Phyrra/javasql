@@ -22,11 +22,6 @@ public class MySqlSelectQuery extends SelectQuery {
     }
 
     @Override
-    public MySqlQuery union() {
-        return new MySqlQuery(renderer, this);
-    }
-
-    @Override
     public MySqlWhereQuery where(ICondition c) {
         return new MySqlWhereQuery(renderer, this, c);
     }

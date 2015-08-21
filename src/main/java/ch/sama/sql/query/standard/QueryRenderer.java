@@ -15,8 +15,10 @@ import java.util.List;
 public abstract class QueryRenderer implements IQueryRenderer {
     protected void prependParentIfExists(StringBuilder builder, IQuery query) {
         IQuery parent = query.getParent();
+
         if (parent != null) {
             String parentQuery = parent.getSql();
+
             if (parentQuery != null) {
                 builder.append(parentQuery);
                 builder.append("\n");
@@ -27,11 +29,33 @@ public abstract class QueryRenderer implements IQueryRenderer {
     @Override
     public String render(Query query) {
         IQuery parent = query.getParent();
+
         if (parent != null) {
-            return parent.getSql() + " UNION ALL";
+            String parentQuery = parent.getSql();
+
+            if (parentQuery != null) {
+                return parentQuery + "\nUNION ALL";
+            }
         }
 
         return null;
+    }
+
+    @Override
+    public String render(UnionQuery query) {
+        StringBuilder builder = new StringBuilder();
+
+        prependParentIfExists(builder, query);
+
+        String prefix = "";
+        for (IQuery q : query.getQueries()) {
+            builder.append(prefix);
+            builder.append(q.getSql());
+
+            prefix = "\nUNION ALL\n";
+        }
+
+        return builder.toString();
     }
 
     @Override

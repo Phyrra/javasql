@@ -16,11 +16,6 @@ public class MySqlWhereQuery extends WhereQuery {
     }
 
     @Override
-    public MySqlQuery union() {
-        return new MySqlQuery(renderer, this);
-    }
-
-    @Override
     public MySqlOrderQuery order(IOrder... o) {
         return new MySqlOrderQuery(renderer, this, o);
     }
