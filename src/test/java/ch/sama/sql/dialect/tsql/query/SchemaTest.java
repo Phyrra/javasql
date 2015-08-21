@@ -6,7 +6,6 @@ import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
 import ch.sama.sql.dialect.tsql.TSqlQueryRenderer;
 import ch.sama.sql.dialect.tsql.TSqlSchema;
 import ch.sama.sql.query.exception.BadSqlException;
-import ch.sama.sql.query.exception.ObjectNotFoundException;
 import org.junit.Test;
 
 import java.util.List;
@@ -223,7 +222,7 @@ public class SchemaTest {
         assertEquals(true, table.getColumn("uidId2").isPrimaryKey());
     }
 
-    @Test (expected = ObjectNotFoundException.class)
+    @Test (expected = BadSqlException.class)
     public void unknownPrimary() {
         new TSqlSchema(
                 "CREATE TABLE [tblTable](\n" +

@@ -1,6 +1,8 @@
 package ch.sama.sql.dialect.tsql;
 
 import ch.sama.sql.dbo.Table;
+import ch.sama.sql.query.base.check.Identifier;
+import ch.sama.sql.query.exception.IllegalIdentifierException;
 import ch.sama.sql.query.helper.Value;
 import ch.sama.sql.query.standard.ValueFactory;
 
@@ -31,5 +33,13 @@ public class TSqlValueFactory extends ValueFactory {
     @Override
     public Value string(String s) {
         return new Value(s, "'" + s.replace("'", "''") + "'");
+    }
+
+    public Value variable(String name) {
+        if (!Identifier.test(name)) {
+            throw new IllegalIdentifierException(name);
+        }
+
+        return new Value(name, "@" + name);
     }
 }

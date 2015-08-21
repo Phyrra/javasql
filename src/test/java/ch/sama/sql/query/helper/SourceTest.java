@@ -54,4 +54,14 @@ public class SourceTest {
     public void query() {
         assertEquals("(\nSELECT 1\n) AS [QUERY]", renderer.render(source.query(sql.query().select(value.numeric(1))).as("QUERY")));
     }
+
+    @Test
+    public void variable() {
+        assertEquals("@table", renderer.render(source.variable("table")));
+    }
+
+    @Test (expected = IllegalIdentifierException.class)
+    public void badVariable() {
+        source.variable("@test");
+    }
 }

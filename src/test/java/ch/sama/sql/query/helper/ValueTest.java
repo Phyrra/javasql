@@ -151,4 +151,14 @@ public class ValueTest {
     public void types() {
         assertEquals("int", renderer.render(value.type(TYPE.INT_TYPE)));
     }
+
+    @Test
+    public void variable() {
+        assertEquals("@VAR", renderer.render(value.variable("VAR")));
+    }
+
+    @Test (expected = IllegalIdentifierException.class)
+    public void badVariable() {
+        value.variable("@VAR");
+    }
 }
