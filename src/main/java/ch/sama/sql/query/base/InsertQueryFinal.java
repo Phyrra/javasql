@@ -48,4 +48,8 @@ public class InsertQueryFinal implements IQuery {
     public InsertQueryValues values(Value... values) {
         return new InsertQueryValues(renderer, this, values);
     }
+
+    public UnionQuery union(IQuery... queries) {
+        return new UnionQuery(renderer, this, queries);
+    }
 }

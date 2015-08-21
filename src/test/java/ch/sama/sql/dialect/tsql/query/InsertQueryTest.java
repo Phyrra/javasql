@@ -129,4 +129,19 @@ public class InsertQueryTest {
                 .getSql()
         );
     }
+
+    @Test
+    public void insertMultipleRows() {
+        assertEquals(
+                "INSERT INTO [TABLE] ([FIELD1], [FIELD2])\nSELECT 'A', 'B'\nUNION ALL\nSELECT 'C', 'D'",
+                sql.query()
+                        .insert().into("TABLE")
+                        .columns("FIELD1", "FIELD2")
+                        .union(
+                                sql.query().select(value.string("A"), value.string("B")),
+                                sql.query().select(value.string("C"), value.string("D"))
+                        )
+                .getSql()
+        );
+    }
 }
