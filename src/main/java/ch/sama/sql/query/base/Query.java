@@ -7,7 +7,7 @@ public class Query implements IQuery {
     private IQueryRenderer renderer;
     private IQuery parent;
 
-	public Query(IQueryRenderer renderer) {
+    public Query(IQueryRenderer renderer) {
         this.renderer = renderer;
     }
 
@@ -17,9 +17,9 @@ public class Query implements IQuery {
     }
 
     @Override
-	public IQuery getParent() {
-		return parent;
-	}
+    public IQuery getParent() {
+        return parent;
+    }
 
     @Override
     public String getSql() {
@@ -31,19 +31,19 @@ public class Query implements IQuery {
         this.parent = query;
         return query;
     }
-		
-	public SelectQuery select(Value... v) {
-        return new SelectQuery(renderer, this, v);
-	}
+
+    public SelectQuery select(Value... values) {
+        return new SelectQuery(renderer, this, values);
+    }
 
     public InsertQuery insert() {
         return new InsertQuery(renderer, this);
     }
-    
+
     public DeleteQuery delete() {
         return new DeleteQuery(renderer, this);
     }
-    
+
     public UpdateQuery update(Table table) {
         return new UpdateQuery(renderer, this, table);
     }

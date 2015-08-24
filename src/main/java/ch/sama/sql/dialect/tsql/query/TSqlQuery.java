@@ -23,8 +23,8 @@ public class TSqlQuery extends Query {
     }
 
     @Override
-    public TSqlSelectQuery select(Value... v) {
-        return new TSqlSelectQuery(renderer, this, v);
+    public TSqlSelectQuery select(Value... values) {
+        return new TSqlSelectQuery(renderer, this, values);
     }
 
     @Override

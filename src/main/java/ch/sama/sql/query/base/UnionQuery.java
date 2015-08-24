@@ -8,11 +8,11 @@ public class UnionQuery implements IQuery {
     private IQuery parent;
     private List<IQuery> queries;
 
-    public UnionQuery(IQueryRenderer renderer, IQuery parent, IQuery[] q) {
+    public UnionQuery(IQueryRenderer renderer, IQuery parent, IQuery[] queries) {
         this.renderer = renderer;
         this.parent = parent;
 
-        this.queries = Arrays.asList(q);
+        this.queries = Arrays.asList(queries);
     }
 
     @Override

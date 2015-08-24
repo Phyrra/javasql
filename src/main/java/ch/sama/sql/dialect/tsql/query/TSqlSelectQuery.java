@@ -10,8 +10,8 @@ public class TSqlSelectQuery extends SelectQuery {
     private TSqlQueryRenderer renderer;
     private int top;
 
-    public TSqlSelectQuery(TSqlQueryRenderer renderer, IQuery parent, Value[] v) {
-        super(renderer, parent, v);
+    public TSqlSelectQuery(TSqlQueryRenderer renderer, IQuery parent, Value[] values) {
+        super(renderer, parent, values);
 
         this.top = -1;
         this.renderer = renderer;

@@ -20,8 +20,8 @@ abstract class MainQuery implements IQuery {
         return new TSqlCteQuery(renderer, this, name);
     }
 
-    public TSqlSelectQuery select(Value... v) {
-        return new TSqlSelectQuery(renderer, this, v);
+    public TSqlSelectQuery select(Value... values) {
+        return new TSqlSelectQuery(renderer, this, values);
     }
 
     public InsertQuery insert() {
