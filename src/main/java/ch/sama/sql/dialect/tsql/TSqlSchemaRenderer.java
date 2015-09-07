@@ -86,7 +86,7 @@ public class TSqlSchemaRenderer {
         }
 
         if (field.isAutoIncrement()) {
-            if (!TYPE.isEqualType(type, TYPE.INT_TYPE)) {
+            if (!TYPE.isWeakEqualType(type, TYPE.INT_TYPE)) {
                 throw new BadSqlException("AutoIncrement on non-integer column: " + colName);
             }
 
@@ -158,7 +158,7 @@ public class TSqlSchemaRenderer {
                 }
 
                 if (field.isAnnotationPresent(AutoIncrement.class)) {
-                    if (!TYPE.isEqualType(type, TYPE.INT_TYPE)) {
+                    if (!TYPE.isWeakEqualType(type, TYPE.INT_TYPE)) {
                         throw new BadSqlException("AutoIncrement on non-integer column: " + colName);
                     }
 

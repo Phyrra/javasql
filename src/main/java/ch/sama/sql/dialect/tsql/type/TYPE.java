@@ -112,6 +112,24 @@ public class TYPE {
         return t1.getClass().equals(t2.getClass());
     }
 
+    public static boolean isWeakEqualType(IType t1, IType t2) {
+        String s1 = t1.getString();
+
+        int i1 = s1.indexOf("(");
+        if (i1 != -1) {
+            s1 = s1.substring(0, i1);
+        }
+
+        String s2 = t2.getString();
+
+        int i2 = s2.indexOf("(");
+        if (i2 != -1) {
+            s2 = s2.substring(0, i2);
+        }
+
+        return s1.equalsIgnoreCase(s2);
+    }
+
     public static IType fromClass(Class clazz) {
         String name = clazz.getSimpleName().toLowerCase();
 
