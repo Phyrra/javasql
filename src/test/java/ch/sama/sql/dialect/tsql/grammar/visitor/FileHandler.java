@@ -7,13 +7,13 @@ public class FileHandler {
         BufferedReader br = new BufferedReader(new FileReader(file));
         StringBuilder builder = new StringBuilder();
 
-        String prefix = "";
         String line;
         while ((line = br.readLine()) != null) {
-            builder.append(prefix);
-            builder.append(line);
+            if (builder.length() > 0) {
+                builder.append("\r\n");
+            }
 
-            prefix = "\r\n";
+            builder.append(line);
         }
         br.close();
 

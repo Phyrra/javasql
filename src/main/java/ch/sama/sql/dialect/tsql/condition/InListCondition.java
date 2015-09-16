@@ -5,25 +5,21 @@ import ch.sama.sql.query.helper.condition.CustomCondition;
 import ch.sama.sql.query.helper.condition.IConditionRenderer;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 class InListCondition extends CustomCondition {
     private Value value;
     private List<Value> list;
 
     public InListCondition(Value value, List<Value> list) {
-        super(() -> {
-            StringBuilder builder = new StringBuilder();
-            String prefix = "";
-
-            for (Value val : list) {
-                builder.append(prefix);
-                builder.append(val.getValue());
-
-                prefix = ", ";
-            }
-
-            return value.getValue() + " IN (\n" + builder.toString() + "\n)";
-        });
+        super(() ->
+                value.getValue() +
+                " IN (\n" +
+                list.stream()
+                        .map(Value::getValue)
+                        .collect(Collectors.joining(", ")) +
+                "\n)"
+        );
 
         this.value = value;
         this.list = list;

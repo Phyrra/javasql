@@ -9,6 +9,9 @@ import ch.sama.sql.query.base.IValueFactory;
 import ch.sama.sql.query.helper.Function;
 import ch.sama.sql.query.helper.Value;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 public abstract class ValueFactory implements IValueFactory {
     private IQueryRenderer renderer;
 
@@ -100,17 +103,11 @@ public abstract class ValueFactory implements IValueFactory {
     
     @Override
     public Value combine(String operator, Value... values) {
-        StringBuilder builder = new StringBuilder();
-        String prefix = "";
-        
-        for (Value v : values) {
-            builder.append(prefix);
-            builder.append(v.getValue());
-            
-            prefix = " " + operator + " ";
-        }
-        
-        return new Value(builder.toString());
+        return new Value(
+                Arrays.asList(values).stream()
+                        .map(Value::getValue)
+                        .collect(Collectors.joining(" " + operator + " "))
+        );
     }
     
     @Override

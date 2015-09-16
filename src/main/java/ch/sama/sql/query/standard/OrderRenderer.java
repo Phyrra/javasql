@@ -7,20 +7,13 @@ import ch.sama.sql.query.helper.order.DescOrder;
 import ch.sama.sql.query.helper.order.IOrderRenderer;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class OrderRenderer implements IOrderRenderer {
     private String getBase(List<Value> values) {
-        StringBuilder builder = new StringBuilder();
-        String prefix = "";
-
-        for (Value v : values) {
-            builder.append(prefix);
-            builder.append(v.getValue());
-
-            prefix = ", ";
-        }
-
-        return builder.toString();
+        return values.stream()
+                .map(Value::getValue)
+                .collect(Collectors.joining(", "));
     }
 
     @Override

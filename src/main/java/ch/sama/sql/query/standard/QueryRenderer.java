@@ -11,6 +11,7 @@ import ch.sama.sql.query.helper.order.IOrder;
 import ch.sama.sql.dialect.tsql.query.TSqlSelectQuery;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class QueryRenderer implements IQueryRenderer {
     protected void prependParentIfExists(StringBuilder builder, IQuery query) {
@@ -47,13 +48,11 @@ public abstract class QueryRenderer implements IQueryRenderer {
 
         prependParentIfExists(builder, query);
 
-        String prefix = "";
-        for (IQuery q : query.getQueries()) {
-            builder.append(prefix);
-            builder.append(q.getSql());
-
-            prefix = "\nUNION ALL\n";
-        }
+        builder.append(
+                query.getQueries().stream()
+                        .map(IQuery::getSql)
+                        .collect(Collectors.joining("\nUNION ALL\n"))
+        );
 
         return builder.toString();
     }
@@ -66,13 +65,11 @@ public abstract class QueryRenderer implements IQueryRenderer {
 
         builder.append("SELECT ");
 
-        String prefix = "";
-        for (Value v : query.getValues()) {
-            builder.append(prefix);
-            builder.append(render(v));
-
-            prefix = ", ";
-        }
+        builder.append(
+                query.getValues().stream()
+                        .map(this::render)
+                        .collect(Collectors.joining(", "))
+        );
 
         return builder.toString();
     }
@@ -90,13 +87,11 @@ public abstract class QueryRenderer implements IQueryRenderer {
             builder.append(" ");
         }
 
-        String prefix = "";
-        for (Value v : query.getValues()) {
-            builder.append(prefix);
-            builder.append(render(v));
-
-            prefix = ", ";
-        }
+        builder.append(
+                query.getValues().stream()
+                        .map(this::render)
+                        .collect(Collectors.joining(", "))
+        );
 
         return builder.toString();
     }
@@ -109,13 +104,11 @@ public abstract class QueryRenderer implements IQueryRenderer {
 
         builder.append("FROM ");
 
-        String prefix = "";
-        for (Source s : query.getSources()) {
-            builder.append(prefix);
-            builder.append(render(s));
-
-            prefix = ", ";
-        }
+        builder.append(
+                query.getSources().stream()
+                        .map(this::render)
+                        .collect(Collectors.joining(", "))
+        );
 
         return builder.toString();
     }
@@ -194,14 +187,11 @@ public abstract class QueryRenderer implements IQueryRenderer {
 
         builder.append("\nORDER BY ");
 
-        String prefix = "";
-        List<IOrder> orders = query.getOrders();
-        for (IOrder o : orders) {
-            builder.append(prefix);
-            builder.append(render(o));
-
-            prefix = ", ";
-        }
+        builder.append(
+                query.getOrders().stream()
+                        .map(this::render)
+                        .collect(Collectors.joining(", "))
+        );
 
         return builder.toString();
     }
@@ -263,18 +253,15 @@ public abstract class QueryRenderer implements IQueryRenderer {
     @Override
     public String render(InsertQueryFinal query) {
         StringBuilder builder = new StringBuilder();
-        String prefix = "";
 
         builder.append(query.getParent().getSql());
         builder.append(" (");
 
-        List<Field> fields = query.getFields();
-        for (Field f : fields) {
-            builder.append(prefix);
-            builder.append(renderObjectName(f.getName()));
-
-            prefix = ", ";
-        }
+        builder.append(
+                query.getFields().stream()
+                        .map(f -> renderObjectName(f.getName()))
+                        .collect(Collectors.joining(", "))
+        );
 
         builder.append(")");
 
@@ -288,13 +275,11 @@ public abstract class QueryRenderer implements IQueryRenderer {
         builder.append(query.getParent().getSql());
         builder.append("\nVALUES (");
 
-        String prefix = "";
-        for (Value v : query.getValues()) {
-            builder.append(prefix);
-            builder.append(v.getValue());
-
-            prefix = ", ";
-        }
+        builder.append(
+                query.getValues().stream()
+                        .map(Value::getValue)
+                        .collect(Collectors.joining(", "))
+        );
 
         builder.append(")");
 

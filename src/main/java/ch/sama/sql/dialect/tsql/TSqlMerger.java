@@ -227,7 +227,6 @@ public class TSqlMerger {
         
         public String getSql() {
             StringBuilder builder = new StringBuilder();
-            String prefix;
             
             MatchFields matchFields = getParent();
             MergeValues mergeValues = matchFields.getParent();
@@ -240,41 +239,31 @@ public class TSqlMerger {
             
             builder.append("DECLARE @table TABLE (\n");
             
-            prefix = "";
-            for (Pair pair : fields) {
-                Field field = pair.getField();
-                String name = field.getName();
-                IType type = field.getDataType();
-                
-                builder.append(prefix);
-                builder.append(name);
-                builder.append(" ");
-                builder.append(type.getString());
-                
-                prefix = ",\n";
-            }
+            builder.append(
+                    fields.stream()
+                            .map(p -> {
+                                Field field = p.getField();
+                                String name = field.getName();
+                                IType type = field.getDataType();
+
+                                return name + " " + type.getString();
+                            })
+                            .collect(Collectors.joining(",\n"))
+            );
             
             builder.append("\n);\n");
             builder.append("INSERT INTO @table\n");
             
-            prefix = "";
-            for (List<Pair> row : values) {
-                builder.append(prefix);
-                
-                builder.append("SELECT ");
-                
-                String listPrefix = "";
-                for (Pair pair : row) {
-                    Value val = pair.getValue();
-                    
-                    builder.append(listPrefix);
-                    builder.append(val.getValue());
-                    
-                    listPrefix = ", ";
-                }
-                
-                prefix = " UNION ALL\n";
-            }
+            builder.append(
+                    values.stream()
+                            .map(r ->
+                                    "SELECT " +
+                                    r.stream()
+                                            .map(p -> p.getValue().getValue())
+                                            .collect(Collectors.joining(", "))
+                            )
+                            .collect(Collectors.joining(" UNION ALL\n"))
+            );
             
             builder.append(";\n");
             builder.append("MERGE INTO ");
@@ -282,75 +271,51 @@ public class TSqlMerger {
             builder.append(" AS [old]\n");
             builder.append("USING @table AS [new] ON (\n");
             
-            prefix = "";
-            for (String field : matchers) {
-                builder.append(prefix);
-                builder.append("[old].[");
-                builder.append(field);
-                builder.append("] = [new].[");
-                builder.append(field);
-                builder.append("]");
-                
-                prefix = " AND ";
-            }
+            builder.append(
+                    matchers.stream()
+                            .map(f -> "[old].[" + f + "] = [new].[" + f + "]")
+                            .collect(Collectors.joining(" AND "))
+            );
             
             builder.append("\n)\n");
             builder.append("WHEN MATCHED THEN\n");
             builder.append("UPDATE SET ");
             
-            prefix = "";
-            for (Pair pair : fields) {
-                String name = pair.getField().getName();
-                
-                if (!omitField(name)) {
-                    builder.append(prefix);
-                    builder.append("[");
-                    builder.append(name);
-                    builder.append("] = [new].[");
-                    builder.append(name);
-                    builder.append("]");
+            builder.append(
+                    fields.stream()
+                            .filter(p -> !omitField(p.getField().getName()))
+                            .map(p -> {
+                                String name = p.getField().getName();
 
-                    prefix = ", ";
-                }
-            }
+                                return "[" + name + "] = [new].[" + name + "]";
+                            })
+                            .collect(Collectors.joining(", "))
+            );
             
             builder.append("\n");
             builder.append("WHEN NOT MATCHED BY TARGET THEN\n");
             builder.append("INSERT (");
 
-            prefix = "";
-            for (Pair pair : fields) {
-                String name = pair.getField().getName();
-
-                if (!omitField(name)) {
-                    builder.append(prefix);
-                    builder.append("[");
-                    builder.append(name);
-                    builder.append("]");
-
-                    prefix = ", ";
-                }
-            }
+            builder.append(
+                    fields.stream()
+                            .filter(p -> !omitField(p.getField().getName()))
+                            .map(p -> "[" + p.getField().getName() + "]")
+                            .collect(Collectors.joining(", "))
+            );
 
             builder.append(") VALUES (");
 
-            prefix = "";
-            for (Pair pair : fields) {
-                String name = pair.getField().getName();
+            builder.append(
+                    // TODO
+                    // I think it makes sense to repeat the matcher fields here
+                    //  case: merge (ROW_INT) into table match on (ROW_INT)
+                    //  the setter would be empty otherwise (-> bad query)
 
-                // TODO
-                // I think it makes sense to repeat the matcher fields here
-                //  case: merge (ROW_INT) into table match on (ROW_INT)
-                //  the setter would be empty otherwise (-> bad query)
-                if (!omitField(name)) {
-                    builder.append(prefix);
-                    builder.append("[new].[");
-                    builder.append(name);
-                    builder.append("]");
-
-                    prefix = ", ";
-                }
-            }
+                    fields.stream()
+                            .filter(p -> !omitField(p.getField().getName()))
+                            .map(p -> "[new].[" + p.getField().getName() + "]")
+                            .collect(Collectors.joining(", "))
+            );
             
             builder.append(");");
             

@@ -167,17 +167,17 @@ public class TSqlSchema implements ISchema {
 
     private void load(InputStream stream) {
         StringBuilder builder = new StringBuilder();
-        String prefix = "";
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 
         try {
             String line;
             while ((line = reader.readLine()) != null) {
-                builder.append(prefix);
-                builder.append(line);
+                if (builder.length() > 0) {
+                    builder.append("\n");
+                }
 
-                prefix = "\n";
+                builder.append(line);
             }
 
             reader.close();

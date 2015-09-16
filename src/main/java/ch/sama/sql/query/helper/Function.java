@@ -5,7 +5,9 @@ import ch.sama.sql.query.base.check.Identifier;
 import ch.sama.sql.query.exception.IllegalIdentifierException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Function {
 	private String name;
@@ -20,29 +22,17 @@ public class Function {
 
         this.parameters = new ArrayList<Value>();
 
-        for (Value v : parameters) {
-            this.parameters.add(v);
-        }
+        Collections.addAll(this.parameters, parameters);
     }
 
     // This function exists, because I don't think any DB actually has a different form of rendering functions
 	public String getDefaultString() {
-        StringBuilder builder = new StringBuilder();
-
-        builder.append(name);
-        builder.append("(");
-
-        String prefix = "";
-        for (Value v : parameters) {
-            builder.append(prefix);
-            builder.append(v.getValue());
-
-            prefix = ", ";
-        }
-
-        builder.append(")");
-
-		return builder.toString();
+		return name +
+                "(" +
+                parameters.stream()
+                        .map(Value::getValue)
+                        .collect(Collectors.joining(", ")) +
+                ")";
 	}
 
     public String getString(IQueryRenderer renderer) {

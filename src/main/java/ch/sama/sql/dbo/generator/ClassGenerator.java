@@ -10,6 +10,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 public class ClassGenerator<T extends IQueryFactory> {
     private ISchema schema;
@@ -117,14 +118,11 @@ public class ClassGenerator<T extends IQueryFactory> {
         writer.write("\tpublic List<Field> getColumns() {\n");
         writer.write("\t\treturn Arrays.asList(\n");
 
-        String prefix = "";
-        for (Field field : table.getColumns()) {
-            String fieldName = field.getName();
-
-            writer.write(prefix + "\t\t\t" + fieldName);
-
-            prefix = ",\n";
-        }
+        writer.append(
+                table.getColumns().stream()
+                        .map(f -> "\t\t\t" + f.getName())
+                        .collect(Collectors.joining(",\n"))
+        );
 
         writer.write("\n\t\t);\n");
         writer.write("\t}");

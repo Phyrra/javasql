@@ -13,6 +13,7 @@ import ch.sama.sql.query.helper.order.IOrderRenderer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /*
     There is no parent object to this,
@@ -147,27 +148,22 @@ public class TSqlFunctionFactory {
         IOrderRenderer renderer = new TSqlOrderRenderer();
         
         StringBuilder builder = new StringBuilder();
-        String prefix;
         
         builder.append("ROW_NUMBER() OVER (PARTITION BY ");
 
-        prefix = "";
-        for (Value v : partition) {
-            builder.append(prefix);
-            builder.append(v.getValue());
-            
-            prefix = ", ";
-        }
+        builder.append(
+                partition.stream()
+                        .map(Value::getValue)
+                        .collect(Collectors.joining(", "))
+        );
         
         builder.append(" ORDER BY ");
-        
-        prefix = "";
-        for (IOrder o : order) {
-            builder.append(prefix);
-            builder.append(o.render(renderer));
-            
-            prefix = ", ";
-        }
+
+        builder.append(
+                order.stream()
+                        .map(o -> o.render(renderer))
+                        .collect(Collectors.joining(", "))
+        );
         
         builder.append(")");
         

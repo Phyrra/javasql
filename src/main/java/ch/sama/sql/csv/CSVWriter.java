@@ -1,5 +1,7 @@
 package ch.sama.sql.csv;
 
+import java.util.stream.Collectors;
+
 public class CSVWriter {
     private CSVFormat format;
 
@@ -13,20 +15,17 @@ public class CSVWriter {
 
     public String write(CSVSet set) {
         StringBuilder builder = new StringBuilder();
-        String prefix = "";
 
         if (set.hasTitle()) {
             builder.append(format.join(set.getTitle()));
-
-            prefix = "\r\n";
+            builder.append("\r\n");
         }
 
-        for (CSVRow row : set) {
-            builder.append(prefix);
-            builder.append(format.join(row));
-
-            prefix = "\r\n";
-        }
+        builder.append(
+                set.toList().stream()
+                        .map(format::join)
+                        .collect(Collectors.joining("\r\n"))
+        );
 
         return builder.toString();
     }

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class MySqlSchema implements ISchema {
     private static final MySqlQueryFactory sql = new MySqlQueryFactory();
@@ -158,37 +159,40 @@ public class MySqlSchema implements ISchema {
 
     public static String getTableSchema(Table table) {
         StringBuilder builder = new StringBuilder();
-        String prefix = "";
 
         builder.append("CREATE TABLE ");
         builder.append(renderer.renderObjectName(table.getName()));
         builder.append(" (\n");
 
-        for (Field field : table.getColumns()) {
-            builder.append(prefix);
+        builder.append(
+                table.getColumns().stream()
+                        .map(f -> {
+                            StringBuilder sb = new StringBuilder();
 
-            builder.append("\t");
-            builder.append(renderer.renderObjectName(field.getName()));
-            builder.append(" ");
-            builder.append(field.getDataType().getString());
+                            sb.append("\t");
+                            sb.append(renderer.renderObjectName(f.getName()));
+                            sb.append(" ");
+                            sb.append(f.getDataType().getString());
 
-            if (field.hasDefaultValue()) {
-                if (!field.isNullable()) {
-                    builder.append(" NOT NULL");
-                }
+                            if (f.hasDefaultValue()) {
+                                if (!f.isNullable()) {
+                                    sb.append(" NOT NULL");
+                                }
 
-                builder.append(" DEFAULT ");
-                builder.append(field.getDefaultValue().getValue());
-            } else {
-                if (field.isNullable()) {
-                    builder.append(" DEFAULT NULL");
-                } else {
-                    builder.append(" NOT NULL");
-                }
-            }
+                                sb.append(" DEFAULT ");
+                                sb.append(f.getDefaultValue().getValue());
+                            } else {
+                                if (f.isNullable()) {
+                                    sb.append(" DEFAULT NULL");
+                                } else {
+                                    sb.append(" NOT NULL");
+                                }
+                            }
 
-            prefix = ",\n";
-        }
+                            return sb.toString();
+                        })
+                        .collect(Collectors.joining(",\n"))
+        );
 
         builder.append("\n);");
 

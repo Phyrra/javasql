@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 class WhiteSpaceSplitter implements ISplitter {
     @Override
@@ -40,18 +41,8 @@ class WhiteSpaceSplitter implements ISplitter {
 
     @Override
     public String join(List<String> list) {
-        StringBuilder builder = new StringBuilder();
-        String prefix = "";
-
-        for (String s : list) {
-            builder.append(prefix);
-            builder.append("\"");
-            builder.append(s.replace("\"", "\\\""));
-            builder.append("\"");
-
-            prefix = " ";
-        }
-
-        return builder.toString();
+        return list.stream()
+                .map(s -> "\"" + s.replace("\"", "\\\"") + "\"")
+                .collect(Collectors.joining(" "));
     }
 }

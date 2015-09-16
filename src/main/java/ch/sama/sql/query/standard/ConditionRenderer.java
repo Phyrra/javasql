@@ -3,6 +3,7 @@ package ch.sama.sql.query.standard;
 import ch.sama.sql.query.helper.condition.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class ConditionRenderer implements IConditionRenderer {
     @Override
@@ -21,21 +22,11 @@ public abstract class ConditionRenderer implements IConditionRenderer {
     }
 
     private String join(List<ICondition> conditions, String join) {
-        StringBuilder builder = new StringBuilder();
-        String prefix = "";
-
-        builder.append("(");
-
-        for (ICondition c : conditions) {
-            builder.append(prefix);
-            builder.append(c.render(this));
-
-            prefix = join;
-        }
-
-        builder.append(")");
-
-        return builder.toString();
+        return "(" +
+                conditions.stream()
+                        .map(c -> c.render(this))
+                        .collect(Collectors.joining(join)) +
+                ")";
     }
 
     @Override

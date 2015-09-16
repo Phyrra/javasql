@@ -7,6 +7,8 @@ import ch.sama.sql.query.helper.condition.ICondition;
 import ch.sama.sql.query.helper.order.IOrder;
 import ch.sama.sql.query.standard.QueryRenderer;
 
+import java.util.stream.Collectors;
+
 public class TSqlQueryRenderer extends QueryRenderer {
     private static final TSqlConditionRenderer conditionRenderer = new TSqlConditionRenderer();
     private static final TSqlOrderRenderer orderRenderer = new TSqlOrderRenderer();
@@ -39,13 +41,11 @@ public class TSqlQueryRenderer extends QueryRenderer {
             builder.append(" ");
         }
 
-        String prefix = "";
-        for (Value v : query.getValues()) {
-            builder.append(prefix);
-            builder.append(render(v));
-
-            prefix = ", ";
-        }
+        builder.append(
+                query.getValues().stream()
+                        .map(this::render)
+                        .collect(Collectors.joining(", "))
+        );
 
         return builder.toString();
     }
@@ -88,13 +88,11 @@ public class TSqlQueryRenderer extends QueryRenderer {
         builder.append("\n");
         builder.append("OUTPUT ");
 
-        String prefix = "";
-        for (Value v : query.getValues()) {
-            builder.append(prefix);
-            builder.append(render(v));
-
-            prefix = ", ";
-        }
+        builder.append(
+                query.getValues().stream()
+                        .map(this::render)
+                        .collect(Collectors.joining(", "))
+        );
 
         return builder.toString();
     }
