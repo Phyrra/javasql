@@ -5,11 +5,21 @@ import ch.sama.sql.query.helper.condition.ICondition;
 
 public class JoinQuery implements IQuery {
     public enum TYPE {
-        LEFT,
-        RIGHT,
-        INNER,
-        FULL,
-        CROSS
+        LEFT("LEFT"),
+        RIGHT("RIGHT"),
+        INNER("INNER"),
+        FULL("FULL"),
+        CROSS("CROSS");
+
+        private String name;
+
+        TYPE(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
     }
 
     private IQueryRenderer renderer;

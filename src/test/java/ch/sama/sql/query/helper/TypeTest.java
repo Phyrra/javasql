@@ -211,7 +211,7 @@ public class TypeTest {
     }
     
     @Test
-    public void testNFromString() {
+    public void textNFromString() {
         assertEquals(TextType.class, TYPE.fromString("text(2147483647)").getClass());
     }
     

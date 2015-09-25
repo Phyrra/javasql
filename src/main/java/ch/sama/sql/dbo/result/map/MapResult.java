@@ -20,11 +20,11 @@ public class MapResult {
         return map.put(key, value);
     }
 
-    public Set<String> keySet() {
+    public Set<String> getKeySet() {
         return map.keySet();
     }
 
-    public boolean contains(String key) {
+    public boolean containsKey(String key) {
         return map.containsKey(key);
     }
 

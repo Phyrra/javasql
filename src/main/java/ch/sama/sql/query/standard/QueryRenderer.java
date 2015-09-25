@@ -3,14 +3,10 @@ package ch.sama.sql.query.standard;
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.base.*;
-import ch.sama.sql.query.exception.UnknownValueException;
 import ch.sama.sql.query.helper.Function;
 import ch.sama.sql.query.helper.Source;
 import ch.sama.sql.query.helper.Value;
-import ch.sama.sql.query.helper.order.IOrder;
-import ch.sama.sql.dialect.tsql.query.TSqlSelectQuery;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 public abstract class QueryRenderer implements IQueryRenderer {
@@ -74,28 +70,6 @@ public abstract class QueryRenderer implements IQueryRenderer {
         return builder.toString();
     }
 
-    public String render(TSqlSelectQuery query) {
-        StringBuilder builder = new StringBuilder();
-
-        prependParentIfExists(builder, query);
-
-        builder.append("SELECT ");
-
-        if (query.hasTop()) {
-            builder.append("TOP ");
-            builder.append(query.getTop());
-            builder.append(" ");
-        }
-
-        builder.append(
-                query.getValues().stream()
-                        .map(this::render)
-                        .collect(Collectors.joining(", "))
-        );
-
-        return builder.toString();
-    }
-
     @Override
     public String render(FromQuery query) {
         StringBuilder builder = new StringBuilder();
@@ -123,26 +97,7 @@ public abstract class QueryRenderer implements IQueryRenderer {
 
         JoinQuery.TYPE type = query.getType();
         if (type != null) {
-            switch (type) {
-                case INNER:
-                    builder.append("INNER");
-                    break;
-                case LEFT:
-                    builder.append("LEFT");
-                    break;
-                case RIGHT:
-                    builder.append("RIGHT");
-                    break;
-                case FULL:
-                    builder.append("FULL");
-                    break;
-                case CROSS:
-                    builder.append("CROSS");
-                    break;
-                default:
-                    throw new UnknownValueException("Unknown join type: " + type);
-            }
-
+            builder.append(type.getName());
             builder.append(" ");
         } else {
             // builder.append("INNER "); // Don't really like it
