@@ -2,6 +2,8 @@ package ch.sama.sql.query.helper;
 
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
+import ch.sama.sql.dialect.tsql.FUNCTION;
+import ch.sama.sql.query.exception.BadParameterException;
 import ch.sama.sql.query.exception.IllegalIdentifierException;
 import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
 import ch.sama.sql.dialect.tsql.TSqlQueryRenderer;
@@ -160,5 +162,15 @@ public class ValueTest {
     @Test (expected = IllegalIdentifierException.class)
     public void badVariable() {
         value.variable("@VAR");
+    }
+
+    @Test
+    public void functionWithCorrectNumberOfArguments() {
+        assertEquals("COALESCE([FIELD], 0)", value.function(FUNCTION.COALESCE, value.field("FIELD"), value.numeric(0)).getValue());
+    }
+
+    @Test (expected = BadParameterException.class)
+    public void functionWithIncorrectNumberOfArguments() {
+        value.function(FUNCTION.COALESCE);
     }
 }

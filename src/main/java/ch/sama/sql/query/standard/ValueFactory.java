@@ -87,8 +87,8 @@ public abstract class ValueFactory implements IValueFactory {
     }
 
     @Override
-    public Value function(String fnc, Value... parameters) {
-        return function(new Function(fnc, parameters));
+    public Value function(String fnc, Value... arguments) {
+        return function(new Function(fnc, arguments));
     }
 
     @Override

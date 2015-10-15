@@ -2,6 +2,7 @@ package ch.sama.sql.dialect.tsql;
 
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.base.check.Identifier;
+import ch.sama.sql.query.exception.BadParameterException;
 import ch.sama.sql.query.exception.IllegalIdentifierException;
 import ch.sama.sql.query.helper.Value;
 import ch.sama.sql.query.standard.ValueFactory;
@@ -41,5 +42,13 @@ public class TSqlValueFactory extends ValueFactory {
         }
 
         return new Value(name, "@" + name);
+    }
+
+    public Value function(FUNCTION fnc, Value... arguments) {
+        if (arguments.length != fnc.getNumArgs()) {
+            throw new BadParameterException(fnc.getName() + " expected " + fnc.getNumArgs() + ", but got " + arguments.length);
+        }
+
+        return function(fnc.getName(), arguments);
     }
 }
