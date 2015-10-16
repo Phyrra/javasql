@@ -1,0 +1,14 @@
+sql
+	statement
+		select
+			value
+				primary
+					numeric: 3
+				*
+				(
+					primary
+						numeric: 2
+					+
+					primary
+						numeric: 1
+				)

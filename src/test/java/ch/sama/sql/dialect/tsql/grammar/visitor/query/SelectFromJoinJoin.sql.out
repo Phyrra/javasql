@@ -1,0 +1,4 @@
+SELECT *
+FROM [table1]
+JOIN [table2] ON [table1].[key] = [table2].[key]
+JOIN [table3] ON [table1].[key] = [table3].[key]
