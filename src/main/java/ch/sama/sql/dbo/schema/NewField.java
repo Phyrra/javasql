@@ -2,7 +2,7 @@ package ch.sama.sql.dbo.schema;
 
 import ch.sama.sql.dbo.Field;
 
-class NewField extends FieldDiff {
+class NewField implements ISchemaDiff {
     private Field field;
 
     NewField(Field field) {

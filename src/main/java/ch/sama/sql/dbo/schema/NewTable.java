@@ -2,7 +2,7 @@ package ch.sama.sql.dbo.schema;
 
 import ch.sama.sql.dbo.Table;
 
-class NewTable extends TableDiff {
+class NewTable implements ISchemaDiff {
     private Table table;
 
     NewTable(Table table) {

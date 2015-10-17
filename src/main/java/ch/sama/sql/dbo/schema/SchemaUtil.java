@@ -22,8 +22,6 @@ public class SchemaUtil {
             String rhTableName = tr.getName();
 
             if (lhs.hasTable(rhTableName)) {
-                ChangeTable ct = new ChangeTable();
-
                 Table tl = lhs.getTable(rhTableName);
 
                 for (Field fr : tr.getColumns()) {
@@ -33,15 +31,11 @@ public class SchemaUtil {
                         Field fl = tl.getColumn(rhColumnName);
 
                         if (!fr.compareTo(fl)) {
-                            ct.addFieldDiff(new ChangeField(fr));
+                            diff.add(new ChangeField(fr));
                         }
                     } else {
-                        ct.addFieldDiff(new NewField(fr));
+                        diff.add(new NewField(fr));
                     }
-                }
-
-                if (ct.hasChanges()) {
-                    diff.add(ct);
                 }
             } else {
                 diff.add(new NewTable(tr));
