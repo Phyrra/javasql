@@ -1,21 +1,16 @@
-package ch.sama.sql.dialect.tsql.query;
+package ch.sama.sql.dialect.tsql.schema;
 
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
-import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
-import ch.sama.sql.dialect.tsql.TSqlQueryRenderer;
-import ch.sama.sql.dialect.tsql.TSqlSchema;
 import ch.sama.sql.query.exception.BadSqlException;
 import org.junit.Test;
 
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class SchemaTest {
-    private static final TSqlQueryFactory sql = new TSqlQueryFactory();
-    private static final TSqlQueryRenderer renderer = sql.renderer();
-
     // Table
 
     @Test
@@ -23,7 +18,11 @@ public class SchemaTest {
         List<Table> list = new TSqlSchema("CREATE TABLE [dbo].[tblTable](\n)").getTables();
 
         assertEquals(1, list.size());
-        assertEquals("[dbo].[tblTable]", renderer.render(list.get(0)));
+
+        Table table = list.get(0);
+
+        assertEquals("dbo", table.getSchema());
+        assertEquals("tblTable", table.getName());
     }
 
     @Test
@@ -31,7 +30,11 @@ public class SchemaTest {
         List<Table> list = new TSqlSchema("CREATE TABLE [tblTable](\n)").getTables();
 
         assertEquals(1, list.size());
-        assertEquals("[tblTable]", renderer.render(list.get(0)));
+
+        Table table = list.get(0);
+
+        assertEquals(null, table.getSchema());
+        assertEquals("tblTable", table.getName());
     }
 
     @Test (expected = BadSqlException.class)
@@ -193,10 +196,12 @@ public class SchemaTest {
 
         Table table = list.get(0);
 
-        assertEquals(
-                renderer.render(table.getColumn("uidId")),
-                renderer.render(table.getPrimaryKey().get(0))
-        );
+        assertEquals(false, table.getPrimaryKey().isEmpty());
+
+        Field pKey = table.getPrimaryKey().get(0);
+
+        assertEquals("tblTable", pKey.getTableName());
+        assertEquals("uidId", pKey.getName());
     }
 
     @Test

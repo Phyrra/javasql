@@ -1,4 +1,4 @@
-package ch.sama.sql.dialect.tsql;
+package ch.sama.sql.dialect.tsql.schema;
 
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.IType;
@@ -37,12 +37,13 @@ public class TSqlSchemaRenderer implements ISchemaRenderer {
         // TODO: Ignores FK constraints
 
         StringBuilder builder = new StringBuilder();
-        String prefix = "";
+        String prefix;
 
         builder.append("CREATE TABLE ");
         builder.append(renderName(table));
-        builder.append(" (\n");
+        builder.append(" (");
 
+        prefix = "\n";
         for (Field field : table.getColumns()) {
             builder.append(prefix);
             builder.append("\t");
@@ -86,6 +87,9 @@ public class TSqlSchemaRenderer implements ISchemaRenderer {
         builder.append("] [");
 
         IType type = field.getDataType();
+        if (type == null) {
+            throw new BadSqlException("Column " + colName + " has no type");
+        }
 
         String dataType = type.getString();
         if (dataType.contains("(")) {
@@ -140,7 +144,7 @@ public class TSqlSchemaRenderer implements ISchemaRenderer {
 
         return diff.stream()
                 .map(d -> d.getString(self))
-                .collect(Collectors.joining("\n"));
+                .collect(Collectors.joining(";\n\n")) + ";";
     }
 
     public static String getTableSchema(Table table) throws BadSqlException {

@@ -35,4 +35,19 @@ public class FieldTest {
 	public void badTable() {
 		new Field("'", "FIELD");
 	}
+
+	@Test
+	public void checkDefaults() {
+        Field field = new Field("field");
+
+        assertEquals("field", field.getName());
+
+        assertEquals(null, field.getTable());
+        assertEquals(null, field.getTableName());
+
+        assertEquals(null, field.getDataType());
+        assertEquals(false, field.isAutoIncrement());
+        assertEquals(true, field.isNullable());
+        assertEquals(false, field.isPrimaryKey());
+    }
 }

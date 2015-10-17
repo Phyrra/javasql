@@ -1,6 +1,6 @@
 package ch.sama.sql.jpa;
 
-import ch.sama.sql.dialect.tsql.TSqlSchemaRenderer;
+import ch.sama.sql.dialect.tsql.schema.TSqlSchemaRenderer;
 import ch.sama.sql.query.exception.BadSqlException;
 import org.junit.Test;
 

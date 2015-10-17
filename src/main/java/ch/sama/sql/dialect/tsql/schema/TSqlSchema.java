@@ -1,4 +1,4 @@
-package ch.sama.sql.dialect.tsql;
+package ch.sama.sql.dialect.tsql.schema;
 
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.schema.ISchema;
@@ -6,6 +6,10 @@ import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dbo.connection.IQueryExecutor;
 import ch.sama.sql.dbo.generator.ITableFilter;
 import ch.sama.sql.dbo.result.map.MapResult;
+import ch.sama.sql.dialect.tsql.TSqlFunctionFactory;
+import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
+import ch.sama.sql.dialect.tsql.TSqlSourceFactory;
+import ch.sama.sql.dialect.tsql.TSqlValueFactory;
 import ch.sama.sql.dialect.tsql.type.TYPE;
 import ch.sama.sql.query.exception.BadSqlException;
 import ch.sama.sql.query.exception.ObjectNotFoundException;

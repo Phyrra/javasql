@@ -139,11 +139,15 @@ public class Field {
     }
 
     public boolean compareTo(Field other) {
+        if (!field.equalsIgnoreCase(other.getName())) {
+            return false;
+        }
+
         if (isNullable != other.isNullable()) {
             return false;
         }
 
-        if (isAutoIncrement() != other.isAutoIncrement()) {
+        if (isAutoIncrement != other.isAutoIncrement()) {
             return false;
         }
 
@@ -152,7 +156,7 @@ public class Field {
             return false;
         }
         if (dataType != null && otherType != null) {
-            if (!dataType.getClass().equals(otherType.getClass())) {
+            if (!dataType.getString().equalsIgnoreCase(otherType.getString())) {
                 return false;
             }
         }

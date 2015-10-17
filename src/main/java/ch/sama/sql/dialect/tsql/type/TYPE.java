@@ -109,6 +109,10 @@ public class TYPE {
     }
     
     public static boolean isEqualType(IType t1, IType t2) {
+        if (t1 instanceof GenericType && t2 instanceof GenericType) {
+            return t1.getString().equalsIgnoreCase(t2.getString());
+        }
+
         return t1.getClass().equals(t2.getClass());
     }
 
