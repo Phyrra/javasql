@@ -12,6 +12,7 @@ public interface IValueFactory {
     public Value field(Field field);
     public Value field(String field);
     public Value field(String table, String field);
+    public Value field(String table, Field field);
     public Value field(Table table, String field);
 
     public Value table(String table);

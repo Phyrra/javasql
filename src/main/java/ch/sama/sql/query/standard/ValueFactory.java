@@ -43,6 +43,11 @@ public abstract class ValueFactory implements IValueFactory {
     }
 
     @Override
+    public Value field(String table, Field field) {
+        return field(new Field(table, field.getName()));
+    }
+
+    @Override
     public Value field(Table table, String field) {
         return field(new Field(table, field));
     }
