@@ -2,8 +2,6 @@ apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'jacoco'
 
-sourceCompatibility = 1.8
-
 buildscript {
     repositories {
         mavenCentral()
@@ -55,6 +53,15 @@ task antlrGenerate << {
 
 compileJava {
     dependsOn antlrGenerate
+}
+
+jar {
+    exclude('ch/sama/sql/dbo/generator/SchemaGenerator.*')
+    exclude('ch/sama/sql/generated/**')
+}
+
+clean {
+    delete "$projectDir/src/main/java/ch/sama/sql/generated"
 }
 
 /*
