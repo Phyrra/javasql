@@ -5,6 +5,8 @@ import ch.sama.sql.dbo.schema.ISchema;
 import ch.sama.sql.dbo.IType;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.base.IQueryFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -16,6 +18,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ClassGenerator<T extends IQueryFactory> {
+    private static final Logger logger = LoggerFactory.getLogger(ClassGenerator.class);
+
     private ISchema schema;
     private Class<T> type;
 
@@ -62,7 +66,7 @@ public class ClassGenerator<T extends IQueryFactory> {
 
                 tableList.add("\t\t\t" + tableVarName);
 
-                System.out.println("Generated: " + tableName);
+                logger.debug("Generated: " + tableName);
             }
         }
 

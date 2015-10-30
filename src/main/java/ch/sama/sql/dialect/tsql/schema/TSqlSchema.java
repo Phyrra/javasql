@@ -14,6 +14,8 @@ import ch.sama.sql.query.exception.BadSqlException;
 import ch.sama.sql.query.exception.ObjectNotFoundException;
 import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -25,6 +27,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TSqlSchema implements ISchema {
+    private static final Logger logger = LoggerFactory.getLogger(TSqlSchema.class);
+
     private static final TSqlQueryFactory sql = new TSqlQueryFactory();
     private static final TSqlValueFactory value = sql.value();
     private static final TSqlSourceFactory source = sql.source();
@@ -66,7 +70,7 @@ public class TSqlSchema implements ISchema {
                 continue;
             }
 
-            System.out.println("Creating table: " + table);
+            logger.debug("Creating table: " + table);
 
             Table tbl = new Table(schema, table);
 

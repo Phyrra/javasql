@@ -8,6 +8,8 @@ import ch.sama.sql.dbo.connection.IQueryExecutor;
 import ch.sama.sql.dbo.result.map.MapResult;
 import ch.sama.sql.query.exception.ObjectNotFoundException;
 import ch.sama.sql.query.helper.Condition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +19,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class MySqlSchema implements ISchema {
+    private static final Logger logger = LoggerFactory.getLogger(MySqlSchema.class);
+
     private static final MySqlQueryFactory sql = new MySqlQueryFactory();
     private static final MySqlValueFactory value = sql.value();
     private static final MySqlSourceFactory source = sql.source();
@@ -54,7 +58,7 @@ public class MySqlSchema implements ISchema {
                 continue;
             }
 
-            System.out.println("Creating table: " + table);
+            logger.debug("Creating table: " + table);
 
             Table t = new Table(schema, table);
             tables.put(table, t);
