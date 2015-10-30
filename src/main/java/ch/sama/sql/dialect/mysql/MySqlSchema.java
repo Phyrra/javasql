@@ -5,7 +5,6 @@ import ch.sama.sql.dbo.GenericType;
 import ch.sama.sql.dbo.schema.ISchema;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dbo.connection.IQueryExecutor;
-import ch.sama.sql.dbo.generator.ITableFilter;
 import ch.sama.sql.dbo.result.map.MapResult;
 import ch.sama.sql.query.exception.ObjectNotFoundException;
 import ch.sama.sql.query.helper.Condition;
@@ -14,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class MySqlSchema implements ISchema {
@@ -28,11 +28,11 @@ public class MySqlSchema implements ISchema {
         loadSchema(db, executor, table -> true);
     }
 
-    public MySqlSchema(String db, IQueryExecutor<List<MapResult>> executor, ITableFilter filter) {
+    public MySqlSchema(String db, IQueryExecutor<List<MapResult>> executor, Function<String, Boolean> filter) {
         loadSchema(db, executor, filter);
     }
 
-    private void loadSchema(String db, IQueryExecutor<List<MapResult>> executor, ITableFilter filter) {
+    private void loadSchema(String db, IQueryExecutor<List<MapResult>> executor, Function<String, Boolean> filter) {
         tables = new HashMap<String, Table>();
 
         List<MapResult> result = executor.query(
@@ -50,7 +50,7 @@ public class MySqlSchema implements ISchema {
             String schema = row.getAsString("TABLE_SCHEMA");
             String table = row.getAsString("TABLE_NAME");
 
-            if (!filter.filter(table)) {
+            if (!filter.apply(table)) {
                 continue;
             }
 

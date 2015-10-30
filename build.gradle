@@ -58,20 +58,18 @@ compileJava {
 jar {
     exclude('ch/sama/sql/dbo/generator/SchemaGenerator.*')
     exclude('ch/sama/sql/generated/**')
+
+    /*
+    // Copies the dependencies into the jar
+    from configurations.compile.collect {
+        it.isDirectory() ? it : zipTree(it)
+    }
+    */
 }
 
 clean {
     delete "$projectDir/src/main/java/ch/sama/sql/generated"
 }
-
-/*
-// Copies the dependencies into the jar
-jar {
-    from configurations.compile.collect {
-        it.isDirectory() ? it : zipTree(it)
-    }
-}
-*/
 
 jacocoTestReport {
     reports {

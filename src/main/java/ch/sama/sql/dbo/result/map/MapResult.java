@@ -1,9 +1,6 @@
 package ch.sama.sql.dbo.result.map;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class MapResult {
     private Map<String, Object> map;
@@ -72,5 +69,12 @@ public class MapResult {
 
     public Date getAsDate(String key) {
         return getAs(key, Date.class);
+    }
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> copy = new LinkedHashMap<String, Object>();
+        copy.putAll(map);
+
+        return copy;
     }
 }

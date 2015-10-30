@@ -10,6 +10,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ClassGenerator<T extends IQueryFactory> {
@@ -25,10 +28,13 @@ public class ClassGenerator<T extends IQueryFactory> {
         generate(srcFolder, pkg, name -> true);
     }
 
-    public void generate(String srcFolder, String pkg, ITableFilter filter) throws IOException {
+    public void generate(String srcFolder, String pkg, Function<String, Boolean> filter) throws IOException {
         BufferedWriter tables = createClassFile(srcFolder, pkg, "Tables");
 
         tables.write("package " + pkg + ";\n\n");
+        tables.write("import java.util.Arrays;\n");
+        tables.write("import java.util.List;\n");
+        tables.write("import ch.sama.sql.dbo.Table;\n");
         tables.write("import " + pkg + ".tables.*;\n\n");
         tables.write("public class Tables {\n");
 
@@ -38,10 +44,12 @@ public class ClassGenerator<T extends IQueryFactory> {
         sources.write("import " + pkg + ".sources.*;\n\n");
         sources.write("public class Sources {\n");
 
+        List<String> tableList = new ArrayList<String>();
+
         for (Table table : schema.getTables()) {
             String tableName = table.getName();
 
-            if (filter.filter(tableName)) {
+            if (filter.apply(tableName)) {
                 String tableClassName = getTableClassName(table);
                 String sourceClassName = getSourceClassName(table);
                 String tableVarName = getTableVariableName(table);
@@ -52,9 +60,19 @@ public class ClassGenerator<T extends IQueryFactory> {
                 sources.write("\tpublic static final " + sourceClassName + " " + tableVarName + " = new " + sourceClassName + "();\n");
                 generateSourceClass(table, srcFolder, pkg);
 
+                tableList.add("\t\t\t" + tableVarName);
+
                 System.out.println("Generated: " + tableName);
             }
         }
+
+        tables.write("\n\tpublic static List<Table> getSchema() {\n");
+        tables.write("\t\treturn Arrays.asList(\n");
+        tables.write(
+                tableList.stream()
+                        .collect(Collectors.joining(",\n"))
+        );
+        tables.write("\n\t\t);\n\t};\n");
 
         tables.write("}");
         tables.close();

@@ -4,7 +4,6 @@ import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.schema.ISchema;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dbo.connection.IQueryExecutor;
-import ch.sama.sql.dbo.generator.ITableFilter;
 import ch.sama.sql.dbo.result.map.MapResult;
 import ch.sama.sql.dialect.tsql.TSqlFunctionFactory;
 import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
@@ -21,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,11 +39,11 @@ public class TSqlSchema implements ISchema {
         loadSchema(executor, table -> true);
     }
 
-    public TSqlSchema(IQueryExecutor<List<MapResult>> executor, ITableFilter filter) {
+    public TSqlSchema(IQueryExecutor<List<MapResult>> executor, Function<String, Boolean> filter) {
         loadSchema(executor, filter);
     }
 
-    private void loadSchema(IQueryExecutor<List<MapResult>> executor, ITableFilter filter) {
+    private void loadSchema(IQueryExecutor<List<MapResult>> executor, Function<String, Boolean> filter) {
         TSqlFunctionFactory fnc = new TSqlFunctionFactory();
 
         tables = new HashMap<String, Table>();
@@ -62,7 +62,7 @@ public class TSqlSchema implements ISchema {
             String schema = row.getAsString("TABLE_SCHEMA");
             String table = row.getAsString("TABLE_NAME");
 
-            if (!filter.filter(table)) {
+            if (!filter.apply(table)) {
                 continue;
             }
 
