@@ -2,13 +2,12 @@ package ch.sama.sql.dialect.tsql.schema;
 
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
-import ch.sama.sql.query.exception.BadSqlException;
+import ch.sama.sql.dbo.schema.SchemaException;
 import org.junit.Test;
 
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 
 public class SchemaTest {
     // Table
@@ -37,7 +36,7 @@ public class SchemaTest {
         assertEquals("tblTable", table.getName());
     }
 
-    @Test (expected = BadSqlException.class)
+    @Test (expected = SchemaException.class)
     public void tableNoName() {
         new TSqlSchema("CREATE TABLE (");
     }
@@ -71,7 +70,7 @@ public class SchemaTest {
         assertEquals("field", columns.get(0).getName());
     }
 
-    @Test (expected = BadSqlException.class)
+    @Test (expected = SchemaException.class)
     public void fieldNoTable() {
         new TSqlSchema("[field]");
     }
@@ -159,7 +158,7 @@ public class SchemaTest {
         assertEquals("iField", field.getName());
         assertEquals("int", field.getDataType().getString());
         assertEquals(false, field.isNullable());
-        assertEquals("(1337)", field.getDefaultValue().getValue());
+        assertEquals("1337", field.getDefaultValue().getValue());
     }
 
     @Test
@@ -177,7 +176,7 @@ public class SchemaTest {
         assertEquals("uidId", field.getName());
         assertEquals("uniqueidentifier", field.getDataType().getString());
         assertEquals(false, field.isNullable());
-        assertEquals("(newsequentialid())", field.getDefaultValue().getValue());
+        assertEquals("newsequentialid()", field.getDefaultValue().getValue());
     }
 
     // PKey
@@ -227,7 +226,7 @@ public class SchemaTest {
         assertEquals(true, table.getColumn("uidId2").isPrimaryKey());
     }
 
-    @Test (expected = BadSqlException.class)
+    @Test (expected = SchemaException.class)
     public void unknownPrimary() {
         new TSqlSchema(
                 "CREATE TABLE [tblTable](\n" +

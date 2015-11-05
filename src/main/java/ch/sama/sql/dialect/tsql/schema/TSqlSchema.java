@@ -1,16 +1,16 @@
 package ch.sama.sql.dialect.tsql.schema;
 
 import ch.sama.sql.dbo.Field;
-import ch.sama.sql.dbo.schema.ISchema;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dbo.connection.IQueryExecutor;
 import ch.sama.sql.dbo.result.map.MapResult;
+import ch.sama.sql.dbo.schema.ISchema;
+import ch.sama.sql.dbo.schema.SchemaException;
 import ch.sama.sql.dialect.tsql.TSqlFunctionFactory;
 import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
 import ch.sama.sql.dialect.tsql.TSqlSourceFactory;
 import ch.sama.sql.dialect.tsql.TSqlValueFactory;
 import ch.sama.sql.dialect.tsql.type.TYPE;
-import ch.sama.sql.query.exception.BadSqlException;
 import ch.sama.sql.query.exception.ObjectNotFoundException;
 import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.Value;
@@ -219,7 +219,11 @@ public class TSqlSchema implements ISchema {
         return tables.get(name);
     }
 
-    private void parse(String schema) {
+    private void throwSchemaException(String message, int lineNo, String line) {
+        throw new SchemaException(message + " on line #" + lineNo + ": " + line);
+    }
+
+    private void parse(String schema) throws SchemaException {
         // This will be very basic!
         //  I have no intention of writing a complete SQL parser
 
@@ -227,20 +231,26 @@ public class TSqlSchema implements ISchema {
         final int TABLE_BLOCK = 1;
         final int PRIMARY_BLOCK = 2;
 
+        final Pattern FIELD_PATTERN = Pattern.compile("\\[(\\w+)\\](\\((\\d+|[m|M][a|A][x|X])\\))?");
+        final String IDENTITY_REGEX = "(?i).*IDENTITY\\(\\d\\s*,\\s*\\d\\).*";
+        final String NOTNULL_REGEX = "(?i).*NOT NULL.*";
+        final Pattern DEFAULT_PATTERN = Pattern.compile("(?i)CONSTRAINT\\s+\\[\\w+\\]\\s+DEFAULT\\s+.+");
+
         tables = new HashMap<String, Table>();
         int currentBlock = NONE;
         Table table = null;
 
-        Pattern pattern = Pattern.compile("\\[(\\w+)\\](\\((\\d+|[m|M][a|A][x|X])\\))?");
+        int lineNo = 0;
 
         String[] lines = schema.split("\n");
         for (String line : lines) {
+            ++lineNo;
             line = line.trim();
 
             if (line.startsWith("CREATE TABLE")) {
                 currentBlock = TABLE_BLOCK;
 
-                Matcher matcher = pattern.matcher(line);
+                Matcher matcher = FIELD_PATTERN.matcher(line);
 
                 String tableSchema = null;
                 String tableName = null;
@@ -258,7 +268,7 @@ public class TSqlSchema implements ISchema {
                     ++i;
                 }
                 if (i == 0) {
-                    throw new BadSqlException("Schema error: " + line);
+                    throwSchemaException("No table name found", lineNo, line);
                 } else if (i == 1) {
                     tableName = tableSchema;
                     table = new Table(tableName);
@@ -271,27 +281,29 @@ public class TSqlSchema implements ISchema {
                 currentBlock = PRIMARY_BLOCK;
             } else if (line.startsWith(")")) {
                 if (currentBlock == NONE) {
-                    throw new BadSqlException("Schema error, unbalanced Brackets: " + line);
+                    throwSchemaException("Unbalanced Brackets", lineNo, line);
                 } else if (currentBlock == TABLE_BLOCK) {
                     table = null;
                     currentBlock = NONE;
                 } else if (currentBlock == PRIMARY_BLOCK) {
                     if (table == null) {
-                        throw new BadSqlException("Schema error, primary key block without table: " + line);
+                        throwSchemaException("Primary key block without table", lineNo, line);
                     }
 
                     currentBlock = TABLE_BLOCK;
                 }
+            } else if (line.equals("(")) {
+                // ignore
             } else if (line.startsWith("--") || line.length() == 0) {
                 // ignore
             } else {
-                Matcher matcher = pattern.matcher(line);
+                Matcher matcher = FIELD_PATTERN.matcher(line);
                 String fieldName = null;
                 int i = 0;
 
                 switch (currentBlock) {
                     case NONE:
-                        throw new BadSqlException("Schema error, blockless field: " + line);
+                        throwSchemaException("Blockless field", lineNo, line);
                     case TABLE_BLOCK:
                         String dataType = null;
 
@@ -312,12 +324,18 @@ public class TSqlSchema implements ISchema {
                             ++i;
                         }
                         if (i == 0) {
-                            throw new BadSqlException("Schema error, no field name: " + line);
+                            throwSchemaException("No field name in TABLE_BLOCK", lineNo, line);
                         }
 
                         Field field = new Field(table, fieldName);
 
-                        if (line.contains("NOT NULL")) {
+                        if (line.matches(IDENTITY_REGEX)) {
+                            field.setAutoIncrement();
+                        } else {
+                            field.removeAutoIncrement();
+                        }
+
+                        if (line.matches(NOTNULL_REGEX)) {
                             field.setNotNullable();
                         } else {
                             field.setNullable(); // nullable = true is default if none is set
@@ -327,12 +345,31 @@ public class TSqlSchema implements ISchema {
                             field.setDataType(TYPE.fromString(dataType));
                         }
 
-                        if (line.contains("CONSTRAINT") && line.contains("DEFAULT")) { // The only supported constraint is DEFAULT
-                            int idx0 = line.indexOf("DEFAULT");
-                            int idx1 = line.indexOf("(", idx0 + 1);
-                            int idx2 = line.lastIndexOf(")");
+                        Matcher defaultMatcher = DEFAULT_PATTERN.matcher(line);
+                        if (defaultMatcher.find()) {
+                            int matchStart = defaultMatcher.start();
 
-                            String defaultValue = line.substring(idx1, idx2 + 1);
+                            int start = line.indexOf("(", matchStart);
+                            int open = 1;
+
+                            int stop = start + 1;
+                            while (open > 0 && stop < line.length()) {
+                                char c = line.charAt(stop);
+
+                                if (c == '(') {
+                                    ++open;
+                                } else if (c == ')') {
+                                    --open;
+                                }
+
+                                ++stop;
+                            }
+
+                            if (open > 0) {
+                                throwSchemaException("Unbalanced brackets in default value", lineNo, line);
+                            }
+
+                            String defaultValue = line.substring(start + 1, stop - 1);
                             field.setDefaultValue(new Value(defaultValue));
                         }
 
@@ -350,18 +387,18 @@ public class TSqlSchema implements ISchema {
                             ++i;
                         }
                         if (i == 0) {
-                            throw new BadSqlException("Schema error, no field name: " + line);
+                            throwSchemaException("No field name in PRIMARY_BLOCK", lineNo, line);
                         }
 
                         if (!table.hasColumn(fieldName)) {
-                            throw new BadSqlException("Primary key error, table has no " + fieldName);
+                            throwSchemaException("Primary key error, table has no column " + fieldName, lineNo, line);
                         }
 
                         table.getColumn(fieldName).setAsPrimaryKey();
 
                         break;
                     default:
-                        throw new BadSqlException("Unknown block (" + currentBlock + "): " + line); // should never happen
+                        throwSchemaException("Unknown block " + currentBlock, lineNo, line); // should never happen
                 }
             }
         }
