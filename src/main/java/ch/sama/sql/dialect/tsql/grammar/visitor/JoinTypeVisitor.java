@@ -2,49 +2,54 @@ package ch.sama.sql.dialect.tsql.grammar.visitor;
 
 import ch.sama.sql.dialect.tsql.grammar.antlr.SqlBaseVisitor;
 import ch.sama.sql.dialect.tsql.grammar.antlr.SqlParser;
-import ch.sama.sql.query.base.JoinQuery;
+import ch.sama.sql.query.exception.BadSqlException;
+import ch.sama.sql.query.helper.join.JoinType;
+import ch.sama.sql.query.helper.join.JoinTypeDirection;
 
-import java.util.ArrayList;
-import java.util.List;
-
-class JoinTypeVisitor extends SqlBaseVisitor<List<JoinQuery.TYPE>> {
+class JoinTypeVisitor extends SqlBaseVisitor<JoinType> {
     @Override
-    public List<JoinQuery.TYPE> visitJoinDirection(SqlParser.JoinDirectionContext ctx) {
-        List<JoinQuery.TYPE> types = new ArrayList<JoinQuery.TYPE>();
+    public JoinType visitJoinDirection(SqlParser.JoinDirectionContext ctx) {
+        String dir = ctx.getText();
 
-        types.add(JoinQuery.TYPE.fromString(ctx.getText()));
-
-        return types;
-    }
-
-    @Override
-    public List<JoinQuery.TYPE> visitJoinTypeSpecial(SqlParser.JoinTypeSpecialContext ctx) {
-        List<JoinQuery.TYPE> types = new ArrayList<JoinQuery.TYPE>();
-
-        types.add(JoinQuery.TYPE.fromString(ctx.getText()));
-
-        return types;
-    }
-
-    @Override
-    public List<JoinQuery.TYPE> visitJoinTypeOuter(SqlParser.JoinTypeOuterContext ctx) {
-        List<JoinQuery.TYPE> types = new ArrayList<JoinQuery.TYPE>();
-
-        types.addAll(visit(ctx.joinDirection()));
-
-        if (ctx.Outer() != null) {
-            types.add(JoinQuery.TYPE.OUTER);
+        switch (dir.toUpperCase()) {
+            case "LEFT":
+                return JoinType.LEFT;
+            case "RIGHT":
+                return JoinType.RIGHT;
+            case "FULL":
+                return JoinType.FULL;
+            default:
+                throw new BadSqlException("Unknown join direction: " + dir);
         }
-
-        return types;
     }
 
     @Override
-    public List<JoinQuery.TYPE> visitJoinType(SqlParser.JoinTypeContext ctx) {
-        List<JoinQuery.TYPE> types = new ArrayList<JoinQuery.TYPE>();
+    public JoinType visitJoinTypeSpecial(SqlParser.JoinTypeSpecialContext ctx) {
+        String special = ctx.getText();
 
-        types.addAll(visitChildren(ctx));
+        switch (special.toUpperCase()) {
+            case "CROSS":
+                return JoinType.CROSS;
+            case "INNER":
+                return JoinType.INNER;
+            default:
+                throw new BadSqlException("Unknown join type: " + special);
+        }
+    }
 
-        return types;
+    @Override
+    public JoinType visitJoinTypeOuter(SqlParser.JoinTypeOuterContext ctx) {
+        JoinTypeDirection direction = (JoinTypeDirection) visit(ctx.joinDirection());
+
+        if (ctx.Outer() == null) {
+            return direction;
+        } else {
+            return direction.outer();
+        }
+    }
+
+    @Override
+    public JoinType visitJoinType(SqlParser.JoinTypeContext ctx) {
+        return visitChildren(ctx);
     }
 }

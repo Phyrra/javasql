@@ -1,11 +1,11 @@
 package ch.sama.sql.dialect.tsql.query;
 
-import ch.sama.sql.query.base.FromQuery;
-import ch.sama.sql.query.helper.Condition;
-import ch.sama.sql.query.helper.condition.ICondition;
 import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
 import ch.sama.sql.dialect.tsql.TSqlSourceFactory;
 import ch.sama.sql.dialect.tsql.TSqlValueFactory;
+import ch.sama.sql.query.base.FromQuery;
+import ch.sama.sql.query.helper.Condition;
+import ch.sama.sql.query.helper.condition.ICondition;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -102,7 +102,7 @@ public class JoinQueryTest {
         assertEquals(
                 "SELECT [F]\nFROM [T]\nFULL OUTER JOIN [J] ON 1 = 1",
                 query
-                        .join(source.table("J")).full().outer().on(cond)
+                        .join(source.table("J")).fullOuter().on(cond)
                 .getSql()
         );
     }

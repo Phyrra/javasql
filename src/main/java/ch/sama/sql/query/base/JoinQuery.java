@@ -1,61 +1,20 @@
 package ch.sama.sql.query.base;
 
-import ch.sama.sql.query.exception.BadSqlException;
 import ch.sama.sql.query.helper.Source;
 import ch.sama.sql.query.helper.condition.ICondition;
-
-import java.util.ArrayList;
-import java.util.List;
+import ch.sama.sql.query.helper.join.JoinType;
 
 public class JoinQuery implements IQuery {
-    public enum TYPE {
-        LEFT("LEFT"),
-        RIGHT("RIGHT"),
-        INNER("INNER"),
-        OUTER("OUTER"),
-        FULL("FULL"),
-        CROSS("CROSS");
-
-        private String name;
-
-        TYPE(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public static TYPE fromString(String name) {
-            switch (name.toUpperCase()) {
-                case "LEFT":
-                    return LEFT;
-                case "RIGHT":
-                    return RIGHT;
-                case "INNER":
-                    return INNER;
-                case "OUTER":
-                    return OUTER;
-                case "FULL":
-                    return FULL;
-                case "CROSS":
-                    return CROSS;
-                default:
-                    throw new BadSqlException("Unknown Join Type: " + name);
-            }
-        }
-    }
-
     private IQueryRenderer renderer;
 	private IQuery parent;
 	private Source source;
-	private List<TYPE> types;
+	private JoinType type;
 
     public JoinQuery(IQueryRenderer renderer, IQuery parent, Source source) {
         this.renderer = renderer;
         this.parent = parent;
         this.source = source;
-        this.types = new ArrayList<TYPE>();
+        this.type = null;
     }
     
     @Override
@@ -78,48 +37,58 @@ public class JoinQuery implements IQuery {
 		return source;
 	}
 	
-	public List<TYPE> getTypes() {
-		return types;
+	public JoinType getType() {
+		return type;
 	}
 
-    public boolean hasTypes() {
-        return !types.isEmpty();
+    public boolean hasType() {
+        return type != null;
     }
 
-    public JoinQuery type(TYPE type) {
-        this.types.add(type);
+    public JoinQuery type(JoinType type) {
+        this.type = type;
         return this;
     }
 	
 	public JoinQuery left() {
-		this.types.add(TYPE.LEFT);
+		this.type = JoinType.LEFT;
 		return this;
 	}
 	
 	public JoinQuery right() {
-		this.types.add(TYPE.RIGHT);
-		return this;
-	}
-	
-	public JoinQuery inner() {
-		this.types.add(TYPE.INNER);
+		this.type = JoinType.RIGHT;
 		return this;
 	}
 
-    public JoinQuery outer() {
-        this.types.add(TYPE.OUTER);
+    public JoinQuery full() {
+        this.type = JoinType.FULL;
         return this;
     }
-
-	public JoinQuery full() {
-		this.types.add(TYPE.FULL);
+	
+	public JoinQuery inner() {
+		this.type = JoinType.INNER;
 		return this;
 	}
 
 	public JoinQuery cross() {
-		this.types.add(TYPE.CROSS);
+		this.type = JoinType.CROSS;
 		return this;
 	}
+
+    public JoinQuery leftOuter() {
+        this.type = JoinType.LEFT_OUTER;
+        return this;
+    }
+
+    public JoinQuery rightOuter() {
+        this.type = JoinType.RIGHT_OUTER;
+        return this;
+    }
+
+    public JoinQuery fullOuter() {
+        this.type = JoinType.FULL_OUTER;
+        return this;
+    }
 	
 	public JoinQueryFinal on(ICondition condition) {
 		return new JoinQueryFinal(renderer, this, condition);

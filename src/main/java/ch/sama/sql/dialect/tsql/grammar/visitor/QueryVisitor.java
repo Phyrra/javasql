@@ -192,11 +192,7 @@ public class QueryVisitor extends SqlBaseVisitor<IQuery> {
         ICondition condition = getCondition(ctx.condition());
 
         if (ctx.joinType() != null) {
-            List<JoinQuery.TYPE> joinTypes = joinTypeVisitor.visit(ctx.joinType());
-
-            for (JoinQuery.TYPE type : joinTypes) {
-                query = query.type(type);
-            }
+            query = query.type(joinTypeVisitor.visit(ctx.joinType()));
         }
 
         return query.on(condition);
