@@ -2,39 +2,43 @@ package ch.sama.sql.dialect.tsql.grammar.visitor;
 
 import ch.sama.sql.dialect.tsql.grammar.antlr.SqlBaseVisitor;
 import ch.sama.sql.dialect.tsql.grammar.antlr.SqlParser;
-import ch.sama.sql.query.exception.BadSqlException;
 import ch.sama.sql.query.helper.join.JoinType;
 import ch.sama.sql.query.helper.join.JoinTypeDirection;
 
 class JoinTypeVisitor extends SqlBaseVisitor<JoinType> {
     @Override
-    public JoinType visitJoinDirection(SqlParser.JoinDirectionContext ctx) {
-        String dir = ctx.getText();
+    public JoinTypeDirection visitJoinDirectionLeft(SqlParser.JoinDirectionLeftContext ctx) {
+        return JoinType.LEFT;
+    }
 
-        switch (dir.toUpperCase()) {
-            case "LEFT":
-                return JoinType.LEFT;
-            case "RIGHT":
-                return JoinType.RIGHT;
-            case "FULL":
-                return JoinType.FULL;
-            default:
-                throw new BadSqlException("Unknown join direction: " + dir);
-        }
+    @Override
+    public JoinTypeDirection visitJoinDirectionRight(SqlParser.JoinDirectionRightContext ctx) {
+        return JoinType.RIGHT;
+    }
+
+    @Override
+    public JoinTypeDirection visitJoinDirectionFull(SqlParser.JoinDirectionFullContext ctx) {
+        return JoinType.FULL;
+    }
+
+    @Override
+    public JoinType visitJoinDirection(SqlParser.JoinDirectionContext ctx) {
+        return visitChildren(ctx);
+    }
+
+    @Override
+    public JoinType visitJoinSpecialCross(SqlParser.JoinSpecialCrossContext ctx) {
+        return JoinType.CROSS;
+    }
+
+    @Override
+    public JoinType visitJoinSpecialInner(SqlParser.JoinSpecialInnerContext ctx) {
+        return JoinType.INNER;
     }
 
     @Override
     public JoinType visitJoinTypeSpecial(SqlParser.JoinTypeSpecialContext ctx) {
-        String special = ctx.getText();
-
-        switch (special.toUpperCase()) {
-            case "CROSS":
-                return JoinType.CROSS;
-            case "INNER":
-                return JoinType.INNER;
-            default:
-                throw new BadSqlException("Unknown join type: " + special);
-        }
+        return visitChildren(ctx);
     }
 
     @Override

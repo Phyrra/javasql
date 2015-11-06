@@ -199,15 +199,35 @@ fromStatement
     : From sourceList
     ;
 
-joinDirection
+joinDirectionLeft
     : Left
-    | Right
-    | Full
+    ;
+
+joinDirectionRight
+    : Right
+    ;
+
+joinDirectionFull
+    : Full
+    ;
+
+joinDirection
+    : joinDirectionLeft
+    | joinDirectionRight
+    | joinDirectionFull
+    ;
+
+joinSpecialCross
+    : Cross
+    ;
+
+joinSpecialInner
+    : Inner
     ;
 
 joinTypeSpecial
-    : Cross
-    | Inner
+    : joinSpecialCross
+    | joinSpecialInner
     ;
 
 joinTypeOuter
