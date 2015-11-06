@@ -1,0 +1,3 @@
+SELECT [dbo].[t1].[f], [dbo].[t2].*
+FROM [dbo].[t1]
+JOIN [dbo].[t2] ON [dbo].[t1].[f] = [dbo].[t2].[f]
