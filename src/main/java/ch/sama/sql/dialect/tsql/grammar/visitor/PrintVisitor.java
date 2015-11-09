@@ -2,7 +2,6 @@ package ch.sama.sql.dialect.tsql.grammar.visitor;
 
 import ch.sama.sql.dialect.tsql.grammar.antlr.SqlBaseVisitor;
 import ch.sama.sql.dialect.tsql.grammar.antlr.SqlParser;
-import ch.sama.sql.dialect.tsql.grammar.helper.StringGetter;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 public class PrintVisitor extends SqlBaseVisitor<Void> {

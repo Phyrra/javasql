@@ -1,0 +1,1 @@
+(NOT ([field] IS NULL) OR NOT ([field] IS NULL))

@@ -9,5 +9,6 @@ gradlew.bat
 bin/*
 src/main/java/ch/sama/sql/dbo/generator/SchemaGenerator.java
 src/main/java/ch/sama/sql/dialect/tsql/grammar/antlr/*
+src/main/java/ch/sama/sql/jql/antlr/*
 src/main/java/ch/sama/sql/generated/*
 *.iml

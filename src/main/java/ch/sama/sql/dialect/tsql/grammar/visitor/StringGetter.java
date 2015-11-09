@@ -1,8 +1,8 @@
-package ch.sama.sql.dialect.tsql.grammar.helper;
+package ch.sama.sql.dialect.tsql.grammar.visitor;
 
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-public class StringGetter {
+class StringGetter {
     public static String get(TerminalNode sl) {
         String s = sl.getText();
 

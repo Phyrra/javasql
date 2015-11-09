@@ -1,9 +1,8 @@
-package ch.sama.sql.dialect.tsql.grammar.runner;
+package ch.sama.sql.dialect.tsql.grammar.parser;
 
 import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
 import ch.sama.sql.dialect.tsql.grammar.antlr.SqlParser;
 import ch.sama.sql.dialect.tsql.grammar.exception.SqlGrammarException;
-import ch.sama.sql.dialect.tsql.grammar.helper.SqlParserBase;
 import ch.sama.sql.dialect.tsql.grammar.visitor.QueryVisitor;
 import ch.sama.sql.query.base.IQuery;
 import org.antlr.v4.runtime.misc.ParseCancellationException;

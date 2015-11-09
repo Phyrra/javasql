@@ -14,5 +14,6 @@ public interface IConditionRenderer {
     public String render(ExistsCondition c);
     public String render(IsNullCondition c);
     public String render(InQueryCondition c);
+    public String render(InListCondition c);
     public String render(CustomCondition c);
 }

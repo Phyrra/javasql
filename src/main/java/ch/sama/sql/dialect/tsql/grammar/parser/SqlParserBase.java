@@ -1,4 +1,4 @@
-package ch.sama.sql.dialect.tsql.grammar.helper;
+package ch.sama.sql.dialect.tsql.grammar.parser;
 
 import ch.sama.sql.dialect.tsql.grammar.antlr.SqlLexer;
 import ch.sama.sql.dialect.tsql.grammar.antlr.SqlParser;
@@ -6,7 +6,7 @@ import ch.sama.sql.dialect.tsql.grammar.exception.SqlGrammarException;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 
-public abstract class SqlParserBase {
+abstract class SqlParserBase {
     public SqlParser parse(String pattern) {
         SqlLexer lexer = new SqlLexer(new ANTLRInputStream(pattern));
         CommonTokenStream tokens = new CommonTokenStream(lexer);

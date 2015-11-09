@@ -3,6 +3,7 @@ package ch.sama.sql.query.helper;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.helper.condition.*;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 public class Condition {
@@ -56,6 +57,10 @@ public class Condition {
 
     public static InQueryCondition in(Value value, IQuery query) {
         return new InQueryCondition(value, query);
+    }
+
+    public static InListCondition in(Value value, List<Value> values) {
+        return new InListCondition(value, values);
     }
 
     public static CustomCondition custom(Supplier<String> renderer) {

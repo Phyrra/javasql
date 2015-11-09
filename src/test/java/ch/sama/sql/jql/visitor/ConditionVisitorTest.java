@@ -1,6 +1,8 @@
-package ch.sama.sql.dialect.tsql.grammar.visitor;
+package ch.sama.sql.jql.visitor;
 
-import ch.sama.sql.dialect.tsql.grammar.parser.AntlrSqlPrinter;
+import ch.sama.sql.dialect.tsql.TSqlConditionRenderer;
+import ch.sama.sql.dialect.tsql.TSqlValueFactory;
+import ch.sama.sql.jql.parser.AntlrJqlConditionBuilder;
 import ch.sama.sql.util.GrammarTestBase;
 import ch.sama.sql.util.TestFileUtil;
 import org.junit.Test;
@@ -13,9 +15,9 @@ import java.io.IOException;
 import java.util.Collection;
 
 @RunWith(Parameterized.class)
-public class PrintVisitorTest extends GrammarTestBase {
-    private static final String PATH = "grammar/print";
-    private static final String ENDING = "sql";
+public class ConditionVisitorTest extends GrammarTestBase {
+    private static final String PATH = "grammar/jql";
+    private static final String ENDING = "jql";
 
     private static String ONLY_ONE = null;
 
@@ -23,14 +25,14 @@ public class PrintVisitorTest extends GrammarTestBase {
     private File in;
     private File out;
 
-    private AntlrSqlPrinter printer;
+    private AntlrJqlConditionBuilder builder;
 
-    public PrintVisitorTest(String name, File in, File out) {
+    public ConditionVisitorTest(String name, File in, File out) {
         this.name = name;
         this.in = in;
         this.out = out;
 
-        this.printer = new AntlrSqlPrinter();
+        this.builder = new AntlrJqlConditionBuilder(new TSqlValueFactory());
     }
 
     @Parameterized.Parameters (name = "{index}: {0}")
@@ -40,7 +42,7 @@ public class PrintVisitorTest extends GrammarTestBase {
 
     @Test
     public void testFile() throws IOException {
-        String result = printer.print(TestFileUtil.readFile(in));
+        String result = builder.build(TestFileUtil.readFile(in)).render(new TSqlConditionRenderer());
 
         compareResult(in, out, result);
     }

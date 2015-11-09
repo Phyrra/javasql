@@ -1,13 +1,13 @@
-package ch.sama.sql.dialect.tsql.grammar.visitor;
+package ch.sama.sql.util;
 
 import java.io.*;
 import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
 
-public class TestUtil {
+public class TestFileUtil {
     public static File getFile(String path) throws FileNotFoundException {
-        URL url = TestUtil.class.getClassLoader().getResource(path);
+        URL url = TestFileUtil.class.getClassLoader().getResource(path);
         if (url == null) {
             throw new FileNotFoundException("File " + path + " not found");
         }
