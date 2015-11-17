@@ -47,7 +47,7 @@ public class JqlConditionVisitor extends JqlBaseVisitor<ICondition> {
 
     @Override
     public ICondition visitNotCondition(JqlParser.NotConditionContext ctx) {
-        ICondition c = visit(ctx.comparativeCondition());
+        ICondition c = visit(ctx.primaryCondition());
 
         if (ctx.notOperator() != null) {
             return Condition.not(c);
@@ -57,7 +57,7 @@ public class JqlConditionVisitor extends JqlBaseVisitor<ICondition> {
     }
 
     @Override
-    public ICondition visitComparativeCondition(JqlParser.ComparativeConditionContext ctx) {
+    public ICondition visitPrimaryCondition(JqlParser.PrimaryConditionContext ctx) {
         return visitChildren(ctx);
     }
 
@@ -137,5 +137,18 @@ public class JqlConditionVisitor extends JqlBaseVisitor<ICondition> {
         List<Value> values = valueListVisitor.visit(ctx.constantValueList());
 
         return Condition.in(value, values);
+    }
+
+    @Override
+    public ICondition visitNotInCondition(JqlParser.NotInConditionContext ctx) {
+        Value value = valueVisitor.visit(ctx.expression());
+        List<Value> values = valueListVisitor.visit(ctx.constantValueList());
+
+        return Condition.not(Condition.in(value, values));
+    }
+
+    @Override
+    public ICondition visitParCondition(JqlParser.ParConditionContext ctx) {
+        return visit(ctx.condition());
     }
 }

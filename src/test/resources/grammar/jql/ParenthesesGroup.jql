@@ -1,0 +1,1 @@
+(field1 = 1 and field2 = 2) or (field1 = 2 and field2 = 1)

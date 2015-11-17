@@ -14,6 +14,7 @@ And : [aA][nN][dD] ;
 Or : [oO][rR] ;
 Null : [nN][uU][lL][lL] ;
 In : [iI][nN] ;
+Not : [nN][oO][tT] ;
 
 Identifier
     : IdentifierNondigit ( IdentifierNondigit | Digit )*
@@ -149,15 +150,15 @@ logicalAndCondition
     ;
 
 notOperator
-    : '!'
+    : Not
     ;
 
 notCondition
-    : comparativeCondition
-    | notOperator comparativeCondition
+    : primaryCondition
+    | notOperator primaryCondition
     ;
 
-comparativeCondition
+primaryCondition
     : equalCondition
     | unequalCondition
     | lessCondition
@@ -168,6 +169,8 @@ comparativeCondition
     | isNullCondition
     | isNotNullCondition
     | inCondition
+    | notInCondition
+    | parCondition
     ;
 
 equalCondition
@@ -215,6 +218,14 @@ constantValueList
 
 inCondition
     : expression In '(' constantValueList ')'
+    ;
+
+notInCondition
+    : expression Not In '(' constantValueList ')'
+    ;
+
+parCondition
+    : '(' condition ')'
     ;
 
 expression

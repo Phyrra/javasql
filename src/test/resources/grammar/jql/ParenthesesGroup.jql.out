@@ -1,0 +1,1 @@
+(([field1] = 1 AND [field2] = 2) OR ([field1] = 2 AND [field2] = 1))
