@@ -1,12 +1,15 @@
 package ch.sama.sql.jql.visitor;
 
-import ch.sama.sql.query.base.IValueFactory;
 import ch.sama.sql.jql.antlr.JqlBaseVisitor;
 import ch.sama.sql.jql.antlr.JqlParser;
+import ch.sama.sql.query.base.IValueFactory;
 import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.Value;
+import ch.sama.sql.query.helper.condition.AndCondition;
 import ch.sama.sql.query.helper.condition.ICondition;
+import ch.sama.sql.query.helper.condition.OrCondition;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class JqlConditionVisitor extends JqlBaseVisitor<ICondition> {
@@ -25,24 +28,44 @@ public class JqlConditionVisitor extends JqlBaseVisitor<ICondition> {
 
     @Override
     public ICondition visitLogicalOrCondition(JqlParser.LogicalOrConditionContext ctx) {
-        ICondition c = visit(ctx.logicalAndCondition());
+        ICondition rhs = visit(ctx.logicalAndCondition());
 
         if (ctx.logicalOrCondition() != null) {
-            return Condition.or(visit(ctx.logicalOrCondition()), c);
+            ICondition lhs = visit(ctx.logicalOrCondition());
+
+            if (lhs instanceof OrCondition) {
+                List<ICondition> cond = new ArrayList<ICondition>();
+                cond.addAll(((OrCondition) lhs).getConditions());
+                cond.add(rhs);
+
+                return Condition.or(cond.toArray(new ICondition[cond.size()]));
+            }
+
+            return Condition.or(visit(ctx.logicalOrCondition()), rhs);
         }
 
-        return c;
+        return rhs;
     }
 
     @Override
     public ICondition visitLogicalAndCondition(JqlParser.LogicalAndConditionContext ctx) {
-        ICondition c = visit(ctx.notCondition());
+        ICondition rhs = visit(ctx.notCondition());
 
         if (ctx.logicalAndCondition() != null) {
-            return Condition.and(visit(ctx.logicalAndCondition()), c);
+            ICondition lhs = visit(ctx.logicalAndCondition());
+
+            if (lhs instanceof AndCondition) {
+                List<ICondition> cond = new ArrayList<ICondition>();
+                cond.addAll(((AndCondition) lhs).getConditions());
+                cond.add(rhs);
+
+                return Condition.and(cond.toArray(new ICondition[cond.size()]));
+            }
+
+            return Condition.and(lhs, rhs);
         }
 
-        return c;
+        return rhs;
     }
 
     @Override
