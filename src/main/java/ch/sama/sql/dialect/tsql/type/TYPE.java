@@ -144,6 +144,7 @@ public class TYPE {
             case "float":
                 return FLOAT_TYPE;
             case "int":
+            case "short":
             case "long":
                 return INT_TYPE;
             case "boolean":
