@@ -43,10 +43,10 @@ public class ConditionTest {
 	
 	@Test
 	public void and() {
-		ICondition c = Condition.and(
-				Condition.eq(value.numeric(1), value.numeric(2)),
-				Condition.eq(value.numeric(3), value.numeric(4))
-		);
+        ICondition c = Condition.and(
+                Condition.eq(value.numeric(1), value.numeric(2)),
+                Condition.eq(value.numeric(3), value.numeric(4))
+        );
 		
 		assertEquals("(1 = 2 AND 3 = 4)", c.render(condition));
 	}
@@ -64,10 +64,10 @@ public class ConditionTest {
 	
 	@Test
 	public void or() {
-		ICondition c = Condition.or(
-				Condition.eq(value.numeric(1), value.numeric(2)),
-				Condition.eq(value.numeric(3), value.numeric(4))
-		);
+        ICondition c = Condition.or(
+                Condition.eq(value.numeric(1), value.numeric(2)),
+                Condition.eq(value.numeric(3), value.numeric(4))
+        );
 		
 		assertEquals("(1 = 2 OR 3 = 4)", c.render(condition));
 	}
@@ -146,5 +146,17 @@ public class ConditionTest {
     public void between() {
         ICondition c = TSqlCondition.between(value.numeric(1), value.numeric(10));
         assertEquals("BETWEEN 1 AND 10", c.render(condition));
+    }
+
+    @Test
+    public void contains() {
+        ICondition c = TSqlCondition.contains(value.field("FIELD"), "text");
+        assertEquals("[FIELD] LIKE '%text%'", c.render(condition));
+    }
+
+    @Test
+    public void containsWithEscape() {
+        ICondition c = TSqlCondition.contains(value.field("FIELD"), "some 'text'");
+        assertEquals("[FIELD] LIKE '%some ''text''%'", c.render(condition));
     }
 }

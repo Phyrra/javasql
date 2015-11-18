@@ -1,5 +1,6 @@
 package ch.sama.sql.query.standard;
 
+import ch.sama.sql.query.helper.Value;
 import ch.sama.sql.query.helper.condition.*;
 
 import java.util.List;
@@ -77,6 +78,16 @@ public abstract class ConditionRenderer implements IConditionRenderer {
     @Override
     public String render(InQueryCondition c) {
         return c.getValue().getValue() + " IN (\n" + c.getQuery().getSql() + "\n)";
+    }
+
+    @Override
+    public String render(InListCondition c) {
+        return c.getValue().getValue() +
+                " IN (\n" +
+                c.getList().stream()
+                        .map(Value::getValue)
+                        .collect(Collectors.joining(", ")) +
+                "\n)";
     }
 
     @Override

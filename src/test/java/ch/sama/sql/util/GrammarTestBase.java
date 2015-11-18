@@ -1,4 +1,4 @@
-package ch.sama.sql.dialect.tsql.grammar.visitor;
+package ch.sama.sql.util;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -7,21 +7,20 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class TestBase {
-    private static final String ENDING = "sql";
+public class GrammarTestBase {
     private static final String OUT = "out";
     private static final String GEN = "gen";
 
-    public static Collection getTestFiles(String directory, String onlyOne) throws FileNotFoundException {
+    public static Collection getTestFiles(String directory, String ending, String onlyOne) throws FileNotFoundException {
         List<Object[]> files = new ArrayList<Object[]>();
 
-        File dir = TestUtil.getFile(directory);
+        File dir = TestFileUtil.getFile(directory);
 
         if (onlyOne == null) {
             for (File file : dir.listFiles()) {
                 String fileName = file.getName();
 
-                if (fileName.endsWith("." + ENDING)) {
+                if (fileName.endsWith("." + ending)) {
                     files.add(new Object[]{
                             fileName,
                             file,
@@ -43,9 +42,9 @@ public class TestBase {
     public void compareResult(File in, File out, String result) {
         try {
             if (out.exists()) {
-                TestUtil.compare(TestUtil.readFile(out), result);
+                TestFileUtil.compare(TestFileUtil.readFile(out), result);
             } else {
-                TestUtil.writeFile(new File(in.getParentFile(), in.getName() + "." + GEN), result);
+                TestFileUtil.writeFile(new File(in.getParentFile(), in.getName() + "." + GEN), result);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

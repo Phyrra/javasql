@@ -1,6 +1,8 @@
 package ch.sama.sql.dialect.tsql.grammar.visitor;
 
-import ch.sama.sql.dialect.tsql.grammar.runner.AntlrQueryBuilder;
+import ch.sama.sql.dialect.tsql.grammar.parser.AntlrQueryBuilder;
+import ch.sama.sql.util.GrammarTestBase;
+import ch.sama.sql.util.TestFileUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -11,12 +13,9 @@ import java.io.IOException;
 import java.util.Collection;
 
 @RunWith(Parameterized.class)
-public class QueryVisitorTest extends TestBase {
+public class QueryVisitorTest extends GrammarTestBase {
     private static final String PATH = "grammar/query";
-
     private static final String ENDING = "sql";
-    private static final String OUT = "out";
-    private static final String GEN = "gen";
 
     private static String ONLY_ONE = null;
 
@@ -36,12 +35,12 @@ public class QueryVisitorTest extends TestBase {
 
     @Parameterized.Parameters (name = "{index}: {0}")
     public static Collection tests() throws FileNotFoundException {
-        return getTestFiles(PATH, ONLY_ONE);
+        return getTestFiles(PATH, ENDING, ONLY_ONE);
     }
 
     @Test
     public void testFile() throws IOException {
-        String result = builder.build(TestUtil.readFile(in)).getSql();
+        String result = builder.build(TestFileUtil.readFile(in)).getSql();
 
         compareResult(in, out, result);
     }
