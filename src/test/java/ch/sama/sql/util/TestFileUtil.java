@@ -16,18 +16,18 @@ public class TestFileUtil {
     }
 
     public static String readFile(File file) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(file));
         StringBuilder builder = new StringBuilder();
 
-        String line;
-        while ((line = br.readLine()) != null) {
-            if (builder.length() > 0) {
-                builder.append("\r\n");
-            }
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (builder.length() > 0) {
+                    builder.append("\r\n");
+                }
 
-            builder.append(line);
+                builder.append(line);
+            }
         }
-        br.close();
 
         return builder.toString();
     }
@@ -38,10 +38,10 @@ public class TestFileUtil {
         String fixedPath = file.getAbsolutePath().replace("\\build\\resources\\test\\", "\\src\\test\\resources\\");
         File fixedFile = new File(fixedPath);
 
-        BufferedWriter bw = new BufferedWriter(new FileWriter(fixedFile));
-        bw.write(s);
-        bw.flush();
-        bw.close();
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(fixedFile))) {
+            bw.write(s);
+            bw.flush();
+        }
     }
 
     public static void compare(String expected, String actual) {
