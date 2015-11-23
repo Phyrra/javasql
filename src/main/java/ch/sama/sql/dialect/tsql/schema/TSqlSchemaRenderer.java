@@ -37,19 +37,19 @@ public class TSqlSchemaRenderer implements ISchemaRenderer {
         // TODO: Ignores FK constraints
 
         StringBuilder builder = new StringBuilder();
-        String prefix;
 
         builder.append("CREATE TABLE ");
         builder.append(renderName(table));
         builder.append(" (");
 
-        prefix = "\n";
-        for (Field field : table.getColumns()) {
-            builder.append(prefix);
-            builder.append("\t");
-            builder.append(render(field));
-
-            prefix = ",\n";
+        List<Field> columns = table.getColumns();
+        if (!columns.isEmpty()) {
+            builder.append("\n");
+            builder.append(
+                    columns.stream()
+                            .map(field -> "\t" + render(field))
+                            .collect(Collectors.joining(",\n"))
+            );
         }
 
         if (table.hasPrimaryKey()) {
@@ -57,15 +57,11 @@ public class TSqlSchemaRenderer implements ISchemaRenderer {
             builder.append(table.getName());
             builder.append("] PRIMARY KEY CLUSTERED (\n");
 
-            prefix = "";
-            for (Field pKey : table.getPrimaryKey()) {
-                builder.append(prefix);
-                builder.append("\t\t[");
-                builder.append(pKey.getName());
-                builder.append("] ASC");
-
-                prefix = ",\n";
-            }
+            builder.append(
+                    table.getPrimaryKey().stream()
+                            .map(pKey -> "\t\t[" + pKey.getName() + "] ASC")
+                            .collect(Collectors.joining(",\n"))
+            );
 
             builder.append("\n\t)\n) ON [PRIMARY]");
             // Ignores all the options: WITH  (...) ON [PRIMARY]
