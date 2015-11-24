@@ -70,7 +70,7 @@ class ConditionVisitor extends SqlBaseVisitor<ICondition> {
 
     @Override
     public ICondition visitNotCondition(SqlParser.NotConditionContext ctx) {
-        ICondition c = visit(ctx.comparativeCondition());
+        ICondition c = visit(ctx.primaryCondition());
 
         if (ctx.Not() != null) {
             return Condition.not(c);
@@ -80,7 +80,7 @@ class ConditionVisitor extends SqlBaseVisitor<ICondition> {
     }
 
     @Override
-    public ICondition visitComparativeCondition(SqlParser.ComparativeConditionContext ctx) {
+    public ICondition visitPrimaryCondition(SqlParser.PrimaryConditionContext ctx) {
         return visitChildren(ctx);
     }
 
@@ -168,5 +168,10 @@ class ConditionVisitor extends SqlBaseVisitor<ICondition> {
         IQuery query = queryVisitor.visit(ctx.statement());
 
         return Condition.not(Condition.in(val, query));
+    }
+
+    @Override
+    public ICondition visitParCondition(SqlParser.ParConditionContext ctx) {
+        return visit(ctx.condition());
     }
 }

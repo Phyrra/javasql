@@ -397,11 +397,11 @@ logicalAndCondition
     ;
 
 notCondition
-    : comparativeCondition
-    | Not comparativeCondition
+    : primaryCondition
+    | Not primaryCondition
     ;
 
-comparativeCondition
+primaryCondition
     : equalCondition
     | unequalCondition
     | lessCondition
@@ -413,6 +413,7 @@ comparativeCondition
     | isNotNullCondition
     | inCondition
     | notInCondition
+    | parCondition
     ;
 
 equalCondition
@@ -457,6 +458,10 @@ inCondition
 
 notInCondition
     : expression Not In '(' statement ')'
+    ;
+
+parCondition
+    : '(' condition ')'
     ;
 
 expression
