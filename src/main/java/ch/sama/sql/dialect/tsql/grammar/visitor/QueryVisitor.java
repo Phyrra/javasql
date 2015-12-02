@@ -30,7 +30,7 @@ public class QueryVisitor extends SqlBaseVisitor<IQuery> {
     public QueryVisitor(TSqlQueryFactory factory) {
         this.renderer = factory.renderer();
 
-        this.valueVisitor = new ValueVisitor(factory.value());
+        this.valueVisitor = new ValueVisitor(factory.value(), this);
         this.valueListVisitor = new ValueListVisitor(valueVisitor);
         this.sourceVisitor = new SourceVisitor(this, factory.source());
         this.sourceListVisitor = new SourceListVisitor(sourceVisitor);

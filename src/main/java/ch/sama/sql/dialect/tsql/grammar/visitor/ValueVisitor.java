@@ -1,10 +1,12 @@
 package ch.sama.sql.dialect.tsql.grammar.visitor;
 
+import ch.sama.sql.dbo.IType;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dialect.tsql.TSqlValueFactory;
 import ch.sama.sql.dialect.tsql.grammar.antlr.SqlBaseVisitor;
 import ch.sama.sql.dialect.tsql.grammar.antlr.SqlParser;
 import ch.sama.sql.dialect.tsql.type.TYPE;
+import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.helper.Value;
 
 import java.util.ArrayList;
@@ -14,9 +16,13 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
     private TSqlValueFactory valueFactory;
     private ValueListVisitor listVisitor;
 
-    public ValueVisitor(TSqlValueFactory value) {
+    private QueryVisitor queryVisitor;
+
+    public ValueVisitor(TSqlValueFactory value, QueryVisitor queryVisitor) {
         this.valueFactory = value;
         listVisitor = new ValueListVisitor(this);
+
+        this.queryVisitor = queryVisitor;
     }
 
     @Override
@@ -218,5 +224,20 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
         }
 
         return valueFactory.function(fnc, params.toArray(new Value[params.size()]));
+    }
+
+    @Override
+    public Value visitQueryValue(SqlParser.QueryValueContext ctx) {
+        IQuery query = queryVisitor.visit(ctx.statement());
+
+        return valueFactory.query(query);
+    }
+
+    @Override
+    public Value visitCastValue(SqlParser.CastValueContext ctx) {
+        Value value = visit(ctx.expression());
+        IType type = (IType) visit(ctx.dataType()).getSource();
+
+        return valueFactory.cast(value, type);
     }
 }

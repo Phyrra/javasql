@@ -152,11 +152,7 @@ public class PrintVisitor extends SqlBaseVisitor<Void> {
 
     @Override
     public Void visitSelectTopStatement(SqlParser.SelectTopStatementContext ctx) {
-        appendIndented("top");
-
-        indent();
-        appendIndented(ctx.IntegerConstant().getText());
-        unindent();
+        appendIndented("top " + ctx.IntegerConstant().getText());
 
         visitChildren(ctx);
 
@@ -259,6 +255,18 @@ public class PrintVisitor extends SqlBaseVisitor<Void> {
     @Override
     public Void visitQueryValue(SqlParser.QueryValueContext ctx) {
         appendIndented("query");
+        indent();
+
+        visitChildren(ctx);
+
+        unindent();
+
+        return null;
+    }
+
+    @Override
+    public Void visitCastValue(SqlParser.CastValueContext ctx) {
+        appendIndented("cast");
         indent();
 
         visitChildren(ctx);

@@ -173,4 +173,9 @@ public class ValueTest {
     public void functionWithIncorrectNumberOfArguments() {
         value.function(FUNCTION.COALESCE);
     }
+
+    @Test
+    public void cast() {
+        assertEquals("CAST('12' AS int)", value.cast(value.string("12"), TYPE.INT_TYPE).getValue());
+    }
 }

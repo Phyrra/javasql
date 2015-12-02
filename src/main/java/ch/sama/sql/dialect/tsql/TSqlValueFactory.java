@@ -1,5 +1,6 @@
 package ch.sama.sql.dialect.tsql;
 
+import ch.sama.sql.dbo.IType;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.base.check.Identifier;
 import ch.sama.sql.query.exception.BadParameterException;
@@ -50,5 +51,9 @@ public class TSqlValueFactory extends ValueFactory {
         }
 
         return function(fnc.getName(), arguments);
+    }
+
+    public Value cast(Value value, IType type) {
+        return new Value(value, "CAST(" + value.getValue() + " AS " + type.getString() + ")");
     }
 }

@@ -1,7 +1,6 @@
 sql
     statement
         select
-            top
-                10
+            top 10
             value
                 all

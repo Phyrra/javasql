@@ -49,6 +49,8 @@ Datetime : [dD][aA][tT][eE][tT][iI][mM][eE] ;
 Varchar : [nN]?[vV][aA][rR][cC][hH][aA][rR] ;
 Max : [mM][aA][xX] ;
 
+Cast : [cC][aA][sS][tT] ;
+
 Identifier
     : IdentifierNondigit ( IdentifierNondigit | Digit )*
     ;
@@ -268,6 +270,7 @@ primaryValue
     | numericValue
     | functionValue
     | queryValue
+    | castValue
     ;
 
 stringValue
@@ -293,6 +296,10 @@ functionValue
 
 queryValue
     : '(' statement ')'
+    ;
+
+castValue
+    : Cast '(' expression As dataType ')'
     ;
     
 argument

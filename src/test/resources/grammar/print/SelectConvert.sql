@@ -1,0 +1,1 @@
+select convert(datetime, '2015-02-21', 21) as date
