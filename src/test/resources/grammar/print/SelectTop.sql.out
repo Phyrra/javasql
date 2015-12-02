@@ -1,0 +1,7 @@
+sql
+    statement
+        select
+            top
+                10
+            value
+                all

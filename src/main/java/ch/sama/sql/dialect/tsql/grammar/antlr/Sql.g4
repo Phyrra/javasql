@@ -20,6 +20,7 @@ From : [fF][rR][oO][mM] ;
 Where : [wW][hH][eE][rR][eE] ;
 Join : [jJ][oO][iI][nN] ;
 Order : [oO][rR][dD][eE][rR] ;
+Top : [tT][oO][pP] ;
 As : [aA][sS] ;
 On : [oO][nN] ;
 By : [bB][yY] ;
@@ -192,7 +193,16 @@ statement
     ;
 
 selectStatement
+    : selectAllStatement
+    | selectTopStatement
+    ;
+
+selectAllStatement
     : Select valueList
+    ;
+
+selectTopStatement
+    : Select Top IntegerConstant valueList
     ;
 
 fromStatement

@@ -171,9 +171,22 @@ public class QueryVisitor extends SqlBaseVisitor<IQuery> {
 
     @Override
     public IQuery visitSelectStatement(SqlParser.SelectStatementContext ctx) {
+        return visitChildren(ctx);
+    }
+
+    @Override
+    public IQuery visitSelectAllStatement(SqlParser.SelectAllStatementContext ctx) {
         Value[] values = getValueList(ctx.valueList());
 
         return new TSqlSelectQuery(renderer, null, values);
+    }
+
+    @Override
+    public IQuery visitSelectTopStatement(SqlParser.SelectTopStatementContext ctx) {
+        int n = Integer.parseInt(ctx.IntegerConstant().getText());
+        Value[] values = getValueList(ctx.valueList());
+
+        return new TSqlSelectQuery(renderer, null, values).top(n);
     }
 
     @Override

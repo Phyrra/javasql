@@ -144,6 +144,26 @@ public class PrintVisitor extends SqlBaseVisitor<Void> {
     }
 
     @Override
+    public Void visitSelectAllStatement(SqlParser.SelectAllStatementContext ctx) {
+        visitChildren(ctx);
+
+        return null;
+    }
+
+    @Override
+    public Void visitSelectTopStatement(SqlParser.SelectTopStatementContext ctx) {
+        appendIndented("top");
+
+        indent();
+        appendIndented(ctx.IntegerConstant().getText());
+        unindent();
+
+        visitChildren(ctx);
+
+        return null;
+    }
+
+    @Override
     public Void visitFromStatement(SqlParser.FromStatementContext ctx) {
         appendIndented("from");
         indent();
