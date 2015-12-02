@@ -40,10 +40,7 @@ public class CSVReader {
     public CSVSet readStream(InputStream stream) throws IOException {
         CSVSet set = new CSVSet();
 
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new InputStreamReader(stream));
-
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(stream))) {
             String line;
             while ((line = br.readLine()) != null) {
                 CSVRow row = new CSVRow(format.split(line));
@@ -52,14 +49,6 @@ public class CSVReader {
                     set.addTitle(row);
                 } else {
                     set.add(row);
-                }
-            }
-        } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (IOException e) {
-                    // Ignore
                 }
             }
         }
