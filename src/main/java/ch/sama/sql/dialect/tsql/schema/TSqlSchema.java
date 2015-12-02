@@ -11,6 +11,7 @@ import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
 import ch.sama.sql.dialect.tsql.TSqlSourceFactory;
 import ch.sama.sql.dialect.tsql.TSqlValueFactory;
 import ch.sama.sql.dialect.tsql.type.TYPE;
+import ch.sama.sql.query.exception.BadParameterException;
 import ch.sama.sql.query.exception.ObjectNotFoundException;
 import ch.sama.sql.query.helper.Condition;
 import ch.sama.sql.query.helper.Value;
@@ -163,7 +164,7 @@ public class TSqlSchema implements ISchema {
         try {
             stream = new FileInputStream(file);
         } catch(FileNotFoundException e) {
-            throw new ObjectNotFoundException(e.getMessage(), e);
+            throw new BadParameterException(e.getMessage(), e);
         }
 
         load(stream);
@@ -231,6 +232,7 @@ public class TSqlSchema implements ISchema {
         final int TABLE_BLOCK = 1;
         final int PRIMARY_BLOCK = 2;
 
+        final Pattern TABLE_PATTERN = Pattern.compile("(\\[(\\w+)\\]\\.)?\\[(\\w+)\\]");
         final Pattern FIELD_PATTERN = Pattern.compile("\\[(\\w+)\\](\\((\\d+|[m|M][a|A][x|X])\\))?");
         final String IDENTITY_REGEX = "(?i).*IDENTITY\\(\\d\\s*,\\s*\\d\\).*";
         final String NOTNULL_REGEX = "(?i).*NOT NULL.*";
@@ -250,47 +252,43 @@ public class TSqlSchema implements ISchema {
             if (line.startsWith("CREATE TABLE")) {
                 currentBlock = TABLE_BLOCK;
 
-                Matcher matcher = FIELD_PATTERN.matcher(line);
+                Matcher matcher = TABLE_PATTERN.matcher(line);
 
-                String tableSchema = null;
-                String tableName = null;
+                if (matcher.find()) {
+                    String tableSchema = matcher.group(2);
+                    String tableName = matcher.group(3);
 
-                int i = 0;
-                while (matcher.find()) { // [dbo].[table]
-                    if (i == 0) {
-                        tableSchema = matcher.group(1);
-                    } else if (i == 1) {
-                        tableName = matcher.group(1);
+                    if (tableSchema == null) {
+                        table = new Table(tableName);
                     } else {
-                        break;
+                        table = new Table(tableSchema, tableName);
                     }
 
-                    ++i;
-                }
-                if (i == 0) {
-                    throwSchemaException("No table name found", lineNo, line);
-                } else if (i == 1) {
-                    tableName = tableSchema;
-                    table = new Table(tableName);
+                    addTable(table);
                 } else {
-                    table = new Table(tableSchema, tableName);
+                    throwSchemaException("No table name found", lineNo, line);
                 }
-
-                addTable(table);
             } else if (line.startsWith("CONSTRAINT")) { // the only supported constraint is PRIMARY
                 currentBlock = PRIMARY_BLOCK;
             } else if (line.startsWith(")")) {
-                if (currentBlock == NONE) {
-                    throwSchemaException("Unbalanced Brackets", lineNo, line);
-                } else if (currentBlock == TABLE_BLOCK) {
-                    table = null;
-                    currentBlock = NONE;
-                } else if (currentBlock == PRIMARY_BLOCK) {
-                    if (table == null) {
-                        throwSchemaException("Primary key block without table", lineNo, line);
-                    }
+                switch (currentBlock) {
+                    case NONE:
+                        throwSchemaException("Unbalanced Brackets", lineNo, line);
+                    case TABLE_BLOCK:
+                        table = null;
+                        currentBlock = NONE;
 
-                    currentBlock = TABLE_BLOCK;
+                        break;
+                    case PRIMARY_BLOCK:
+                        if (table == null) {
+                            throwSchemaException("Primary key block without table", lineNo, line);
+                        }
+
+                        currentBlock = TABLE_BLOCK;
+
+                        break;
+                    default:
+                        throwSchemaException("Unknown block", lineNo, line);
                 }
             } else if (line.equals("(")) {
                 // ignore
