@@ -304,6 +304,13 @@ public class PrintVisitor extends SqlBaseVisitor<Void> {
     }
 
     @Override
+    public Void visitConstArg(SqlParser.ConstArgContext ctx) {
+        appendIndented("const arg: " + ctx.getText());
+
+        return null;
+    }
+
+    @Override
     public Void visitAliasedValue(SqlParser.AliasedValueContext ctx) {
         appendIndented("aliased");
         indent();

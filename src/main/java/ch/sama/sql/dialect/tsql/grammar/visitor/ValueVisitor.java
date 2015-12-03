@@ -55,6 +55,11 @@ class ValueVisitor extends SqlBaseVisitor<Value> {
     public Value visitDataType(SqlParser.DataTypeContext ctx) {
         return visitChildren(ctx);
     }
+
+    @Override
+    public Value visitConstArg(SqlParser.ConstArgContext ctx) {
+        return valueFactory.plain(ctx.getText().toLowerCase());
+    }
     
     @Override
     public Value visitIntType(SqlParser.IntTypeContext ctx) {

@@ -51,6 +51,20 @@ Max : [mM][aA][xX] ;
 
 Cast : [cC][aA][sS][tT] ;
 
+Year : [yY][eE][aA][rR] ;
+Quarter : [qQ][uU][aA][rR][tT][eE][rR] ;
+Month : [mM][oO][nN][tT][hH] ;
+DayOfYear : [dD][aA][yY][oO][fF][yY][eE][aA][rR] ;
+Day : [dD][aA][yY] ;
+Week : [wW][eE][eE][kK] ;
+WeekDay : [wW][eE][eE][kK][dD][aA][yY] ;
+Hour : [hH][oO][uU][rR] ;
+Minute : [mM][iI][nN][uU][tT][eE] ;
+Second : [sS][eE][cC][oO][nN][dD] ;
+MilliSecond : [mM][iI][lL][lL][iI][sS][eE][cC][oO][nN][dD] ;
+MicroSecond : [mM][iI][cC][rR][oO][sS][eE][cC][oO][nN][dD] ;
+NanoSecond : [nN][aA][nN][oO][sS][eE][cC][oO][nN][dD] ;
+
 Identifier
     : IdentifierNondigit ( IdentifierNondigit | Digit )*
     ;
@@ -304,12 +318,29 @@ castValue
     
 argument
     : dataType
+    | constArg
     | expression
     ;
 
 argumentList
     : argument ',' argumentList
     | argument
+    ;
+
+constArg
+    : Year
+    | Quarter
+    | Month
+    | DayOfYear
+    | Day
+    | Week
+    | WeekDay
+    | Hour
+    | Minute
+    | Second
+    | MilliSecond
+    | MicroSecond
+    | NanoSecond
     ;
 
 aliasedValue
