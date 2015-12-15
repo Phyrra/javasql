@@ -5,6 +5,7 @@ import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
 import ch.sama.sql.dialect.tsql.TSqlSourceFactory;
 import ch.sama.sql.dialect.tsql.TSqlValueFactory;
+import ch.sama.sql.query.exception.IllegalIdentifierException;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -116,6 +117,29 @@ public class InsertQueryTest {
                         .select(value.string("A"), value.string("B"))
                 .getSql()
         );
+    }
+
+    @Test
+    public void insertOutputInto() {
+        assertEquals(
+                "INSERT INTO [TABLE] ([FIELD1], [FIELD2])\nOUTPUT [INSERTED].* INTO @tmp\nSELECT 'A', 'B'",
+                sql.query()
+                        .insert().into("TABLE")
+                        .columns("FIELD1", "FIELD2")
+                        .output(value.table("INSERTED")).into("@tmp")
+                        .select(value.string("A"), value.string("B"))
+                .getSql()
+        );
+    }
+
+    @Test (expected = IllegalIdentifierException.class)
+    public void insertOutputIntoBadDestination() {
+        sql.query()
+                .insert().into("TABLE")
+                .columns("FIELD1", "FIELD2")
+                .output(value.table("INSERTED")).into("@[tmp]")
+                .select(value.string("A"), value.string("B"))
+        .getSql();
     }
 
     @Test

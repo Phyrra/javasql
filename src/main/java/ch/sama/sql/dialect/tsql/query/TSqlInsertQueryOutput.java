@@ -2,6 +2,7 @@ package ch.sama.sql.dialect.tsql.query;
 
 import ch.sama.sql.dialect.tsql.TSqlQueryRenderer;
 import ch.sama.sql.query.base.IQuery;
+import ch.sama.sql.query.exception.IllegalIdentifierException;
 import ch.sama.sql.query.helper.Value;
 
 import java.util.Arrays;
@@ -12,6 +13,8 @@ public class TSqlInsertQueryOutput implements IQuery {
     private TSqlInsertQueryFinal parent;
     private List<Value> values;
 
+    private String destination;
+
     public TSqlInsertQueryOutput(TSqlQueryRenderer renderer, TSqlInsertQueryFinal parent, Value[] values) {
         this.renderer = renderer;
         this.parent = parent;
@@ -20,6 +23,14 @@ public class TSqlInsertQueryOutput implements IQuery {
 
     public List<Value> getValues() {
         return values;
+    }
+
+    public boolean hasDestination() {
+        return destination != null;
+    }
+
+    public String getDestination() {
+        return destination;
     }
 
     @Override
@@ -35,6 +46,16 @@ public class TSqlInsertQueryOutput implements IQuery {
     @Override
     public IQuery chainTo(IQuery query) {
         return this.parent.chainTo(query);
+    }
+
+    public TSqlInsertQueryOutput into(String destination) {
+        if (!destination.matches("^(\\[\\w+\\]|@?\\w+)$")) {
+            throw new IllegalIdentifierException(destination);
+        }
+
+        this.destination = destination;
+
+        return this;
     }
 
     public TSqlSelectQuery select(Value... values) {

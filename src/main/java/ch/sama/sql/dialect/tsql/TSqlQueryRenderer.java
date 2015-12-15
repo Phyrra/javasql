@@ -2,7 +2,6 @@ package ch.sama.sql.dialect.tsql;
 
 import ch.sama.sql.dialect.tsql.query.*;
 import ch.sama.sql.query.base.IQuery;
-import ch.sama.sql.query.helper.Value;
 import ch.sama.sql.query.helper.condition.ICondition;
 import ch.sama.sql.query.helper.order.IOrder;
 import ch.sama.sql.query.standard.QueryRenderer;
@@ -93,6 +92,11 @@ public class TSqlQueryRenderer extends QueryRenderer {
                         .map(this::render)
                         .collect(Collectors.joining(", "))
         );
+
+        if (query.hasDestination()) {
+            builder.append(" INTO ");
+            builder.append(query.getDestination());
+        }
 
         return builder.toString();
     }
