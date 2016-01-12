@@ -99,19 +99,6 @@ public class ClassGenerator<T extends IQueryFactory> {
         writer.write("import ch.sama.sql.dbo.GenericType;\n\n");
         writer.write("public class " + tableClassName + " extends Table {\n");
 
-        writer.write("\tpublic " + tableClassName + "() {\n");
-
-        String schemaInit = table.getSchema();
-        String tableName = table.getName();
-
-        if (schemaInit != null) {
-            writer.write("\t\tsuper(\"" + schemaInit + "\", \"" + tableName + "\");\n");
-        } else {
-            writer.write("\t\tsuper(\"" + tableName + "\");\n");
-        }
-
-        writer.write("\t}\n\n");
-
         for (Field field : table.getColumns()) {
             String fieldName = field.getName();
             writer.write("\tpublic Field " + fieldName + " = new Field(this, \"" + fieldName + "\")");
@@ -136,18 +123,28 @@ public class ClassGenerator<T extends IQueryFactory> {
             writer.write(";\n");
         }
 
-        writer.write("\n\t@Override\n");
-        writer.write("\tpublic List<Field> getColumns() {\n");
-        writer.write("\t\treturn Arrays.asList(\n");
+        writer.write("\n");
+
+        String schemaInit = table.getSchema();
+        String tableName = table.getName();
+
+        writer.write("\tpublic " + tableClassName + "() {\n");
+
+        if (schemaInit != null) {
+            writer.write("\t\tsuper(\"" + schemaInit + "\", \"" + tableName + "\");\n");
+        } else {
+            writer.write("\t\tsuper(\"" + tableName + "\");\n");
+        }
+
+        writer.write("\n");
 
         writer.append(
                 table.getColumns().stream()
-                        .map(f -> "\t\t\t" + f.getName())
-                        .collect(Collectors.joining(",\n"))
+                        .map(f -> "\t\taddColumn(" + f.getName() + ");")
+                        .collect(Collectors.joining("\n"))
         );
 
-        writer.write("\n\t\t);\n");
-        writer.write("\t}");
+        writer.append("\n\t}\n");
 
         writer.write("}");
         writer.close();
