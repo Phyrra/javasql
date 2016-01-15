@@ -40,58 +40,107 @@ public class NumericsTest {
         assertEquals(true, Numerics.isInteger("-1"));
     }
 
+    // Numerical Float
+
     @Test
-    public void nullIsNotFloat() {
-        assertEquals(false, Numerics.isFloat(null));
+    public void nullIsNotNumericalFloat() {
+        assertEquals(false, Numerics.isNumericalFloat(null));
     }
 
     @Test
-    public void emptyIsNotFloat() {
-        assertEquals(false, Numerics.isFloat(""));
+    public void emptyIsNotNumericalFloat() {
+        assertEquals(false, Numerics.isNumericalFloat(""));
     }
 
     @Test
-    public void noLeadFloat() {
-        assertEquals(true, Numerics.isFloat(".1"));
+    public void dotIsNotNumericalFloat() {
+        assertEquals(false, Numerics.isNumericalFloat("."));
     }
 
     @Test
-    public void negativeNoLeadFloat() {
-        assertEquals(true, Numerics.isFloat("-.1"));
+    public void noLeadIsNumericalFloat() {
+        assertEquals(true, Numerics.isNumericalFloat(".1"));
     }
 
     @Test
-    public void numericLeadFloat() {
-        assertEquals(true, Numerics.isFloat("1.2"));
+    public void negativeNoLeadIsNumericalFloat() {
+        assertEquals(true, Numerics.isNumericalFloat("-.1"));
     }
 
     @Test
-    public void negativeNumericLeadFloat() {
-        assertEquals(true, Numerics.isFloat("-1.2"));
+    public void numericLeadIsNumericalFloat() {
+        assertEquals(true, Numerics.isNumericalFloat("1.2"));
     }
 
     @Test
-    public void zeroLeadFloat() {
-        assertEquals(true, Numerics.isFloat("0.1"));
+    public void negativeNumericLeadIsNumericalFloat() {
+        assertEquals(true, Numerics.isNumericalFloat("-1.2"));
     }
 
     @Test
-    public void negativeZeroLeadFloat() {
-        assertEquals(true, Numerics.isFloat("-0.1"));
+    public void zeroLeadIsNumericalFloat() {
+        assertEquals(true, Numerics.isNumericalFloat("0.1"));
     }
 
     @Test
-    public void noTrailFloat() {
-        assertEquals(true, Numerics.isFloat("1."));
+    public void negativeZeroLeadIsNumericalFloat() {
+        assertEquals(true, Numerics.isNumericalFloat("-0.1"));
     }
 
     @Test
-    public void negativeNoTrailFloat() {
-        assertEquals(true, Numerics.isFloat("-1."));
+    public void noTrailIsNumericalFloat() {
+        assertEquals(true, Numerics.isNumericalFloat("1."));
     }
 
     @Test
-    public void trailingZeroIsFloat() {
-        assertEquals(true, Numerics.isFloat("1.00"));
+    public void negativeNoTrailIsNumericalFloat() {
+        assertEquals(true, Numerics.isNumericalFloat("-1."));
+    }
+
+    @Test
+    public void trailingZeroIsNumericalFloat() {
+        assertEquals(true, Numerics.isNumericalFloat("1.0"));
+        assertEquals(true, Numerics.isNumericalFloat("1.00"));
+    }
+
+    @Test
+    public void multiZeroLeadIsNotNumericalFloat() {
+        assertEquals(false, Numerics.isNumericalFloat("01.1"));
+    }
+
+    // Programmatical Float
+
+    @Test
+    public void nullIsNotProgrammaticalFloat() {
+        assertEquals(false, Numerics.isProgrammaticalFloat(null));
+    }
+
+    @Test
+    public void trailingZeroIsNotProgrammaticalFloat() {
+        assertEquals(true, Numerics.isProgrammaticalFloat("1.0"));
+        assertEquals(false, Numerics.isProgrammaticalFloat("1.00"));
+    }
+
+    // Strict Float
+
+    @Test
+    public void nullIsNotStrictFloat() {
+        assertEquals(false, Numerics.isStrictFloat(null));
+    }
+
+    @Test
+    public void noLeadIsNotStrictFloat() {
+        assertEquals(false, Numerics.isStrictFloat(".1"));
+    }
+
+    @Test
+    public void noTrailIsNotStrictFloat() {
+        assertEquals(false, Numerics.isStrictFloat("1."));
+    }
+
+    @Test
+    public void trailingZeroIsNotStrictFloat() {
+        assertEquals(true, Numerics.isStrictFloat("1.0"));
+        assertEquals(false, Numerics.isStrictFloat("1.00"));
     }
 }

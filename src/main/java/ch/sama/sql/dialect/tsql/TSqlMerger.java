@@ -361,7 +361,7 @@ public class TSqlMerger {
         if (TYPE.isEqualType(type, TYPE.INT_TYPE)) {
             if (Numerics.isInteger(s)) {
                 return new Pair(f, valueFactory.numeric(Integer.parseInt(s)));
-            } else if (Numerics.isFloat(s)) {
+            } else if (Numerics.isNumericalFloat(s)) {
                 return new Pair(f, valueFactory.numeric((int) Double.parseDouble(s)));
             } else {
                 throw new BadSqlException("Expected Int, got: " + s + " (" + o.getClass().getSimpleName() + ")");
@@ -371,7 +371,7 @@ public class TSqlMerger {
         if (TYPE.isEqualType(type, TYPE.FLOAT_TYPE)) {
             if (Numerics.isInteger(s)) {
                 return new Pair(f, valueFactory.numeric(Integer.parseInt(s)));
-            } else if (Numerics.isFloat(s)) {
+            } else if (Numerics.isNumericalFloat(s)) {
                 return new Pair(f, valueFactory.numeric(Double.parseDouble(s)));
             } else {
                 throw new BadSqlException("Expected Double, got: " + s + " (" + o.getClass().getSimpleName() + ")");
@@ -474,7 +474,7 @@ public class TSqlMerger {
                 return new Pair(f, valueFactory.numeric(Integer.parseInt(s)));
             }
             
-            if (Numerics.isFloat(s)) {
+            if (Numerics.isProgrammaticalFloat(s)) {
                 f.setDataType(TYPE.FLOAT_TYPE);
                 return new Pair(f, valueFactory.numeric(Double.parseDouble(s)));
             }
