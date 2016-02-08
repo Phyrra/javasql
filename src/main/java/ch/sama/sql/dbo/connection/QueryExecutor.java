@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class QueryExecutor<S> implements IQueryExecutor<S> {
+public class QueryExecutor<S> implements IQueryExecutor {
     private IConnection connection;
     private IResultSetTransformer<S> transformer;
 
