@@ -4,14 +4,13 @@ import ch.sama.sql.dbo.GenericType;
 import ch.sama.sql.dbo.IType;
 import ch.sama.sql.query.exception.BadSqlException;
 
+import java.util.Date;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TYPE {
-    private static final String CHAR_PATTERN  = "char\\((\\d+|max)\\)";
-    private static final String VARCHAR_PATTERN  = "varchar\\((\\d+|max)\\)";
-    private static final String NVARCHAR_PATTERN  = "nvarchar\\((\\d+|max)\\)";
-    private static final String TEXT_PATTERN = "text\\(\\d+\\)";
+    private static final Pattern TYPE_PATTERN = Pattern.compile("^(\\w+)(\\((\\w+)\\))?$");
     
     public static final UniqueidentifierType UNIQUEIDENTIFIER_TYPE = new UniqueidentifierType();
     public static final BitType BIT_TYPE = new BitType();
@@ -20,6 +19,8 @@ public class TYPE {
     public static final DatetimeType DATETIME_TYPE = new DatetimeType();
     public static final CharType CHAR_TYPE = new CharType();
     public static final CharType CHAR_MAX_TYPE = new CharType(-1);
+    public static final NCharType NCHAR_TYPE = new NCharType();
+    public static final NCharType NCHAR_MAX_TYPE = new NCharType(-1);
     public static final VarcharType VARCHAR_TYPE = new VarcharType();
     public static final VarcharType VARCHAR_MAX_TYPE = new VarcharType(-1);
     public static final NVarcharType NVARCHAR_TYPE = new NVarcharType();
@@ -29,6 +30,10 @@ public class TYPE {
 
     public static CharType CHAR_TYPE(int max) {
         return new CharType(max);
+    }
+    
+    public static NCharType NCHAR_TYPE(int max) {
+        return new NCharType(max);
     }
     
     public static VarcharType VARCHAR_TYPE(int max) {
@@ -44,7 +49,13 @@ public class TYPE {
     }
     
     public static IType fromString(String type) {
-        String sType = type.toLowerCase();
+        Matcher matcher = TYPE_PATTERN.matcher(type);
+        
+        if (!matcher.find()) {
+            throw new BadSqlException("Bad type: " + type);
+        }
+        
+        String sType = matcher.group(1).toLowerCase();
         
         switch (sType) {
             case "uniqueidentifier":
@@ -57,52 +68,52 @@ public class TYPE {
                 return FLOAT_TYPE;
             case "datetime":
                 return DATETIME_TYPE;
-            case "char":
-                return CHAR_TYPE;
-            case "varchar":
-                return VARCHAR_TYPE;
-            case "nvarchar":
-                return NVARCHAR_TYPE;
             case "text":
                 return TEXT_TYPE;
-        }
+            case "char":
+            case "nchar":
+            case "varchar":
+            case "nvarchar":
+                String sLength = matcher.group(3);
 
-        Matcher charP = Pattern.compile(CHAR_PATTERN).matcher(sType);
-        if (charP.matches()) {
-            String length = charP.group(1);
-
-            if ("max".equals(length)) {
-                return CHAR_MAX_TYPE;
-            } else {
-                return CHAR_TYPE(Integer.parseInt(length));
-            }
-        }
-        
-        Matcher varchar = Pattern.compile(VARCHAR_PATTERN).matcher(sType);
-        if (varchar.matches()) {
-            String length = varchar.group(1);
-            
-            if ("max".equals(length)) {
-                return VARCHAR_MAX_TYPE;
-            } else {
-                return VARCHAR_TYPE(Integer.parseInt(length));
-            }
-        }
-        
-        Matcher nvarchar = Pattern.compile(NVARCHAR_PATTERN).matcher(sType);
-        if (nvarchar.matches()) {
-            String length = nvarchar.group(1);
-            
-            if ("max".equals(length)) {
-                return NVARCHAR_MAX_TYPE;
-            } else {
-                return NVARCHAR_TYPE(Integer.parseInt(length));
-            }
-        }
-        
-        Matcher text = Pattern.compile(TEXT_PATTERN).matcher(sType);
-        if (text.matches()) {
-            return TEXT_TYPE;
+                if (sLength == null) {
+                    switch (sType) {
+                        case "char":
+                            return CHAR_TYPE;
+                        case "nchar":
+                            return NCHAR_TYPE;
+                        case "varchar":
+                            return VARCHAR_TYPE;
+                        case "nvarchar":
+                            return NVARCHAR_TYPE;
+                    }
+                } else {
+                    if ("max".equalsIgnoreCase(sLength)) {
+                        switch (sType) {
+                            case "char":
+                                return CHAR_MAX_TYPE;
+                            case "nchar":
+                                return NCHAR_MAX_TYPE;
+                            case "varchar":
+                                return VARCHAR_MAX_TYPE;
+                            case "nvarchar":
+                                return NVARCHAR_MAX_TYPE;
+                        }
+                    } else {
+                        int length = Integer.parseInt(sLength);
+                        
+                        switch (sType) {
+                            case "char":
+                                return CHAR_TYPE(length);
+                            case "nchar":
+                                return NCHAR_TYPE(length);
+                            case "varchar":
+                                return VARCHAR_TYPE(length);
+                            case "nvarchar":
+                                return NVARCHAR_TYPE(length);
+                        }
+                    }
+                }
         }
         
         return CUSTOM_TYPE(type);
@@ -151,8 +162,41 @@ public class TYPE {
                 return BIT_TYPE;
             case "date":
                 return DATETIME_TYPE;
+            case "uuid":
+                return UNIQUEIDENTIFIER_TYPE;
         }
 
         throw new BadSqlException("Class cannot be converted to type");
+    }
+    
+    public static Class<?> toClass(IType type) {
+         Matcher matcher = TYPE_PATTERN.matcher(type.getString());
+        
+        if (!matcher.find()) {
+            throw new BadSqlException("Bad type: " + type);
+        }
+        
+        String sType = matcher.group(1).toLowerCase();
+        
+        switch (sType) {
+            case "bit":
+                return Boolean.class;
+            case "char":
+            case "nchar":
+            case "varchar":
+            case "nvarchar":
+            case "text":
+                return String.class;
+            case "float":
+                return Double.class;
+            case "int":
+                return Long.class;
+            case "datetime":
+                return Date.class;
+            case "uniqueidentifier":
+                return UUID.class;
+        }
+        
+        return Object.class;
     }
 }

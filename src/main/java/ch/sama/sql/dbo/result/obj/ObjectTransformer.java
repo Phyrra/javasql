@@ -24,8 +24,8 @@ public class ObjectTransformer<T> implements IResultSetTransformer<List<T>> {
 
         String[] colNames = TransformerHelper.getColumnNames(resultSet);
 
-        JpaUtil<T> util = new JpaUtil<T>(clazz);
-        List<Field> columns = util.getColumns();
+        JpaUtil util = new JpaUtil();
+        List<Field> columns = util.getColumns(clazz);
 
         while (resultSet.next()) {
             T instance;

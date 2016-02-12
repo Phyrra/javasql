@@ -6,14 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JpaUtil<T> {
-    private Class<T> clazz;
+public class JpaUtil {
+    public JpaUtil() { }
 
-    public JpaUtil(Class<T> clazz) {
-        this.clazz = clazz;
-    }
-
-    public List<Field> getColumns() {
+    public List<Field> getColumns(Class<?> clazz) {
         Field[] fields = clazz.getDeclaredFields();
 
         List<Field> columns = new ArrayList<Field>();
@@ -36,10 +32,10 @@ public class JpaUtil<T> {
                 .equalsIgnoreCase(colName);
     }
 
-    public T toObject(Map<String, Object> map) throws IllegalAccessException, InstantiationException {
+    public<T> T toObject(Map<String, Object> map, Class<T> clazz) throws IllegalAccessException, InstantiationException {
         T instance = clazz.newInstance();
 
-        List<Field> columns = getColumns();
+        List<Field> columns = getColumns(clazz);
 
         for (String key : map.keySet()) {
             Object val = map.get(key);
@@ -56,10 +52,10 @@ public class JpaUtil<T> {
         return instance;
     }
 
-    public Map<String, Object> toMap(T obj) throws IllegalAccessException {
+    public<T> Map<String, Object> toMap(T obj) throws IllegalAccessException {
         Map<String, Object> map = new HashMap<String, Object>();
 
-        List<Field> columns = getColumns();
+        List<Field> columns = getColumns(obj.getClass());
 
         for (Field col : columns) {
             map.put(
