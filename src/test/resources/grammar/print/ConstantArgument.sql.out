@@ -1,0 +1,16 @@
+sql
+    statement
+        select
+            value
+                primary
+                    function
+                        argument
+                            const arg: year
+                        argument
+                            primary
+                                field
+                                    dtStart
+                        argument
+                            primary
+                                field
+                                    dtStop

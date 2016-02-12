@@ -1,0 +1,12 @@
+sql
+    statement
+        select
+            value
+                all
+                    dbo
+                    t
+        from
+            source
+                table
+                    dbo
+                    t

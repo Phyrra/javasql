@@ -1,0 +1,11 @@
+sql
+	statement
+		select
+			value
+				primary
+					field
+						f1
+			value
+				primary
+					field
+						f2

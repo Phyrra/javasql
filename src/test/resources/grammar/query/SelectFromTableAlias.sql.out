@@ -1,0 +1,2 @@
+SELECT [alias].*
+FROM [table] AS [alias]

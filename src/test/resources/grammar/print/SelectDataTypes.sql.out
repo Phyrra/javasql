@@ -1,0 +1,18 @@
+sql
+	statement
+		select
+			value
+				primary
+					function
+						argument
+							data type: int
+						argument
+							data type: float
+						argument
+							data type: datetime
+                        argument
+                            data type: varchar
+                        argument
+                            data type: varchar(64)
+                        argument
+                            data type: varchar(MAX)

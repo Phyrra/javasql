@@ -1,0 +1,3 @@
+SELECT 1
+FROM [a]
+JOIN [b] ON [b].[id] = [a].[id]

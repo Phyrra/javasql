@@ -1,0 +1,19 @@
+sql
+	cte
+		cte
+		statement
+			select
+				value
+					all
+			from
+				source
+					table
+						t
+	statement
+		select
+			value
+				all
+		from
+			source
+				table
+					cte

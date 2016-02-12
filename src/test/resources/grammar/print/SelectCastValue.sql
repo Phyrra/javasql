@@ -1,0 +1,1 @@
+select cast(f as int) as i

@@ -1,0 +1,13 @@
+sql
+	statement
+		select
+			value
+				aliased
+					primary
+						field
+							f
+					alias
+		from
+			source
+				table
+					t

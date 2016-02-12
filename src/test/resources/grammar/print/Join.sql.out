@@ -1,0 +1,20 @@
+sql
+	statement
+		select
+			value
+				all
+		from
+			source
+				table
+					t1
+		join
+			source
+			    aliased
+				    table
+					    t2
+			        a
+			condition
+				primary
+					numeric: 1
+				primary
+					numeric: 1

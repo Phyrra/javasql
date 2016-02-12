@@ -1,0 +1,2 @@
+SELECT datediff(year, [dtStart], [dtStop]) AS [dt]
+FROM [table]
