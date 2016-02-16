@@ -1,9 +1,9 @@
-package ch.sama.sql.dialect.tsql.generator;
+package ch.sama.sql.dbo.generator;
 
 import ch.sama.sql.dbo.Field;
+import ch.sama.sql.dbo.IType;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dbo.schema.ISchema;
-import ch.sama.sql.dialect.tsql.type.TYPE;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -14,7 +14,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ObjectGenerator {
-    public ObjectGenerator() { }
+    private Function<IType, Class<?>> typeConverter;
+
+    public ObjectGenerator(Function<IType, Class<?>> typeConverter) {
+        this.typeConverter = typeConverter;
+    }
     
     public void generate(String srcFolder, String pkg, ISchema schema, Function<String, Boolean> filter) throws IOException {
         generate(
@@ -103,7 +107,7 @@ public class ObjectGenerator {
     private String generateFieldBlock(Field field) {
         StringBuilder builder = new StringBuilder();
         
-        String type = TYPE.toClass(field.getDataType()).getSimpleName();
+        String type = typeConverter.apply(field.getDataType()).getSimpleName();
         
         String memberName = getFieldMemberName(field);
         String functionName = getFieldFunctionName(field);
