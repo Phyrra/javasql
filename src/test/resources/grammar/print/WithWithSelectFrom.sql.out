@@ -1,0 +1,42 @@
+sql
+	cte
+		cte1
+		statement
+			select
+				value
+					all
+			from
+				source
+					table
+						t1
+	cte
+		cte2
+		statement
+			select
+				value
+					all
+			from
+				source
+					table
+						t2
+	statement
+		select
+			value
+				all
+		from
+			source
+				table
+					cte1
+		join
+			source
+				table
+					cte2
+			condition
+				primary
+					table field
+						cte2
+						key
+				primary
+					table field
+						cte1
+						key

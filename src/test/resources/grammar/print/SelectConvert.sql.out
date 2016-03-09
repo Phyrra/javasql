@@ -1,0 +1,16 @@
+sql
+	statement
+		select
+			value
+				aliased
+					primary
+						function
+							argument
+								data type: datetime
+							argument
+								primary
+									string: 2015-02-21
+							argument
+								primary
+									numeric: 21
+					date

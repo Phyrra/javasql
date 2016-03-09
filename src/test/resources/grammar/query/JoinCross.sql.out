@@ -1,0 +1,3 @@
+SELECT 1
+FROM [a]
+CROSS JOIN [b] ON [a].[id] = [b].[id]

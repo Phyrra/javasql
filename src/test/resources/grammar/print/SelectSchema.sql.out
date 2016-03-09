@@ -1,0 +1,14 @@
+sql
+    statement
+        select
+            value
+                primary
+                    table field
+                        dbo
+                        t
+                        f
+        from
+            source
+                table
+                    dbo
+                    t

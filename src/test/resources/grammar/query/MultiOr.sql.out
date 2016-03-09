@@ -1,0 +1,3 @@
+SELECT [field]
+FROM [table]
+WHERE ([field1] = 1 OR [field2] = 2 OR [field3] = 3)

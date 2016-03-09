@@ -1,0 +1,2 @@
+SELECT CAST([field] AS int) AS [i]
+FROM [table]

@@ -1,0 +1,3 @@
+SELECT *
+FROM [t1] AS [a1]
+JOIN [t2] AS [a2] ON [a2].[key] = [a1].[key]

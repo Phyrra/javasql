@@ -1,0 +1,12 @@
+sql
+	statement
+		select
+			value
+				primary
+					numeric: 1
+	union
+	statement
+		select
+			value
+				primary
+					numeric: 2

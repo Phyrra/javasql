@@ -1,0 +1,9 @@
+sql
+	statement
+		select
+			value
+				primary
+					numeric: 1
+				*
+				primary
+					numeric: 2

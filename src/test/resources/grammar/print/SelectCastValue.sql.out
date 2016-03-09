@@ -1,0 +1,12 @@
+sql
+    statement
+        select
+            value
+                aliased
+                    primary
+                        cast
+                            primary
+                                field
+                                    f
+                            data type: int
+                    i
