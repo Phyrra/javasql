@@ -78,8 +78,7 @@ public abstract class JpaObject {
             return ValueFactory.NULL;
         }
 
-        return ValueFactory.NULL;
-        //return val.object(o); // uff :(
+        return val.object(o);
     }
 
     public void update(IQueryExecutor<?> executor, IQueryFactory fac) {
