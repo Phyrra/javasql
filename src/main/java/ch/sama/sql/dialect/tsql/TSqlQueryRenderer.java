@@ -143,4 +143,22 @@ public class TSqlQueryRenderer extends QueryRenderer {
 
         return builder.toString();
     }
+
+    public String render(TSqlOffsetQuery query) {
+        StringBuilder builder = new StringBuilder();
+
+        prependParentIfExists(builder, query);
+
+        builder.append("OFFSET ");
+        builder.append(query.getOffset());
+        builder.append(" ROWS");
+
+        if (query.hasLimit()) {
+            builder.append("\nFETCH NEXT ");
+            builder.append(query.getLimit());
+            builder.append(" ROWS ONLY");
+        }
+
+        return builder.toString();
+    }
 }

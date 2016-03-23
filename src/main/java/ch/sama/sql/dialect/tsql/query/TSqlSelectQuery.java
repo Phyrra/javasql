@@ -4,7 +4,9 @@ import ch.sama.sql.dialect.tsql.TSqlQueryRenderer;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.base.SelectQuery;
 import ch.sama.sql.query.exception.BadParameterException;
+import ch.sama.sql.query.helper.Source;
 import ch.sama.sql.query.helper.Value;
+import ch.sama.sql.query.helper.condition.ICondition;
 
 public class TSqlSelectQuery extends SelectQuery {
     private TSqlQueryRenderer renderer;
@@ -37,5 +39,15 @@ public class TSqlSelectQuery extends SelectQuery {
 
     public boolean hasTop() {
         return top > 0;
+    }
+
+    @Override
+    public TSqlFromQuery from(Source... sources) {
+        return new TSqlFromQuery(renderer, this, sources);
+    }
+
+    @Override
+    public TSqlWhereQuery where(ICondition condition) {
+        return new TSqlWhereQuery(renderer, this, condition);
     }
 }
