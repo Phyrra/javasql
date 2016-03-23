@@ -5,6 +5,7 @@ import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.base.JoinQuery;
 import ch.sama.sql.query.helper.Source;
 import ch.sama.sql.query.helper.condition.ICondition;
+import ch.sama.sql.query.helper.join.JoinType;
 
 public class TSqlJoinQuery extends JoinQuery {
     private TSqlQueryRenderer renderer;
@@ -13,6 +14,60 @@ public class TSqlJoinQuery extends JoinQuery {
         super(renderer, parent, source);
 
         this.renderer = renderer;
+    }
+
+    @Override
+    public TSqlJoinQuery type(JoinType type) {
+        super.type(type);
+        return this;
+    }
+
+    @Override
+    public JoinQuery left() {
+        super.left();
+        return this;
+    }
+
+    @Override
+    public JoinQuery right() {
+        super.right();
+        return this;
+    }
+
+    @Override
+    public JoinQuery full() {
+        super.full();
+        return this;
+    }
+
+    @Override
+    public JoinQuery inner() {
+        super.inner();
+        return this;
+    }
+
+    @Override
+    public JoinQuery cross() {
+        super.cross();
+        return this;
+    }
+
+    @Override
+    public JoinQuery leftOuter() {
+        super.leftOuter();
+        return this;
+    }
+
+    @Override
+    public JoinQuery rightOuter() {
+        super.rightOuter();
+        return this;
+    }
+
+    @Override
+    public JoinQuery fullOuter() {
+        super.fullOuter();
+        return this;
     }
 
     @Override
