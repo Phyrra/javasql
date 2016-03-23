@@ -42,6 +42,11 @@ With : [wW][iI][tT][hH] ;
 Union : [uU][nN][iI][oO][nN] ;
 All : [aA][lL][lL] ;
 In : [iI][nN] ;
+Offset : [oO][fF][fF][sS][eE][tT] ;
+Rows : [rR][oO][wW][sS] ;
+Fetch : [fF][eE][tT][cC][hH] ;
+Next : [nN][eE][xX][tT] ;
+Only : [oO][nN][lL][yY] ;
 
 Int : [iI][nN][tT] ;
 Float : [fF][lL][oO][aA][tT] ;
@@ -274,7 +279,15 @@ whereStatement
     ;
 
 orderStatement
-    : Order By orderList
+    : Order By orderList offsetStatement?
+    ;
+
+offsetStatement
+    : Offset IntegerConstant Rows fetchStatement?
+    ;
+
+fetchStatement
+    : Fetch Next IntegerConstant Rows Only
     ;
 
 primaryValue

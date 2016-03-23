@@ -1,0 +1,19 @@
+sql
+	statement
+		select
+			value
+				all
+		from
+			source
+				table
+					t1
+	order
+		by
+			default
+				primary
+					field
+						field
+		offset
+			10
+		fetch
+			5

@@ -1,0 +1,4 @@
+SELECT *
+FROM [t1]
+ORDER BY [field]
+OFFSET 10 ROWS

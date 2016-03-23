@@ -4,9 +4,8 @@ import ch.sama.sql.dialect.tsql.TSqlQueryFactory;
 import ch.sama.sql.dialect.tsql.TSqlQueryRenderer;
 import ch.sama.sql.dialect.tsql.grammar.antlr.SqlBaseVisitor;
 import ch.sama.sql.dialect.tsql.grammar.antlr.SqlParser;
-import ch.sama.sql.dialect.tsql.query.TSqlQuery;
-import ch.sama.sql.dialect.tsql.query.TSqlSelectQuery;
-import ch.sama.sql.query.base.*;
+import ch.sama.sql.dialect.tsql.query.*;
+import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.helper.Source;
 import ch.sama.sql.query.helper.Value;
 import ch.sama.sql.query.helper.condition.ICondition;
@@ -193,14 +192,14 @@ public class QueryVisitor extends SqlBaseVisitor<IQuery> {
     public IQuery visitFromStatement(SqlParser.FromStatementContext ctx) {
         Source[] sources = getSourceList(ctx.sourceList());
 
-        return new FromQuery(renderer, null, sources);
+        return new TSqlFromQuery(renderer, null, sources);
     }
 
     @Override
     public IQuery visitJoinStatement(SqlParser.JoinStatementContext ctx) {
         Source source = getSource(ctx.source());
 
-        JoinQuery query = new JoinQuery(renderer, null, source);
+        TSqlJoinQuery query = new TSqlJoinQuery(renderer, null, source);
 
         ICondition condition = getCondition(ctx.condition());
 
@@ -215,13 +214,32 @@ public class QueryVisitor extends SqlBaseVisitor<IQuery> {
     public IQuery visitWhereStatement(SqlParser.WhereStatementContext ctx) {
         ICondition condition = getCondition(ctx.condition());
 
-        return new WhereQuery(renderer, null, condition);
+        return new TSqlWhereQuery(renderer, null, condition);
     }
 
     @Override
     public IQuery visitOrderStatement(SqlParser.OrderStatementContext ctx) {
         IOrder[] orders = getOrderList(ctx.orderList());
 
-        return new OrderQuery(renderer, null, orders);
+        IQuery stmt = new TSqlOrderQuery(renderer, null, orders);
+
+        if (ctx.offsetStatement() != null) {
+            stmt = chain(visit(ctx.offsetStatement()), stmt);
+        }
+
+        return stmt;
+    }
+
+    @Override
+    public IQuery visitOffsetStatement(SqlParser.OffsetStatementContext ctx) {
+        int offset = Integer.parseInt(ctx.IntegerConstant().getText());
+
+        if (ctx.fetchStatement() != null) {
+            int limit = Integer.parseInt(ctx.fetchStatement().IntegerConstant().getText());
+
+            return new TSqlOffsetQuery(renderer, null, offset, limit);
+        }
+
+        return new TSqlOffsetQuery(renderer, null, offset);
     }
 }

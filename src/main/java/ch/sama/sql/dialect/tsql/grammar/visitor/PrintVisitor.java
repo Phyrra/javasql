@@ -215,6 +215,32 @@ public class PrintVisitor extends SqlBaseVisitor<Void> {
     }
 
     @Override
+    public Void visitOffsetStatement(SqlParser.OffsetStatementContext ctx) {
+        appendIndented("offset");
+        indent();
+
+        appendIndented(ctx.IntegerConstant().getText());
+        unindent();
+
+        visitChildren(ctx);
+
+        return null;
+    }
+
+    @Override
+    public Void visitFetchStatement(SqlParser.FetchStatementContext ctx) {
+        appendIndented("fetch");
+        indent();
+
+        appendIndented(ctx.IntegerConstant().getText());
+        unindent();
+
+        visitChildren(ctx);
+
+        return null;
+    }
+
+    @Override
     public Void visitPrimaryValue(SqlParser.PrimaryValueContext ctx) {
         appendIndented("primary");
         indent();
