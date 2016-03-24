@@ -23,49 +23,49 @@ public class TSqlJoinQuery extends JoinQuery {
     }
 
     @Override
-    public JoinQuery left() {
+    public TSqlJoinQuery left() {
         super.left();
         return this;
     }
 
     @Override
-    public JoinQuery right() {
+    public TSqlJoinQuery right() {
         super.right();
         return this;
     }
 
     @Override
-    public JoinQuery full() {
+    public TSqlJoinQuery full() {
         super.full();
         return this;
     }
 
     @Override
-    public JoinQuery inner() {
+    public TSqlJoinQuery inner() {
         super.inner();
         return this;
     }
 
     @Override
-    public JoinQuery cross() {
+    public TSqlJoinQuery cross() {
         super.cross();
         return this;
     }
 
     @Override
-    public JoinQuery leftOuter() {
+    public TSqlJoinQuery leftOuter() {
         super.leftOuter();
         return this;
     }
 
     @Override
-    public JoinQuery rightOuter() {
+    public TSqlJoinQuery rightOuter() {
         super.rightOuter();
         return this;
     }
 
     @Override
-    public JoinQuery fullOuter() {
+    public TSqlJoinQuery fullOuter() {
         super.fullOuter();
         return this;
     }
