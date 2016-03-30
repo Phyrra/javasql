@@ -65,7 +65,21 @@ public abstract class JpaObject {
     private String getColumnName(java.lang.reflect.Field field) {
         return field.getAnnotation(Column.class).name();
     }
-    
+
+    private boolean isPrimaryKey(java.lang.reflect.Field field) {
+        return field.isAnnotationPresent(PrimaryKey.class);
+    }
+
+    private ICondition getMatchCondition(IQueryFactory fac) {
+        Table self = new Table(getTableName());
+
+        return Condition.and(
+                getPrimaryKeys().stream()
+                        .map(field -> Condition.eq(fac.value().field(new Field(self, getColumnName(field))), toValue(field, fac.value())))
+                        .toArray(ICondition[]::new)
+        );
+    }
+
     private Value toValue(java.lang.reflect.Field field, IValueFactory val) {
         Object o;
         try {
@@ -87,18 +101,26 @@ public abstract class JpaObject {
         List<java.lang.reflect.Field> primaryKeys = getPrimaryKeys();
         
         Map<Field, Value> values = getColumns().stream()
-                .filter(field -> !primaryKeys.contains(field))
+                .filter(field -> !isPrimaryKey(field))
                 .collect(Collectors.toMap(field -> new Field(self, getColumnName(field)), field -> toValue(field, fac.value())));
-
-        ICondition[] conditions = primaryKeys.stream()
-                .map(field -> Condition.eq(fac.value().field(new Field(self, getColumnName(field))), toValue(field, fac.value())))
-                .toArray(ICondition[]::new);
         
         executor.execute(
                 fac.query()
                         .update(self)
                         .set(values)
-                        .where(Condition.and(conditions))
+                        .where(getMatchCondition(fac))
+                .getSql()
+        );
+    }
+
+    public void delete(IQueryExecutor<?> executor, IQueryFactory fac) {
+        Table self = new Table(getTableName());
+
+        executor.execute(
+                fac.query()
+                        .delete()
+                        .from(self)
+                        .where(getMatchCondition(fac))
                 .getSql()
         );
     }
