@@ -68,15 +68,15 @@ There is an interface for the IQueryExecutor but it is not required.
 
 ## DB Schema ##
 
-There is an (experimental) possibility to create classes from a database connection (or from an SQL schema file).
+There is the possibility to create classes from a database connection (or from an SQL schema file).
 
     TSqlConnection connection = new TSqlConnection(link, user, password);
     
-    QueryExecutor<List<MapResult>> executor = new QueryExecutor<List<MapResult>>(connection, new MapTransformer());
+    QueryExecutor<List<MapResult>> executor = new QueryExecutor<>(connection, new MapTransformer());
     ISchema schema = new TSqlSchema(executor, table -> true);
     
-    new ClassGenerator<TSqlQueryFactory>(schema, TSqlQueryFactory.class)
-            .generate("src/main/java", "ch.project.generated");
+    new ClassGenerator<TSqlQueryFactory>(TSqlQueryFactory.class)
+            .generate("src/main/java", "ch.project.generated", schema);
 
 The generated sources can then be used in a query.
 
