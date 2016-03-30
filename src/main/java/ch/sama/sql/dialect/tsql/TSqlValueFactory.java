@@ -168,23 +168,6 @@ public class TSqlValueFactory extends ValueFactory {
                 return ValueFactory.NULL;
             }
 
-            if (Numerics.isInteger(s)) {
-                return numeric(Integer.parseInt(s));
-            }
-
-            if (Numerics.isProgrammaticalFloat(s)) {
-                return numeric(Double.parseDouble(s));
-            }
-
-            if (Dates.isKnownDate(s)) {
-                return function(
-                        "CONVERT",
-                        type(TYPE.DATETIME_TYPE),
-                        string(Dates.toIsoDateTime(s)),
-                        numeric(21)
-                );
-            }
-
             return string(s);
         }
 

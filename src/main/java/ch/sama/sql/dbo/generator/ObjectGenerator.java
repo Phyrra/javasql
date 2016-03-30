@@ -4,6 +4,8 @@ import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.IType;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dbo.schema.ISchema;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -14,6 +16,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ObjectGenerator {
+    private static final Logger logger = LoggerFactory.getLogger(ObjectGenerator.class);
+
     private Function<IType, Class<?>> typeConverter;
 
     public ObjectGenerator(Function<IType, Class<?>> typeConverter) {
@@ -42,17 +46,20 @@ public class ObjectGenerator {
             
             try {
                 file.write("package " + pkg + ";\n\n");
-                
+
+                file.write("import ch.sama.sql.dbo.result.obj.JpaObject;\n\n");
+
                 file.write("import ch.sama.sql.jpa.Entity;\n");
                 file.write("import ch.sama.sql.jpa.Column;\n");
                 file.write("import ch.sama.sql.jpa.PrimaryKey;\n");
+                file.write("import ch.sama.sql.jpa.AutoIncrement;\n\n");
                 file.write("import ch.sama.sql.jpa.Default;\n\n");
 
                 file.write("import java.util.UUID;\n");
                 file.write("import java.util.Date;\n\n");
                 
                 file.write("@Entity\n");
-                file.write("public class " + className + " {\n");
+                file.write("public class " + className + " extends JpaObject {\n");
                 
                 String fieldBlocks = table.getColumns().stream()
                     .map(this::generateFieldBlock)
@@ -61,7 +68,8 @@ public class ObjectGenerator {
                 file.write(fieldBlocks);
                 
                 file.write("}");
-                
+
+                logger.debug("Generated: " + table.getName());
             // don't catch, forward exception
             } finally {
                 file.close();
@@ -125,9 +133,9 @@ public class ObjectGenerator {
         }
 
         if (field.isNullable()) {
-            builder.append(String.format("\t@Column(name = \"%s\", nullable = true)\n", memberName));
+            builder.append(String.format("\t@Column(name = \"%s\", nullable = true)\n", field.getName()));
         } else {
-            builder.append(String.format("\t@Column(name = \"%s\", nullable = false)\n", memberName));
+            builder.append(String.format("\t@Column(name = \"%s\", nullable = false)\n", field.getName()));
         }
         builder.append(String.format("\tprivate %s %s;\n\n", type, memberName));
         

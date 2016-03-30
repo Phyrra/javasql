@@ -190,7 +190,7 @@ public class TYPE {
             case "float":
                 return Double.class;
             case "int":
-                return Long.class;
+                return Integer.class;
             case "datetime":
                 return Date.class;
             case "uniqueidentifier":
