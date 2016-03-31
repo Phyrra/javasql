@@ -98,8 +98,6 @@ public abstract class JpaObject {
     public void update(IQueryExecutor<?> executor, IQueryFactory fac) {
         Table self = new Table(getTableName());
         
-        List<java.lang.reflect.Field> primaryKeys = getPrimaryKeys();
-        
         Map<Field, Value> values = getColumns().stream()
                 .filter(field -> !isPrimaryKey(field))
                 .collect(Collectors.toMap(field -> new Field(self, getColumnName(field)), field -> toValue(field, fac.value())));
