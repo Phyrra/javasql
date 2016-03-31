@@ -3,6 +3,7 @@ package ch.sama.sql.dbo.result.obj;
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dbo.connection.IQueryExecutor;
+import ch.sama.sql.jpa.AutoIncrement;
 import ch.sama.sql.jpa.Column;
 import ch.sama.sql.jpa.Entity;
 import ch.sama.sql.jpa.PrimaryKey;
@@ -66,10 +67,6 @@ public abstract class JpaObject {
         return field.getAnnotation(Column.class).name();
     }
 
-    private boolean isPrimaryKey(java.lang.reflect.Field field) {
-        return field.isAnnotationPresent(PrimaryKey.class);
-    }
-
     private ICondition getMatchCondition(IQueryFactory fac) {
         Table self = new Table(getTableName());
 
@@ -97,9 +94,9 @@ public abstract class JpaObject {
 
     public void update(IQueryExecutor<?> executor, IQueryFactory fac) {
         Table self = new Table(getTableName());
-        
+
         Map<Field, Value> values = getColumns().stream()
-                .filter(field -> !isPrimaryKey(field))
+                .filter(field -> !field.isAnnotationPresent(PrimaryKey.class))
                 .collect(Collectors.toMap(field -> new Field(self, getColumnName(field)), field -> toValue(field, fac.value())));
         
         executor.execute(
@@ -119,6 +116,31 @@ public abstract class JpaObject {
                         .delete()
                         .from(self)
                         .where(getMatchCondition(fac))
+                .getSql()
+        );
+    }
+
+    public void insert(IQueryExecutor<?> executor, IQueryFactory fac) {
+        Table self = new Table(getTableName());
+
+        List<java.lang.reflect.Field> insertFields = getColumns().stream()
+                .filter(field -> !field.isAnnotationPresent(AutoIncrement.class))
+                .collect(Collectors.toList());
+
+        executor.execute(
+                fac.query()
+                        .insert()
+                        .into(self)
+                        .columns(
+                                insertFields.stream()
+                                        .map(field -> new Field(self, getColumnName(field)))
+                                        .toArray(Field[]::new)
+                        )
+                        .values(
+                                insertFields.stream()
+                                        .map(field -> toValue(field, fac.value()))
+                                        .toArray(Value[]::new)
+                        )
                 .getSql()
         );
     }
