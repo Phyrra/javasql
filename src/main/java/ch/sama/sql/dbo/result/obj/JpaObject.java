@@ -2,11 +2,11 @@ package ch.sama.sql.dbo.result.obj;
 
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
-import ch.sama.sql.dbo.connection.IQueryExecutor;
 import ch.sama.sql.jpa.AutoIncrement;
 import ch.sama.sql.jpa.Column;
 import ch.sama.sql.jpa.Entity;
 import ch.sama.sql.jpa.PrimaryKey;
+import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.base.IQueryFactory;
 import ch.sama.sql.query.base.IValueFactory;
 import ch.sama.sql.query.helper.Condition;
@@ -62,7 +62,11 @@ public abstract class JpaObject {
         
         return clazz.getSimpleName();
     }
-    
+
+    private Table getTable() {
+        return new Table(getTableName());
+    }
+
     private String getColumnName(java.lang.reflect.Field field) {
         return field.getAnnotation(Column.class).name();
     }
@@ -92,56 +96,45 @@ public abstract class JpaObject {
         return val.object(o);
     }
 
-    public void update(IQueryExecutor<?> executor, IQueryFactory fac) {
-        Table self = new Table(getTableName());
+    public IQuery update(IQueryFactory fac) {
+        Table self = getTable();
 
         Map<Field, Value> values = getColumns().stream()
                 .filter(field -> !field.isAnnotationPresent(PrimaryKey.class))
                 .collect(Collectors.toMap(field -> new Field(self, getColumnName(field)), field -> toValue(field, fac.value())));
         
-        executor.execute(
-                fac.query()
-                        .update(self)
-                        .set(values)
-                        .where(getMatchCondition(fac))
-                .getSql()
-        );
+        return fac.query()
+                .update(self)
+                .set(values)
+                .where(getMatchCondition(fac));
     }
 
-    public void delete(IQueryExecutor<?> executor, IQueryFactory fac) {
-        Table self = new Table(getTableName());
-
-        executor.execute(
-                fac.query()
-                        .delete()
-                        .from(self)
-                        .where(getMatchCondition(fac))
-                .getSql()
-        );
+    public IQuery delete(IQueryFactory fac) {
+        return fac.query()
+                .delete()
+                .from(getTable())
+                .where(getMatchCondition(fac));
     }
 
-    public void insert(IQueryExecutor<?> executor, IQueryFactory fac) {
-        Table self = new Table(getTableName());
+    public IQuery insert(IQueryFactory fac) {
+        Table self = getTable();
 
         List<java.lang.reflect.Field> insertFields = getColumns().stream()
                 .filter(field -> !field.isAnnotationPresent(AutoIncrement.class))
                 .collect(Collectors.toList());
 
-        executor.execute(
-                fac.query()
-                        .insert()
-                        .into(self)
-                        .columns(
-                                insertFields.stream()
-                                        .map(field -> new Field(self, getColumnName(field)))
-                                        .toArray(Field[]::new)
-                        )
-                        .values(
-                                insertFields.stream()
-                                        .map(field -> toValue(field, fac.value()))
-                                        .toArray(Value[]::new)
-                        )
-                .getSql()
-        );
+        return fac.query()
+                .insert()
+                .into(self)
+                .columns(
+                        insertFields.stream()
+                                .map(field -> new Field(self, getColumnName(field)))
+                                .toArray(Field[]::new)
+                )
+                .values(
+                        insertFields.stream()
+                                .map(field -> toValue(field, fac.value()))
+                                .toArray(Value[]::new)
+                );
     }
 }
