@@ -14,6 +14,9 @@ public class TestObject {
     @Column(name = "dValue")
     private double doubleVal;
 
+    @Column(name = "bValue")
+    private boolean boolVal;
+
     public void setStringVal(String s) {
         stringVal = s;
     }
@@ -26,6 +29,10 @@ public class TestObject {
         doubleVal = f;
     }
 
+    public void setBoolVal(boolean b) {
+        boolVal = b;
+    }
+
     public String getStringVal() {
         return stringVal;
     }
@@ -36,5 +43,9 @@ public class TestObject {
 
     public double getDoubleVal() {
         return doubleVal;
+    }
+
+    public boolean getBoolVal() {
+        return boolVal;
     }
 }

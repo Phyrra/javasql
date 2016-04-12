@@ -17,6 +17,7 @@ public class MapObjectTest {
         map.put("sValue", "string");
         map.put("iValue", 1);
         map.put("dValue", 1.1);
+        map.put("bValue", true);
 
         JpaUtil util = new JpaUtil();
         TestObject obj = util.toObject(map, TestObject.class);
@@ -24,6 +25,7 @@ public class MapObjectTest {
         assertEquals("string", obj.getStringVal());
         assertEquals(1, obj.getIntVal());
         assertEquals(1.1, obj.getDoubleVal(), EPS);
+        assertEquals(true, obj.getBoolVal());
     }
 
     @Test
@@ -32,6 +34,7 @@ public class MapObjectTest {
         obj.setStringVal("string");
         obj.setIntVal(1);
         obj.setDoubleVal(1.1);
+        obj.setBoolVal(true);
 
         JpaUtil util = new JpaUtil();
         Map<String, Object> map = util.toMap(obj);
@@ -39,5 +42,6 @@ public class MapObjectTest {
         assertEquals("string", map.get("sValue"));
         assertEquals(1, map.get("iValue"));
         assertEquals(1.1, map.get("dValue"));
+        assertEquals(true, map.get("bValue"));
     }
 }

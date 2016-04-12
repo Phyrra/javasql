@@ -30,7 +30,7 @@ public class ObjectTransformerTest {
     public void oneResult() {
         List<TestObject> results = executor.query(
                 sql.query()
-                        .select(value.string("string").as("sValue"), value.numeric(1).as("iValue"), value.numeric(1.1).as("dValue"))
+                        .select(value.string("string").as("sValue"), value.numeric(1).as("iValue"), value.numeric(1.1).as("dValue"), value.bool(true).as("bValue"))
                 .getSql(),
                 transformer
         );
@@ -42,5 +42,6 @@ public class ObjectTransformerTest {
         assertEquals("string", o.getStringVal());
         assertEquals(1, o.getIntVal());
         assertEquals(1.1, o.getDoubleVal(), EPS);
+        assertEquals(true, o.getBoolVal());
     }
 }
