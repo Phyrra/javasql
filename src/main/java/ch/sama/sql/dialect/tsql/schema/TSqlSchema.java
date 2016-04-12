@@ -4,6 +4,8 @@ import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dbo.connection.IQueryExecutor;
 import ch.sama.sql.dbo.result.obj.ObjectTransformer;
+import ch.sama.sql.dbo.schema.DbField;
+import ch.sama.sql.dbo.schema.DbTable;
 import ch.sama.sql.dbo.schema.ISchema;
 import ch.sama.sql.dbo.schema.SchemaException;
 import ch.sama.sql.dialect.tsql.TSqlFunctionFactory;
@@ -76,7 +78,7 @@ public class TSqlSchema implements ISchema {
 
             Table tbl = new Table(schema, tableName);
 
-            List<DbColumn> columns = executor.query(
+            List<DbField> columns = executor.query(
                     sql.query()
                             .select(
                                     value.field("COLUMN_NAME"),
@@ -113,10 +115,10 @@ public class TSqlSchema implements ISchema {
                             .from(source.table("INFORMATION_SCHEMA", "COLUMNS"))
                             .where(Condition.eq(value.field("TABLE_NAME"), value.string(tableName)))
                     .getSql(),
-                    new ObjectTransformer<DbColumn>(DbColumn.class)
+                    new ObjectTransformer<DbField>(DbField.class)
             );
 
-            for (DbColumn column : columns) {
+            for (DbField column : columns) {
                 Field f = new Field(tbl, column.getName());
 
                 String dataType = column.getType();

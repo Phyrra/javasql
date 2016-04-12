@@ -1,10 +1,10 @@
-package ch.sama.sql.dialect.tsql.schema;
+package ch.sama.sql.dbo.schema;
 
 import ch.sama.sql.jpa.Column;
 import ch.sama.sql.jpa.Entity;
 
 @Entity(name = "Columns")
-public class DbColumn {
+public class DbField {
     @Column(name = "COLUMN_NAME")
     private String name;
 

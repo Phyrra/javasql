@@ -1,4 +1,4 @@
-package ch.sama.sql.dialect.tsql.schema;
+package ch.sama.sql.dbo.schema;
 
 import ch.sama.sql.jpa.Column;
 import ch.sama.sql.jpa.Entity;
