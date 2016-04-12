@@ -17,12 +17,13 @@ public class ObjectTransformerTest {
     private static final SqLiteQueryFactory sql = new SqLiteQueryFactory();
     private static final SqLiteValueFactory value = sql.value();
 
-    private QueryExecutor<List<TestObject>> executor;
+    private QueryExecutor executor;
+    private ObjectTransformer<TestObject> transformer;
 
     @Before
     public void loadExecutor() {
-        SQLiteConnection connection = new SQLiteConnection();
-        executor = new QueryExecutor<List<TestObject>>(connection, new ObjectTransformer<TestObject>(TestObject.class));
+        executor = new QueryExecutor(new SQLiteConnection());
+        transformer = new ObjectTransformer<TestObject>(TestObject.class);
     }
 
     @Test
@@ -30,7 +31,8 @@ public class ObjectTransformerTest {
         List<TestObject> results = executor.query(
                 sql.query()
                         .select(value.string("string").as("sValue"), value.numeric(1).as("iValue"), value.numeric(1.1).as("dValue"))
-                .getSql()
+                .getSql(),
+                transformer
         );
 
         assertEquals(1, results.size());

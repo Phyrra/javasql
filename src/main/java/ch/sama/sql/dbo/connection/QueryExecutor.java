@@ -9,13 +9,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class QueryExecutor<S> implements IQueryExecutor<S> {
+public class QueryExecutor implements IQueryExecutor {
     private IConnection connection;
-    private IResultSetTransformer<S> transformer;
 
-    public QueryExecutor(IConnection connection, IResultSetTransformer<S> transformer) {
+    public QueryExecutor(IConnection connection) {
         this.connection = connection;
-        this.transformer = transformer;
     }
 
     private void closeStatement(Statement statement) {
@@ -52,12 +50,12 @@ public class QueryExecutor<S> implements IQueryExecutor<S> {
     }
 
     @Override
-    public S query(String query) {
+    public<S> S query(String query, IResultSetTransformer<S> transformer) {
         Statement statement = createStatement();
 
         try {
-            ResultSet resultSet = statement.executeQuery(query);
-            return transformer.transform(resultSet);
+            ResultSet set = statement.executeQuery(query);
+            return transformer.transform(set);
         } catch (SQLException e) {
             throw new BadSqlException(e);
         } finally {

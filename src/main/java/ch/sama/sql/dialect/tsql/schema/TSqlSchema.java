@@ -4,6 +4,7 @@ import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dbo.connection.IQueryExecutor;
 import ch.sama.sql.dbo.result.map.MapResult;
+import ch.sama.sql.dbo.result.map.MapTransformer;
 import ch.sama.sql.dbo.schema.ISchema;
 import ch.sama.sql.dbo.schema.SchemaException;
 import ch.sama.sql.dialect.tsql.TSqlFunctionFactory;
@@ -40,16 +41,17 @@ public class TSqlSchema implements ISchema {
         this.tables = tables;
     }
 
-    public TSqlSchema(IQueryExecutor<List<MapResult>> executor) {
+    public TSqlSchema(IQueryExecutor executor) {
         loadSchema(executor, table -> true);
     }
 
-    public TSqlSchema(IQueryExecutor<List<MapResult>> executor, Function<String, Boolean> filter) {
+    public TSqlSchema(IQueryExecutor executor, Function<String, Boolean> filter) {
         loadSchema(executor, filter);
     }
 
-    private void loadSchema(IQueryExecutor<List<MapResult>> executor, Function<String, Boolean> filter) {
+    private void loadSchema(IQueryExecutor executor, Function<String, Boolean> filter) {
         TSqlFunctionFactory fnc = new TSqlFunctionFactory();
+        MapTransformer transformer = new MapTransformer();
 
         tables = new HashMap<String, Table>();
 
@@ -60,7 +62,8 @@ public class TSqlSchema implements ISchema {
                                 value.field("TABLE_NAME")
                         )
                         .from(source.table("INFORMATION_SCHEMA", "TABLES"))
-                .getSql()
+                .getSql(),
+                transformer
         );
 
         for (MapResult row : result) {
@@ -108,7 +111,8 @@ public class TSqlSchema implements ISchema {
                             )
                             .from(source.table("INFORMATION_SCHEMA", "COLUMNS"))
                             .where(Condition.eq(value.field("TABLE_NAME"), value.string(table)))
-                    .getSql()
+                    .getSql(),
+                    transformer
             );
 
             for (MapResult column : columns) {
