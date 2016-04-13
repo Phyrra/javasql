@@ -67,22 +67,24 @@ public class TSqlValueFactory extends ValueFactory {
             return bool((boolean) object);
         }
 
-        if (object instanceof Integer || object instanceof Short || object instanceof Long) {
-            if (object instanceof Integer) {
-                return numeric((int) object);
-            } else if (object instanceof Short) {
-                return numeric((int) ((short) object));
-            } else {
-                return numeric((int) ((long) object));
-            }
+        if (object instanceof Integer) {
+            return numeric((int) object);
         }
 
-        if (object instanceof Double || object instanceof Float) {
-            if (object instanceof Double) {
-                return numeric((double) object);
-            } else {
-                return numeric((float) object);
-            }
+        if (object instanceof Short) {
+            return numeric((int) (short) object);
+        }
+
+        if (object instanceof Long) {
+            return numeric((int) (long) object);
+        }
+
+        if (object instanceof Double) {
+            return numeric((double) object);
+        }
+
+        if (object instanceof Float) {
+            return numeric((float) object);
         }
 
         if (object instanceof Date) {
