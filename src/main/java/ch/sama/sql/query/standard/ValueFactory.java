@@ -53,6 +53,11 @@ public abstract class ValueFactory implements IValueFactory {
     }
 
     @Override
+    public Value field(Table table, Field field) {
+        return field(new Field(table, field.getName()));
+    }
+
+    @Override
     public Value table(Table table) {
         return new Value(table, renderer.render(table) + ".*");
     }
@@ -60,6 +65,16 @@ public abstract class ValueFactory implements IValueFactory {
     @Override
     public Value table(String table) {
         return table(new Table(table));
+    }
+
+    @Override
+    public Value table(String schema, String table) {
+        return table(new Table(schema, table));
+    }
+
+    @Override
+    public Value table(String schema, Table table) {
+        return table(new Table(schema, table.getName()));
     }
 
     @Override

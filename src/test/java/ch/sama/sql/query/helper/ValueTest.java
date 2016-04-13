@@ -71,8 +71,13 @@ public class ValueTest {
     }
     
     @Test
-    public void tableField() {
+    public void tableStringField() {
         assertEquals("[dbo].[TABLE].[FIELD]", renderer.render(value.field(new Table("dbo", "TABLE"), "FIELD")));
+    }
+
+    @Test
+    public void tableField() {
+        assertEquals("[dbo].[TABLE].[FIELD]", renderer.render(value.field(new Table("dbo", "TABLE"), new Field("FIELD"))));
     }
 
 	@Test
@@ -83,6 +88,16 @@ public class ValueTest {
     @Test
     public void stringTable() {
         assertEquals("[TABLE].*", renderer.render(value.table("TABLE")));
+    }
+
+    @Test
+    public void tableWithSchema() {
+        assertEquals("[dbo].[TABLE].*", renderer.render(value.table("dbo", new Table("TABLE"))));
+    }
+
+    @Test
+    public void stringTableWithSchema() {
+        assertEquals("[dbo].[TABLE].*", renderer.render(value.table("dbo", "TABLE")));
     }
 
 	@Test
