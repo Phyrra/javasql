@@ -1,6 +1,5 @@
 package ch.sama.sql.dialect.mysql;
 
-import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.exception.BadSqlException;
 import ch.sama.sql.query.helper.Value;
@@ -27,11 +26,6 @@ public class MySqlValueFactory extends ValueFactory {
 
     @Override
     public Value object(Object o) {
-        throw new BadSqlException("Not implemented");
-    }
-
-    @Override
-    public Value object(Field field, Object object) {
         throw new BadSqlException("Not implemented");
     }
 }

@@ -33,5 +33,4 @@ public interface IValueFactory {
     public Value type(IType type);
 
     public Value object(Object o);
-    public Value object(Field field, Object object);
 }
