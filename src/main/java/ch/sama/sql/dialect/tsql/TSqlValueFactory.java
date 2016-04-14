@@ -1,7 +1,6 @@
 package ch.sama.sql.dialect.tsql;
 
 import ch.sama.sql.dbo.IType;
-import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.base.check.Identifier;
 import ch.sama.sql.query.exception.BadParameterException;
 import ch.sama.sql.query.exception.IllegalIdentifierException;
@@ -21,21 +20,13 @@ public class TSqlValueFactory extends ValueFactory {
         super(renderer);
     }
 
-    public Value table(String table) {
-        return table(new Table(table));
-    }
-
-    public Value table(Table table) {
-        return new Value(table, renderer.render(table) + ".*");
-    }
-
-    public Value date(Date date) {
-        return new Value(date, "CONVERT(datetime, '" + DATE_FORMAT.format(date) + "', 21)");
-    }
-
     @Override
     public Value string(String s) {
         return new Value(s, "'" + s.replace("'", "''") + "'");
+    }
+    
+    public Value date(Date date) {
+        return new Value(date, "CONVERT(datetime, '" + DATE_FORMAT.format(date) + "', 21)");
     }
 
     public Value variable(String name) {

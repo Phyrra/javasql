@@ -28,11 +28,6 @@ public abstract class ValueFactory implements IValueFactory {
     }
 
     @Override
-    public Value field(Field field) {
-        return new Value(field, renderer.render(field));
-    }
-
-    @Override
     public Value field(String field) {
         return field(new Field(field));
     }
@@ -58,8 +53,8 @@ public abstract class ValueFactory implements IValueFactory {
     }
 
     @Override
-    public Value table(Table table) {
-        return new Value(table, renderer.render(table) + ".*");
+    public Value field(Field field) {
+        return new Value(field, renderer.render(field));
     }
 
     @Override
@@ -75,6 +70,11 @@ public abstract class ValueFactory implements IValueFactory {
     @Override
     public Value table(String schema, Table table) {
         return table(new Table(schema, table.getName()));
+    }
+
+    @Override
+    public Value table(Table table) {
+        return new Value(table, renderer.render(table) + ".*");
     }
 
     @Override
