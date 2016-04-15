@@ -7,6 +7,45 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SchemaUtil {
+    private static class NewTable implements ISchemaDiff {
+        private Table table;
+
+        NewTable(Table table) {
+            this.table = table;
+        }
+
+        @Override
+        public String getString(ISchemaRenderer renderer) {
+            return renderer.render(table);
+        }
+    }
+
+    private static class NewField implements ISchemaDiff {
+        private Field field;
+
+        NewField(Field field) {
+            this.field = field;
+        }
+
+        @Override
+        public String getString(ISchemaRenderer renderer) {
+            return "ALTER TABLE " + renderer.renderName(field.getTable()) + " ADD " + renderer.render(field);
+        }
+    }
+
+    private static class ChangeField implements ISchemaDiff {
+        private Field field;
+
+        ChangeField(Field field) {
+            this.field = field;
+        }
+
+        @Override
+        public String getString(ISchemaRenderer renderer) {
+            return "ALTER TABLE " + renderer.renderName(field.getTable()) + " ALTER COLUMN " + renderer.render(field);
+        }
+    }
+
     public static List<ISchemaDiff> diff(ISchema lhs, ISchema rhs) {
         // lhs: actual
         // rhs: expected

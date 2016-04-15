@@ -20,19 +20,27 @@ import java.util.stream.Collectors;
 public class ClassGenerator<T extends IQueryFactory> {
     private static final Logger logger = LoggerFactory.getLogger(ClassGenerator.class);
 
-    private ISchema schema;
     private Class<T> type;
 
-    public ClassGenerator(ISchema schema, Class<T> type) {
-        this.schema = schema;
+    public ClassGenerator(Class<T> type) {
         this.type = type;
     }
-
-    public void generate(String srcFolder, String pkg) throws IOException {
-        generate(srcFolder, pkg, name -> true);
+    
+    public void generate(String srcFolder, String pkg, ISchema schema, Function<String, Boolean> filter) throws IOException {
+        generate(
+                srcFolder,
+                pkg,
+                schema.getTables().stream()
+                    .filter(table -> filter.apply(table.getName()))
+                    .collect(Collectors.toList())
+        );
+    }
+    
+    public void generate(String srcFolder, String pkg, ISchema schema) throws IOException {
+        generate(srcFolder, pkg, schema.getTables());
     }
 
-    public void generate(String srcFolder, String pkg, Function<String, Boolean> filter) throws IOException {
+    public void generate(String srcFolder, String pkg, List<Table> tableList) throws IOException {
         BufferedWriter tables = createClassFile(srcFolder, pkg, "Tables");
 
         tables.write("package " + pkg + ";\n\n");
@@ -48,33 +56,26 @@ public class ClassGenerator<T extends IQueryFactory> {
         sources.write("import " + pkg + ".sources.*;\n\n");
         sources.write("public class Sources {\n");
 
-        List<String> tableList = new ArrayList<String>();
+        for (Table table : tableList) {
+            String tableClassName = getTableClassName(table);
+            String sourceClassName = getSourceClassName(table);
+            String tableVarName = getTableVariableName(table);
 
-        for (Table table : schema.getTables()) {
-            String tableName = table.getName();
+            tables.write("\tpublic static final " + tableClassName + " " + tableVarName + " = new " + tableClassName + "();\n");
+            generateTableClass(table, srcFolder, pkg);
 
-            if (filter.apply(tableName)) {
-                String tableClassName = getTableClassName(table);
-                String sourceClassName = getSourceClassName(table);
-                String tableVarName = getTableVariableName(table);
+            sources.write("\tpublic static final " + sourceClassName + " " + tableVarName + " = new " + sourceClassName + "();\n");
+            generateSourceClass(table, srcFolder, pkg);
 
-                tables.write("\tpublic static final " + tableClassName + " " + tableVarName + " = new " + tableClassName + "();\n");
-                generateTableClass(table, srcFolder, pkg);
-
-                sources.write("\tpublic static final " + sourceClassName + " " + tableVarName + " = new " + sourceClassName + "();\n");
-                generateSourceClass(table, srcFolder, pkg);
-
-                tableList.add("\t\t\t" + tableVarName);
-
-                logger.debug("Generated: " + tableName);
-            }
+            logger.debug("Generated: " + table.getName());
         }
 
         tables.write("\n\tpublic static List<Table> getSchema() {\n");
         tables.write("\t\treturn Arrays.asList(\n");
         tables.write(
                 tableList.stream()
-                        .collect(Collectors.joining(",\n"))
+                    .map(table -> "\t\t\t" + getTableVariableName(table))
+                    .collect(Collectors.joining(",\n"))
         );
         tables.write("\n\t\t);\n\t};\n");
 

@@ -2,6 +2,7 @@ package ch.sama.sql.dialect.mysql;
 
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.GenericType;
+import ch.sama.sql.dbo.result.map.MapTransformer;
 import ch.sama.sql.dbo.schema.ISchema;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dbo.connection.IQueryExecutor;
@@ -28,15 +29,17 @@ public class MySqlSchema implements ISchema {
 
     private Map<String, Table> tables;
 
-    public MySqlSchema(String db, IQueryExecutor<List<MapResult>> executor) {
+    public MySqlSchema(String db, IQueryExecutor executor) {
         loadSchema(db, executor, table -> true);
     }
 
-    public MySqlSchema(String db, IQueryExecutor<List<MapResult>> executor, Function<String, Boolean> filter) {
+    public MySqlSchema(String db, IQueryExecutor executor, Function<String, Boolean> filter) {
         loadSchema(db, executor, filter);
     }
 
-    private void loadSchema(String db, IQueryExecutor<List<MapResult>> executor, Function<String, Boolean> filter) {
+    private void loadSchema(String db, IQueryExecutor executor, Function<String, Boolean> filter) {
+        MapTransformer transformer = new MapTransformer();
+
         tables = new HashMap<String, Table>();
 
         List<MapResult> result = executor.query(
@@ -47,7 +50,8 @@ public class MySqlSchema implements ISchema {
                         )
                         .from(source.table("INFORMATION_SCHEMA", "TABLES").as("t"))
                         .where(Condition.eq(value.field("t", "TABLE_SCHEMA"), value.string(db)))
-                .getSql()
+                .getSql(),
+                transformer
         );
 
         for (MapResult row : result) {
@@ -90,7 +94,8 @@ public class MySqlSchema implements ISchema {
                             )
                             .from(source.table("INFORMATION_SCHEMA", "COLUMNS"))
                             .where(Condition.eq(value.field("TABLE_NAME"), value.string(table)))
-                    .getSql()
+                    .getSql(),
+                    transformer
             );
 
             for (MapResult column : columns) {

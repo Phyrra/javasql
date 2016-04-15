@@ -24,8 +24,8 @@ public class ObjectTransformer<T> implements IResultSetTransformer<List<T>> {
 
         String[] colNames = TransformerHelper.getColumnNames(resultSet);
 
-        JpaUtil<T> util = new JpaUtil<T>(clazz);
-        List<Field> columns = util.getColumns();
+        JpaUtil util = new JpaUtil();
+        List<Field> columns = util.getColumns(clazz);
 
         while (resultSet.next()) {
             T instance;
@@ -40,10 +40,15 @@ public class ObjectTransformer<T> implements IResultSetTransformer<List<T>> {
                     if (val != null) {
                         for (Field column : columns) {
                             if (util.isColumn(colName, column)) {
-                                column.set(
-                                        instance,
-                                        TransformerHelper.defaultTransform(val)
-                                );
+                                Object tVal = TransformerHelper.defaultTransform(val);
+
+                                if (column.getType().equals(Boolean.class) || column.getType().equals(Boolean.TYPE)) {
+                                    if (tVal instanceof Integer || tVal instanceof Long) {
+                                        tVal = (int) tVal != 0;
+                                    }
+                                }
+
+                                column.set(instance, tVal);
                             }
                         }
                     }
