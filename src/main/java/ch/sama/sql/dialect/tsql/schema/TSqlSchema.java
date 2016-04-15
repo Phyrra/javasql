@@ -3,7 +3,9 @@ package ch.sama.sql.dialect.tsql.schema;
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.dbo.connection.IQueryExecutor;
-import ch.sama.sql.dbo.result.map.MapResult;
+import ch.sama.sql.dbo.result.obj.ObjectTransformer;
+import ch.sama.sql.dbo.schema.DbField;
+import ch.sama.sql.dbo.schema.DbTable;
 import ch.sama.sql.dbo.schema.ISchema;
 import ch.sama.sql.dbo.schema.SchemaException;
 import ch.sama.sql.dialect.tsql.TSqlFunctionFactory;
@@ -40,48 +42,52 @@ public class TSqlSchema implements ISchema {
         this.tables = tables;
     }
 
-    public TSqlSchema(IQueryExecutor<List<MapResult>> executor) {
+    public TSqlSchema(IQueryExecutor executor) {
         loadSchema(executor, table -> true);
     }
 
-    public TSqlSchema(IQueryExecutor<List<MapResult>> executor, Function<String, Boolean> filter) {
+    public TSqlSchema(IQueryExecutor executor, Function<String, Boolean> filter) {
         loadSchema(executor, filter);
     }
 
-    private void loadSchema(IQueryExecutor<List<MapResult>> executor, Function<String, Boolean> filter) {
+    private void loadSchema(IQueryExecutor executor, Function<String, Boolean> filter) {
         TSqlFunctionFactory fnc = new TSqlFunctionFactory();
 
         tables = new HashMap<String, Table>();
 
-        List<MapResult> result = executor.query(
+        List<DbTable> result = executor.query(
                 sql.query()
                         .select(
                                 value.field("TABLE_SCHEMA"),
                                 value.field("TABLE_NAME")
                         )
                         .from(source.table("INFORMATION_SCHEMA", "TABLES"))
-                .getSql()
+                .getSql(),
+                new ObjectTransformer<DbTable>(DbTable.class)
         );
 
-        for (MapResult row : result) {
-            String schema = row.getAsString("TABLE_SCHEMA");
-            String table = row.getAsString("TABLE_NAME");
+        for (DbTable table : result) {
+            String schema = table.getSchema();
+            String tableName = table.getName();
 
-            if (!filter.apply(table)) {
+            if (!filter.apply(tableName)) {
                 continue;
             }
 
-            logger.debug("Creating table: " + table);
+            logger.debug("Creating table: " + tableName);
 
-            Table tbl = new Table(schema, table);
+            Table tbl = new Table(schema, tableName);
 
-            List<MapResult> columns = executor.query(
+            List<DbField> columns = executor.query(
                     sql.query()
                             .select(
                                     value.field("COLUMN_NAME"),
                                     value.field("DATA_TYPE"),
                                     value.field("CHARACTER_MAXIMUM_LENGTH"),
-                                    value.field("IS_NULLABLE"),
+                                    fnc.caseWhen(
+                                            fnc.whenThen(Condition.eq(value.field("IS_NULLABLE"), value.string("YES")), value.numeric(1)),
+                                            fnc.otherwise(value.numeric(0))
+                                    ).as("IS_NULLABLE"),
                                     value.field("COLUMN_DEFAULT"),
                                     fnc.coalesce(
                                             value.query(
@@ -92,7 +98,7 @@ public class TSqlSchema implements ISchema {
                                                             .where(
                                                                     Condition.and(
                                                                             Condition.eq(value.field("tc", "CONSTRAINT_TYPE"), value.string("PRIMARY KEY")),
-                                                                            Condition.eq(value.field("tc", "TABLE_NAME"), value.string(table)),
+                                                                            Condition.eq(value.field("tc", "TABLE_NAME"), value.string(tableName)),
                                                                             Condition.eq(value.field("ccu", "COLUMN_NAME"), value.field("COLUMNS", "COLUMN_NAME"))
                                                                     )
                                                             )
@@ -104,37 +110,35 @@ public class TSqlSchema implements ISchema {
                                             value.function("object_id", value.field("TABLE_NAME")),
                                             value.field("COLUMN_NAME"),
                                             value.string("IsIdentity")
-                                    ).as("IS_IDENTITY")
+                                    ).as("IS_AUTO_INCREMENT")
                             )
                             .from(source.table("INFORMATION_SCHEMA", "COLUMNS"))
-                            .where(Condition.eq(value.field("TABLE_NAME"), value.string(table)))
-                    .getSql()
+                            .where(Condition.eq(value.field("TABLE_NAME"), value.string(tableName)))
+                    .getSql(),
+                    new ObjectTransformer<DbField>(DbField.class)
             );
 
-            for (MapResult column : columns) {
-                Field f = new Field(tbl, column.getAsString("COLUMN_NAME"));
+            for (DbField column : columns) {
+                Field f = new Field(tbl, column.getName());
 
-                String dataType = column.getAsString("DATA_TYPE");
-                Object maxLength = column.get("CHARACTER_MAXIMUM_LENGTH");
-                if (maxLength != null && maxLength instanceof Integer) {
-                    int l = (Integer) maxLength;
-
-                    if (l == -1) {
+                String dataType = column.getType();
+                Integer maxLength = column.getCharMaxLength();
+                if (maxLength != null) {
+                    if (maxLength == -1) {
                         dataType += "(max)";
                     } else {
-                        dataType += "(" + l + ")";
+                        dataType += "(" + maxLength + ")";
                     }
                 }
                 f.setDataType(TYPE.fromString(dataType));
 
-                String nullable = column.getAsString("IS_NULLABLE");
-                if ("NO".equals(nullable)) {
-                    f.setNotNullable();
-                } else {
+                if (column.isNullable()) {
                     f.setNullable();
+                } else {
+                    f.setNotNullable();
                 }
 
-                String defaultValue = column.getAsString("COLUMN_DEFAULT");
+                String defaultValue = column.getDefaultValue();
                 if (defaultValue != null) {
                     // The data type is inconsequential here
                     f.setDefaultValue(value.plain(defaultValue));
@@ -142,11 +146,11 @@ public class TSqlSchema implements ISchema {
 
                 tbl.addColumn(f);
 
-                if (column.getAsInt("IS_PKEY") == 1) {
+                if (column.isPrimaryKey()) {
                     f.setAsPrimaryKey();
                 }
 
-                if (column.getAsInt("IS_IDENTITY") == 1) {
+                if (column.isAutoIncrement()) {
                     f.setAutoIncrement();
                 }
             }

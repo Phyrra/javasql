@@ -4,17 +4,18 @@ import ch.sama.sql.dbo.Field;
 import ch.sama.sql.query.helper.Value;
 import ch.sama.sql.query.helper.condition.ICondition;
 
+import java.util.Map;
+
 public class UpdateQueryIM implements IQuery {
     private IQueryRenderer renderer;
-	private IQuery parent;
-    private Field field;
-    private Value value;
+    private IQuery parent;
+	
+    private Map<Field, Value> values;
 
-    public UpdateQueryIM(IQueryRenderer renderer, IQuery parent, Field field, Value value) {
+    public UpdateQueryIM(IQueryRenderer renderer, IQuery parent, Map<Field, Value> values) {
         this.renderer = renderer;
         this.parent = parent;
-        this.field = field;
-        this.value = value;
+        this.values = values;
     }
 
     @Override
@@ -32,17 +33,15 @@ public class UpdateQueryIM implements IQuery {
         return this.parent.chainTo(query);
     }
     
-    public Field getField() {
-        return field;
-    }
-    
-    public Value getValue() {
-        return value;
+    public Map<Field, Value> getValues() {
+        return values;
     }
 	
-	public UpdateQueryIM set(Field field, Value value) {
-        return new UpdateQueryIM(renderer, this, field, value);
-	}
+    public UpdateQueryIM set(Field field, Value value) {
+        this.values.put(field, value);
+		
+        return this;
+    }
     
     public UpdateQueryIM set(String field, Value value) {
         return set(new Field(field), value);

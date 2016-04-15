@@ -1,7 +1,5 @@
 package ch.sama.sql.dialect.tsql;
 
-import ch.sama.sql.csv.CSVRow;
-import ch.sama.sql.csv.CSVSet;
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.IType;
 import ch.sama.sql.dbo.Table;
@@ -66,32 +64,6 @@ public class TSqlMerger {
 
             return new MergeValues(this, list);
         }
-
-        public MergeValues values(CSVSet csv) {
-            if (!csv.hasTitle()) {
-                throw new BadParameterException("CSV has no Title row");
-            }
-
-            TSqlMerger guesser = new TSqlMerger();
-            List<List<Pair>> list = new ArrayList<List<Pair>>();
-
-            List<String> fieldNames = csv.getTitle().toList();
-
-            for (CSVRow row : csv) {
-                List<Pair> pairs = new ArrayList<Pair>();
-
-                for (int i = 0; i < row.size(); ++i) { // Empty String will be turned into NULL
-                    String obj = row.get(i);
-                    pairs.add(guesser.value(fieldNames.get(i), obj.length() == 0 ? null : obj));
-                }
-
-                list.add(pairs);
-            }
-
-            return new MergeValues(this, list);
-        }
-
-        // TODO: Function to provide data types for CSV?
     }
 
     public static class MergeValues {

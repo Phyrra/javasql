@@ -7,6 +7,7 @@ import ch.sama.sql.query.helper.Function;
 import ch.sama.sql.query.helper.Source;
 import ch.sama.sql.query.helper.Value;
 
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public abstract class QueryRenderer implements IQueryRenderer {
@@ -260,30 +261,24 @@ public abstract class QueryRenderer implements IQueryRenderer {
 
         builder.append(parent.getSql());
 
-        if (parent instanceof UpdateQueryIM) {
-            builder.append(",");
-        } else {
-            builder.append(" SET");
-        }
+        builder.append(" SET");
 
-        builder.append("\n");
-        builder.append(renderObjectName(query.getField().getName()));
-        builder.append(" = ");
-        builder.append(query.getValue().getValue()); // Do not use render(query.getValue()) here, it would render the alias
+        Map<Field, Value> values = query.getValues();
+        builder.append(
+                values.keySet().stream()
+                        .map(field -> "\n" + renderObjectName(field.getName()) + " = " + values.get(field).getValue())
+                        .collect(Collectors.joining(","))
+
+                        // Do not use render(query.getValue()) here, it would render the alias
+        );
 
         return builder.toString();
     }
 
     @Override
     public String render(UpdateQueryFinal query) {
-        StringBuilder builder = new StringBuilder();
-
-        builder.append(query.getParent().getSql());
-
-        builder.append("\nWHERE ");
-        builder.append(render(query.getCondition()));
-
-        return builder.toString();
+        return query.getParent().getSql()
+                + "\nWHERE " + render(query.getCondition());
     }
 
     @Override

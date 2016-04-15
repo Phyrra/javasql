@@ -36,4 +36,6 @@ public interface IValueFactory {
     
     public Value combine(String operator, Value... values);
     public Value bracket(Value value);
+
+    public Value object(Object o);
 }

@@ -4,6 +4,9 @@ import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.helper.Value;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 public class UpdateQuery implements IQuery {
     private IQueryRenderer renderer;
 	private IQuery parent;
@@ -35,9 +38,16 @@ public class UpdateQuery implements IQuery {
         return table;
     }
 	
-	public UpdateQueryIM set(Field field, Value value) {
-        return new UpdateQueryIM(renderer, this, field, value);
-	}
+    public UpdateQueryIM set(Map<Field, Value> values) {
+        return new UpdateQueryIM(renderer, this, values);
+    }
+
+    public UpdateQueryIM set(Field field, Value value) {
+        Map<Field, Value> values = new LinkedHashMap<Field, Value>();
+        values.put(field, value);
+
+        return set(values);
+    }
     
     public UpdateQueryIM set(String field, Value value) {
         return set(new Field(field), value);

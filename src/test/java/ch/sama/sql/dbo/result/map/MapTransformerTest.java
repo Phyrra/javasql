@@ -15,12 +15,13 @@ public class MapTransformerTest {
     private static final SqLiteQueryFactory sql = new SqLiteQueryFactory();
     private static final SqLiteValueFactory value = sql.value();
 
-    private QueryExecutor<List<MapResult>> executor;
+    private QueryExecutor executor;
+    private MapTransformer transformer;
 
     @Before
     public void loadExecutor() {
-        SQLiteConnection connection = new SQLiteConnection();
-        executor = new QueryExecutor<List<MapResult>>(connection, new MapTransformer());
+        executor = new QueryExecutor(new SQLiteConnection());
+        transformer = new MapTransformer();
     }
 
     @Test
@@ -28,7 +29,8 @@ public class MapTransformerTest {
         List<MapResult> results = executor.query(
                 sql.query()
                         .select(value.numeric(1))
-                .getSql()
+                .getSql(),
+                new MapTransformer()
         );
 
         assertEquals(1, results.size());
@@ -43,7 +45,8 @@ public class MapTransformerTest {
                                 sql.query().select(value.numeric(2)),
                                 sql.query().select(value.numeric(3))
                         )
-                .getSql()
+                .getSql(),
+                transformer
         );
 
         assertEquals(3, results.size());
@@ -54,7 +57,8 @@ public class MapTransformerTest {
         MapResult result = executor.query(
                 sql.query()
                         .select(value.numeric(1).as("f1"), value.numeric(1.1).as("f2")) // Boolean == Int
-                .getSql()
+                .getSql(),
+                transformer
         ).get(0);
 
         assertEquals(Integer.class, result.get("f1").getClass());
@@ -66,7 +70,8 @@ public class MapTransformerTest {
         MapResult result = executor.query(
                 sql.query()
                         .select(value.string("Hello World").as("f1")) // Can't really test Clob
-                .getSql()
+                .getSql(),
+                transformer
         ).get(0);
 
         assertEquals(String.class, result.get("f1").getClass());
@@ -77,7 +82,8 @@ public class MapTransformerTest {
         MapResult result = executor.query(
                 sql.query()
                         .select(value.function("date", value.string("2015-04-02")).as("f1")) // SQLite does not have date type
-                .getSql()
+                .getSql(),
+                transformer
         ).get(0);
 
         assertEquals(String.class, result.get("f1").getClass());
@@ -88,7 +94,8 @@ public class MapTransformerTest {
         MapResult result = executor.query(
                 sql.query()
                         .select(SqLiteValueFactory.NULL.as("f1"))
-                .getSql()
+                .getSql(),
+                transformer
         ).get(0);
 
         assertEquals(null, result.get("f1"));

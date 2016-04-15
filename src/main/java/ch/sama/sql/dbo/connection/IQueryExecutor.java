@@ -1,7 +1,9 @@
 package ch.sama.sql.dbo.connection;
 
-public interface IQueryExecutor<S> {
+import ch.sama.sql.dbo.result.IResultSetTransformer;
+
+public interface IQueryExecutor {
     public void execute(String query);
 
-    public S query(String query);
+    public<S> S query(String query, IResultSetTransformer<S> transformer);
 }
