@@ -6,6 +6,9 @@ import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.helper.Function;
 import ch.sama.sql.query.helper.Value;
 
+/**
+ * Factory for creating SQL selectable values
+ */
 public interface IValueFactory {
     public Value plain(String s);
 

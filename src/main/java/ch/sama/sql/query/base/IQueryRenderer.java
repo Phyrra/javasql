@@ -8,6 +8,9 @@ import ch.sama.sql.query.helper.Value;
 import ch.sama.sql.query.helper.condition.ICondition;
 import ch.sama.sql.query.helper.order.IOrder;
 
+/**
+ * Renderer for query-parts
+ */
 public interface IQueryRenderer {
     public String render(Query query);
     public String render(UnionQuery query);
