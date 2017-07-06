@@ -72,7 +72,7 @@ There is the possibility to create classes from a database connection (or from a
 
     TSqlConnection connection = new TSqlConnection(link, user, password);
     
-    QueryExecutor executor = new QueryExecutor<>(connection);
+    QueryExecutor executor = new QueryExecutor(connection);
     ISchema schema = new TSqlSchema(executor, table -> true);
     
     new ClassGenerator<TSqlQueryFactory>(TSqlQueryFactory.class)
@@ -84,3 +84,27 @@ The generated sources can then be used in a query.
         .select(Sources.TABLE.FIELD)
         .from(Sources.TABLE)
     .getSql();
+    
+## JPA ##
+
+There is the possbility to create java objects from a database schema.
+
+	TSqlConnection connection = new TSqlConnection(link, user, password);
+	
+	QueryExecutor executor = new QueryExecutor(connection);
+    ISchema schema = new TSqlSchema(executor, table -> true);
+	
+    new ObjectGenerator(TYPE::toClass)
+    	.generate("src/main/java", "ch.sama.test.generated", schema);
+
+These classes can be used with the `ObjectMapper`, to convert the result set into useable object.
+
+    TSqlQueryFactory fac = new TSqlQueryFactory();
+    
+	List<TblAddress> addresses = executor.query(
+		fac.query()
+			.select(ValueFactory.ALL)
+			.from(Sources.tblAddress)
+		.getSql(),
+		new ObjectTransformer<>(TblAddress.class)
+	);

@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ObjectTransformer<T> implements IResultSetTransformer<List<T>> {
     private Class<T> clazz;
@@ -45,6 +46,10 @@ public class ObjectTransformer<T> implements IResultSetTransformer<List<T>> {
                                 if (column.getType().equals(Boolean.class) || column.getType().equals(Boolean.TYPE)) {
                                     if (tVal instanceof Integer || tVal instanceof Long) {
                                         tVal = (int) tVal != 0;
+                                    }
+                                } else if (column.getType().equals(UUID.class)) {
+                                    if (tVal instanceof String) {
+                                        tVal = UUID.fromString((String) tVal);
                                     }
                                 }
 
