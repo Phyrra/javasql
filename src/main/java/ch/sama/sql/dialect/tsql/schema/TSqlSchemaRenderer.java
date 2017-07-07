@@ -149,7 +149,7 @@ public class TSqlSchemaRenderer implements ISchemaRenderer {
 
     public static <T> String getTableSchema(Class<T> clazz) throws JpaException, BadSqlException {
         if (!clazz.isAnnotationPresent(Entity.class)) {
-            throw new JpaException("Class must be annotated with @Entity");
+            throw new JpaException("Class " + clazz.getName() + " is not annotated with @Entity");
         }
 
         Entity entity = clazz.getAnnotation(Entity.class);

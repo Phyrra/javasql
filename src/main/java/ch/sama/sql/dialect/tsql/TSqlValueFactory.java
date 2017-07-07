@@ -10,6 +10,7 @@ import ch.sama.sql.query.standard.ValueFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 public class TSqlValueFactory extends ValueFactory {
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -90,6 +91,10 @@ public class TSqlValueFactory extends ValueFactory {
 
         if (object instanceof Date) {
             return date((Date) object);
+        }
+
+        if (object instanceof UUID) {
+            return string(object.toString());
         }
 
         if (object instanceof String) {

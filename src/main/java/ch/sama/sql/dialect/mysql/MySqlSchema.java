@@ -160,7 +160,7 @@ public class MySqlSchema implements ISchema {
         String fName = formatTableName(name);
 
         if (!tables.containsKey(fName)) {
-            throw new ObjectNotFoundException("Table " + name + " could not be cound");
+            throw new ObjectNotFoundException("Table " + name + " could not be found");
         }
 
         return tables.get(fName);

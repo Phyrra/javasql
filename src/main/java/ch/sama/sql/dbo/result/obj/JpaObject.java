@@ -2,10 +2,7 @@ package ch.sama.sql.dbo.result.obj;
 
 import ch.sama.sql.dbo.Field;
 import ch.sama.sql.dbo.Table;
-import ch.sama.sql.jpa.AutoIncrement;
-import ch.sama.sql.jpa.Column;
-import ch.sama.sql.jpa.Entity;
-import ch.sama.sql.jpa.PrimaryKey;
+import ch.sama.sql.jpa.*;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.base.IQueryFactory;
 import ch.sama.sql.query.base.IValueFactory;
@@ -74,6 +71,12 @@ public abstract class JpaObject {
     private ICondition getMatchCondition(IQueryFactory fac) {
         Table self = new Table(getTableName());
 
+        List<java.lang.reflect.Field> primaryKeys = getPrimaryKeys();
+
+        if (primaryKeys.isEmpty()) {
+            throw new JpaException("No primary keys found for " + this.getClass().getName());
+        }
+
         return Condition.and(
                 getPrimaryKeys().stream()
                         .map(field -> Condition.eq(fac.value().field(new Field(self, getColumnName(field))), toValue(field, fac.value())))
@@ -136,5 +139,23 @@ public abstract class JpaObject {
                                 .map(field -> toValue(field, fac.value()))
                                 .toArray(Value[]::new)
                 );
+    }
+
+    public String getString() {
+        String data = getColumns().stream()
+                .filter(field -> !field.isAnnotationPresent(PrimaryKey.class))
+                .map(field -> {
+                    String val;
+                    try {
+                        val = field.get(this).toString();
+                    } catch (IllegalAccessException | NullPointerException e) {
+                        val = "";
+                    }
+
+                    return "\t\"" + getColumnName(field) + "\": \"" + val + "\"";
+                })
+                .collect(Collectors.joining(",\n"));
+
+        return "{\n" + data + "\n}";
     }
 }

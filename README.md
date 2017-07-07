@@ -108,3 +108,11 @@ These classes can be used with the `ObjectMapper`, to convert the result set int
 		.getSql(),
 		new ObjectTransformer<>(TblAddress.class)
 	);
+	
+From here, you can manipulate the object, and persist the change into the database.
+	
+	TblAddress address = addresses.get(0);
+	
+	address.setFirstName("Sandro");
+	
+	executor.execute(address.update().getSql());
