@@ -1,6 +1,6 @@
 # Java SQL #
 
-Java SQL is a simple and easy to use way of bringing your SQL statements directly into your Java code, providing (some) compile time check for correctness and automatic value escaping.
+Java SQL is a simple and easy to use way of bringing your SQL statements directly into your Java code, providing compile time check for correctness and automatic value escaping.
 
 Currently there is only an implementation of Microsoft's T-SQL available.
 
@@ -24,9 +24,9 @@ If not, use your IDE of choice to bring the *.jar into your build path.
 
 The core of the library (generation of SQL) does not depend on anything but standard java.
 
-You may use any class that implements the IConnection interface, or generate your own DB query functions, using only the generated SQL strings.
+You may use any class that implements the `IConnection` interface, or generate your own DB query functions, using only the generated SQL strings.
 
-There are no data base drivers shipped with this library, to use the DBConnection class, you need to provide a driver matching your database.
+There are no data base drivers shipped with this library, to use the `DBConnection` class, you need to provide a driver matching your database.
 
     dependencies {
         compile group: 'net.sourceforge.jtds', name: 'jtds', version: '1.3.1' // Microsoft SQL Server (TSql)
@@ -43,13 +43,13 @@ The grammar depends on Antlr4.
 
 ## QuickStart ##
 
-To get started, create a query builder of your choice. From this the value- and source factory can be derived.
+To get started, create a query builder of your choice. From this the value- and source factories can be derived.
 
     TSqlQueryBuilder builder = new TSqlQueryBuilder();
     TSqlValueFactory value = builder.value();
     TSqlSourceFactory source = builder.source();
 
-It's all SQL from there..
+And then it's all SQL from there..
 
     fac.query()
         .select(value.table("TABLE"))
@@ -62,9 +62,9 @@ It's all SQL from there..
         )
     .getSql();
 
-Note that this only results in a query-string. The execution of the query can still be done by whatever data base driver you want.
+Note that this only results in a query-string. The execution of the query should be done by your project's data base driver.
 
-There is an interface for the IQueryExecutor but it is not required.
+There is an interface for the `IQueryExecutor` but it is not required for basic operations.
 
 ## DB Schema ##
 
@@ -87,7 +87,7 @@ The generated sources can then be used in a query.
     
 ## JPA ##
 
-There is the possbility to create java objects from a database schema.
+There is the possibility to create Java objects from a database schema.
 
 	TSqlConnection connection = new TSqlConnection(link, user, password);
 	
@@ -109,7 +109,7 @@ These classes can be used with the `ObjectMapper`, to convert the result set int
 		new ObjectTransformer<>(TblAddress.class)
 	);
 	
-From here, you can manipulate the object, and persist the change into the database.
+From here, the object can be manipulated and changes persisted into the database.
 	
 	TblAddress address = addresses.get(0);
 	
