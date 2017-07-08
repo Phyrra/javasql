@@ -1,6 +1,7 @@
 package ch.sama.sql.dbo.result.map;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class MapResult {
     private Map<String, Object> map;
@@ -76,5 +77,22 @@ public class MapResult {
         copy.putAll(map);
 
         return copy;
+    }
+
+    public String getString() {
+        String data = map.keySet().stream()
+                .map(key -> {
+                    String val;
+                    try {
+                        val = map.get(key).toString();
+                    } catch (NullPointerException e) {
+                        val = "";
+                    }
+
+                    return "\t\"" + key + "\": \"" + val + "\"";
+                })
+                .collect(Collectors.joining(",\n"));
+
+        return "{\n" + data + "\n}";
     }
 }
