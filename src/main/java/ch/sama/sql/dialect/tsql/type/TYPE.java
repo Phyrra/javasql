@@ -15,6 +15,8 @@ public class TYPE {
     public static final UniqueidentifierType UNIQUEIDENTIFIER_TYPE = new UniqueidentifierType();
     public static final BitType BIT_TYPE = new BitType();
     public static final IntType INT_TYPE = new IntType();
+    public static final SmallIntType SMALL_INT_TYPE = new SmallIntType();
+    public static final BigIntType BIG_INT_TYPE = new BigIntType();
     public static final FloatType FLOAT_TYPE = new FloatType();
     public static final DatetimeType DATETIME_TYPE = new DatetimeType();
     public static final CharType CHAR_TYPE = new CharType();
@@ -64,6 +66,10 @@ public class TYPE {
                 return BIT_TYPE;
             case "int":
                 return INT_TYPE;
+            case "smallint":
+                return SMALL_INT_TYPE;
+            case "bigint":
+                return BIG_INT_TYPE;
             case "float":
                 return FLOAT_TYPE;
             case "datetime":
@@ -154,10 +160,12 @@ public class TYPE {
             case "double":
             case "float":
                 return FLOAT_TYPE;
-            case "int":
-            case "short":
-            case "long":
+            case "integer":
                 return INT_TYPE;
+            case "short":
+                return SMALL_INT_TYPE;
+            case "long":
+                return BIG_INT_TYPE;
             case "boolean":
                 return BIT_TYPE;
             case "date":
@@ -191,6 +199,10 @@ public class TYPE {
                 return Double.class;
             case "int":
                 return Integer.class;
+            case "smallint":
+                return Short.class;
+            case "bigint":
+                return Long.class;
             case "datetime":
                 return Date.class;
             case "uniqueidentifier":

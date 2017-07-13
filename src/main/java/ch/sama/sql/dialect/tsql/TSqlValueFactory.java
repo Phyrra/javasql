@@ -59,6 +59,10 @@ public class TSqlValueFactory extends ValueFactory {
         return new Value(value, "CAST(" + value.getValue() + " AS " + type.getString() + ")");
     }
 
+    public Value uuid(UUID uuid) {
+        return string(uuid.toString());
+    }
+
     @Override
     public Value object(Object object) {
         if (object == null) {
@@ -78,7 +82,7 @@ public class TSqlValueFactory extends ValueFactory {
         }
 
         if (object instanceof Long) {
-            return numeric((int) (long) object);
+            return numeric((long) object);
         }
 
         if (object instanceof Double) {

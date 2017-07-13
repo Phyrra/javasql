@@ -83,6 +83,11 @@ public abstract class ValueFactory implements IValueFactory {
     }
 
     @Override
+    public Value numeric(Long l) {
+        return new Value(l, l.toString());
+    }
+
+    @Override
     public Value numeric(Integer i) {
         return new Value(i, i.toString());
     }

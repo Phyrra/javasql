@@ -30,6 +30,7 @@ public interface IValueFactory {
 
     public Value string(String s);
     public Value numeric(Integer i);
+    public Value numeric(Long l);
     public Value numeric(Float f);
     public Value numeric(Double d);
     public Value bool(Boolean b);
