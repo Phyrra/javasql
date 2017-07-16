@@ -10,9 +10,4 @@ public class SqLiteValueFactory extends ValueFactory {
     public SqLiteValueFactory() {
         super(renderer);
     }
-
-    @Override
-    public Value object(Object o) {
-        throw new BadSqlException("Not implemented");
-    }
 }

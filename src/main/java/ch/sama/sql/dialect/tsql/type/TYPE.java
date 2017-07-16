@@ -161,6 +161,7 @@ public class TYPE {
             case "float":
                 return FLOAT_TYPE;
             case "integer":
+            case "int":
                 return INT_TYPE;
             case "short":
                 return SMALL_INT_TYPE;
@@ -174,7 +175,7 @@ public class TYPE {
                 return UNIQUEIDENTIFIER_TYPE;
         }
 
-        throw new BadSqlException("Class cannot be converted to type");
+        throw new BadSqlException("Class {" + clazz.getName() + "} cannot be converted to type");
     }
     
     public static Class<?> toClass(IType type) {

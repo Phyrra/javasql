@@ -70,6 +70,11 @@ public class ValueGuessTest {
         assertEquals("'Hello'", value.object("Hello").getValue());
     }
 
+    @Test
+    public void useCorrectEscaping() {
+        assertEquals("'Hello ''World'''", value.object("Hello 'World'").getValue());
+    }
+
     @Test (expected = BadParameterException.class)
     public void wrongGuess() {
         value.object(new Object());

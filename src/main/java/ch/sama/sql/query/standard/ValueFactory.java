@@ -6,6 +6,7 @@ import ch.sama.sql.dbo.Table;
 import ch.sama.sql.query.base.IQuery;
 import ch.sama.sql.query.base.IQueryRenderer;
 import ch.sama.sql.query.base.IValueFactory;
+import ch.sama.sql.query.exception.BadParameterException;
 import ch.sama.sql.query.helper.Function;
 import ch.sama.sql.query.helper.Value;
 
@@ -143,5 +144,50 @@ public abstract class ValueFactory implements IValueFactory {
     @Override
     public Value type(IType type) {
         return new Value(type, type.getString());
+    }
+
+    @Override
+    public Value object(Object object) {
+        if (object == null) {
+            return ValueFactory.NULL;
+        }
+
+        if (object instanceof Boolean) {
+            return bool((boolean) object);
+        }
+
+        if (object instanceof Integer) {
+            return numeric((int) object);
+        }
+
+        if (object instanceof Short) {
+            return numeric((int) (short) object);
+        }
+
+        if (object instanceof Long) {
+            return numeric((long) object);
+        }
+
+        if (object instanceof Double) {
+            return numeric((double) object);
+        }
+
+        if (object instanceof Float) {
+            return numeric((float) object);
+        }
+
+        if (object instanceof String) {
+            String s = (String) object;
+
+            // Bit of a gamble..
+            // empty strings will be interpreted as null
+            if (s.length() == 0 || s.toLowerCase().equals("null")) {
+                return ValueFactory.NULL;
+            }
+
+            return string(s);
+        }
+
+        throw new BadParameterException("Cannot guess {" + object.getClass().getName() + ": " + object.toString() + "}");
     }
 }

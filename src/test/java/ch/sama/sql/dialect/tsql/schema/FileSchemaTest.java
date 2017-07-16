@@ -17,7 +17,7 @@ public class FileSchemaTest {
     private File getResource(String path) throws FileNotFoundException {
         URL url = getClass().getClassLoader().getResource(path);
         if (url == null) {
-            throw new FileNotFoundException("File " + path + " not found");
+            throw new FileNotFoundException("File {" + path + "} not found");
         }
 
         return new File(url.getPath());
